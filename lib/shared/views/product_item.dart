@@ -34,7 +34,12 @@ class _CustomProductItemState extends State<CustomProductItem> {
             height: config.sh(100),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.red,
+              image: const DecorationImage(
+                image: AssetImage(
+                  "assets/png/food.jpeg",
+                ),
+                fit: BoxFit.cover
+              ),
               borderRadius: BorderRadius.circular(20)
             ),
           ),

@@ -1,9 +1,11 @@
+import 'package:biz_track/features/cashier/views/cashier_drawer_view.dart';
 import 'package:biz_track/features/cashier/views/cashier_products_view.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
@@ -17,9 +19,14 @@ class CashierDashboardView extends ConsumerStatefulWidget {
 class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
 
   int currentIdx = 0;
+  final PageController _pageController = PageController(
+    initialPage: 0,
+    keepPage: true
+  );
 
   void onPageChanged(int index) {
     setState(() {
+      _pageController.jumpToPage(index);
       currentIdx = index;
     });
   }
@@ -43,8 +50,9 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
           )
         ),
         centerTitle: true,
-        title: const Text(
-          "Cashier"
+        title: Text(
+          "Cashier",
+          style: GoogleFonts.rubik(),
         ),
         titleTextStyle: TextStyle(
           fontSize: config.sp(20),
@@ -53,6 +61,7 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
         ),
       ),
       body: PageView(
+        controller: _pageController,
         onPageChanged: onPageChanged,
         children: [
           const CashierProductsView(),
@@ -60,9 +69,11 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
         ],
       ),
       drawer: SafeArea(
+        top: false,
         bottom: false,
         child: Drawer(
           backgroundColor: ColorPalette.primary,
+          child: const CashierDrawerView(),
         ),
       ),
       bottomNavigationBar: ClipRRect(

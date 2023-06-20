@@ -28,20 +28,23 @@ class CustomAuthButton extends ConsumerWidget {
       ),
       color: ColorPalette.primary,
       child: text != null && icon != null
-        ? Row(
-          children: [
-            icon!,
-            const Spacer(),
-            Text(
-              text ?? "",
-              style: TextStyle(
-                color: ColorPalette.white,
-                fontWeight: FontWeight.w700,
-                fontSize: config.sp(16)
+        ? Padding(
+          padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
+          child: Row(
+            children: [
+              icon!,
+              const Spacer(),
+              Text(
+                text ?? "",
+                style: TextStyle(
+                  color: ColorPalette.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: config.sp(16)
+                ),
               ),
-            ),
-            const Spacer(),
-          ],
+              const Spacer(),
+            ],
+          ),
         )
         : Text(
           text ?? "",

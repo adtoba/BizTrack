@@ -14,40 +14,112 @@ class CashierProductsView extends ConsumerStatefulWidget {
 
 class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
 
+  String selectedValue = "All Products";
+
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
 
     return Scaffold(
       backgroundColor: const Color(0xffF7F8FA),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: config.sw(24)),
-        child: Column(
-          children: [
-            const YMargin(20),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: config.sh(10),
-                  mainAxisSpacing: config.sw(10),
-                  childAspectRatio: .8
-                ), 
-                itemBuilder: (context, index) {
-                  return const CustomProductItem(
-                    productName: "Salad Tuna",
-                    productPrice: "\$29.99",
-                  );
-                },
-                itemCount: 6,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Container(
+                height: config.sh(55),
+                padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
+                decoration: const BoxDecoration(
+                  color: Colors.white
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          items: dropdownItems,
+                          value: selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedValue = value!;
+                            });
+                          }
+                        ), 
+                      )
+                    ),
+                    const XMargin(30),
+                    Container(
+                      height: double.infinity,
+                      width: .2,
+                      color: Colors.grey,
+                    ),
+                    IconButton(
+                      onPressed: () {}, 
+                      icon: const Icon(Icons.search)
+                    ),
+                    Container(
+                      height: double.infinity,
+                      width: .2,
+                      color: Colors.grey,
+                    ),
+                    IconButton(
+                      onPressed: () {}, 
+                      icon: const Icon(Icons.qr_code_scanner)
+                    ),
+                    Container(
+                      height: double.infinity,
+                      width: .2,
+                      color: Colors.grey,
+                    ),
+                    IconButton(
+                      onPressed: () {}, 
+                      icon: const Icon(Icons.list)
+                    )
+                  ],
+                ),
               ),
-            ),
-            const YMargin(10),
-            const CheckoutButton(),
-            const YMargin(10)
-          ],
-        ),
+              const YMargin(10),
+              Expanded(
+                child: GridView.builder(
+                  padding: EdgeInsets.only(left: config.sw(22), right: config.sw(22), bottom: config.sw(50)),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: config.sh(10),
+                    mainAxisSpacing: config.sw(10),
+                    childAspectRatio: .8
+                  ), 
+                  itemBuilder: (context, index) {
+                    return const CustomProductItem(
+                      productName: "Salad Tuna",
+                      productPrice: "\$29.99",
+                    );
+                  },
+                  itemCount: 6,
+                ),
+              ),
+              const YMargin(10),
+              // const CheckoutButton(),
+              // const YMargin(10)
+            ],
+          ),
+          Positioned(
+            bottom: config.sh(10),
+            left: config.sw(22),
+            right: config.sw(22),
+            child: const CheckoutButton(),
+          )
+        ],
       ),
     );
+  }
+
+  List<DropdownMenuItem<String>> get dropdownItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(value: "All Products", child: Text("All Products")),
+      const DropdownMenuItem(value: "Breakfast", child: Text("Breakfast")),
+      const DropdownMenuItem(value: "Lunch", child: Text("Lunch")),
+      const DropdownMenuItem(value: "Dinner", child: Text("Dinner")),
+    ];
+    return menuItems;
   }
 }

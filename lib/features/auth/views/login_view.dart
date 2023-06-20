@@ -50,7 +50,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: config.sw(30)),
+        padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

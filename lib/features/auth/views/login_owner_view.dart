@@ -76,7 +76,7 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
                 child: Text(
                   "Forgot Password?",
                   style: TextStyle(
-                    fontSize: config.sp(12),
+                    fontSize: config.sp(14),
                     decoration: TextDecoration.underline
                   ),
                 )
