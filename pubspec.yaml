@@ -38,9 +38,18 @@ flutter:
 
   uses-material-design: true
 
+  fonts:
+    - family: Apercu
+      fonts:
+        - asset: assets/fonts/Apercu-Regular.otf
+        - asset: assets/fonts/Apercu-Italic.otf
+          style: italic
+        - asset: assets/fonts/Apercu-Bold.otf
+          weight: 700
 
   assets:
     - assets/svg/
     - assets/png/
+    - assets/fonts/
     - assets/
 

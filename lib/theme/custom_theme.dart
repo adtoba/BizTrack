@@ -13,12 +13,13 @@ class CustomTheme {
       backgroundColor: ColorPalette.white,
       toolbarTextStyle: TextStyle(
         color: ColorPalette.primary,
-        fontWeight: FontWeight.w700
+        fontWeight: FontWeight.w700,
+        fontFamily: GoogleFonts.rubik().fontFamily
       ),
       elevation: 0.0,
       centerTitle: true,
     ),
-    textTheme: GoogleFonts.montserratTextTheme(),
+    textTheme: GoogleFonts.rubikTextTheme(),
     scaffoldBackgroundColor: ColorPalette.white
   );
 }

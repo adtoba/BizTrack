@@ -10,6 +10,7 @@ import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -27,6 +28,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             if(Navigator.canPop(context)) Navigator.pop(context);
@@ -37,8 +39,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
             width: config.sw(35),
           )
         ),
-        title: const Text(
-          "Log in"
+        title: Text(
+          "Log in",
+          style: GoogleFonts.rubik(),
         ),
         titleTextStyle: TextStyle(
           fontSize: config.sp(20),

@@ -23,6 +23,7 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             if(Navigator.canPop(context)) Navigator.pop(context);

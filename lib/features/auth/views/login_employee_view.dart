@@ -7,6 +7,7 @@ import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/info_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginEmployeeView extends ConsumerStatefulWidget {
@@ -24,6 +25,7 @@ class __LoginEmployeeViewState extends ConsumerState<LoginEmployeeView> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             if(Navigator.canPop(context)) Navigator.pop(context);
@@ -34,8 +36,9 @@ class __LoginEmployeeViewState extends ConsumerState<LoginEmployeeView> {
             width: config.sw(35),
           )
         ),
-        title: const Text(
-          "Log in as Employee"
+        title: Text(
+          "Log in as Employee",
+          style: GoogleFonts.rubik(),
         ),
         titleTextStyle: TextStyle(
           fontSize: config.sp(20),

@@ -1,11 +1,14 @@
+import 'package:biz_track/features/cashier/views/cashier_dashboard_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_text_field.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginOwnerView extends ConsumerStatefulWidget {
@@ -23,6 +26,7 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             if(Navigator.canPop(context)) Navigator.pop(context);
@@ -33,8 +37,9 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
             width: config.sw(35),
           )
         ),
-        title: const Text(
-          "Log in as Owner"
+        title: Text(
+          "Log in as Owner",
+          style: GoogleFonts.rubik(),
         ),
         titleTextStyle: TextStyle(
           fontSize: config.sp(20),
@@ -62,7 +67,9 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
               const YMargin(30),
               CustomAuthButton(
                 text: "Login",
-                onTap: () {},
+                onTap: () {
+                  push(const CashierDashboardView());
+                },
               ),
               TextButton(
                 onPressed: () {}, 
