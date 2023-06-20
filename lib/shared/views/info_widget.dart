@@ -12,7 +12,7 @@ class InfoWidget extends StatelessWidget {
     final config = SizeConfig();
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: config.sw(40), vertical: config.sh(10)),
+      padding: EdgeInsets.symmetric(horizontal: config.sw(40), vertical: config.sh(15)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: ColorPalette.lightBlue

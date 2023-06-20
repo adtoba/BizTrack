@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LoginOwnerView extends ConsumerStatefulWidget {
-  const LoginOwnerView({super.key});
+class SignUpView extends ConsumerStatefulWidget {
+  const SignUpView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginOwnerViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpViewState();
 }
 
-class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
+class _SignUpViewState extends ConsumerState<SignUpView> {
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
           )
         ),
         title: const Text(
-          "Log in as Owner"
+          "Sign Up"
         ),
         titleTextStyle: TextStyle(
           fontSize: config.sp(20),
@@ -50,8 +50,13 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
             children: [
               const YMargin(30),
               const CustomTextField(
-                label: "Email or Phone Number",
-                hint: "Email or Phone Number",
+                label: "Email Address",
+                hint: "Enter your email address",
+              ),
+              const YMargin(20),
+              const CustomTextField(
+                label: "Phone Number",
+                hint: "08112341234",
               ),
               const YMargin(20),
               const CustomTextField(
@@ -61,19 +66,9 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
               ),
               const YMargin(30),
               CustomAuthButton(
-                text: "Login",
+                text: "Sign Up",
                 onTap: () {},
               ),
-              TextButton(
-                onPressed: () {}, 
-                child: Text(
-                  "Forgot Password?",
-                  style: TextStyle(
-                    fontSize: config.sp(12),
-                    decoration: TextDecoration.underline
-                  ),
-                )
-              )
             ],
           ),
         ),

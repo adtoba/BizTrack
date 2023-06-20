@@ -1,4 +1,6 @@
+import 'package:biz_track/features/auth/views/login_employee_view.dart';
 import 'package:biz_track/features/auth/views/login_owner_view.dart';
+import 'package:biz_track/features/auth/views/signup_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
@@ -78,7 +80,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
             CustomAuthButton(
               icon: const Icon(Icons.people, color: Colors.white),
               text: "Log in as Employee",
-              onTap: () {},
+              onTap: () {
+                push(const LoginEmployeeView());
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +92,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   style: CustomTextStyle.regular16,
                 ),
                 TextButton(
-                  onPressed: () {}, 
+                  onPressed: () {
+                    push(const SignUpView());
+                  }, 
                   child: const Text("Sign Up")
                 )
               ],
