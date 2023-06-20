@@ -1,10 +1,11 @@
 import 'package:biz_track/shared/buttons/auth_button.dart';
-import 'package:biz_track/shared/buttons/bordered_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
+import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
-import 'package:biz_track/shared/views/info_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -23,7 +24,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Log in as Owner"
+          "Log in"
         ),
         titleTextStyle: TextStyle(
           fontSize: config.sp(20),
@@ -34,28 +35,61 @@ class _LoginViewState extends ConsumerState<LoginView> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomAuthButton(
-              text: "Create new account",
-              onTap: () {},
+            const YMargin(20),
+            Text(
+              "Welcome to BizTrack!",
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: config.sp(24),
+                color: ColorPalette.textColor
+              ),
+            ),
+            const YMargin(10),
+            Text(
+              "Login as the Business Owner or Business Employee to continue",
+              style: CustomTextStyle.regular16,
+            ),
+            const YMargin(50),
+            Center(
+              child: SvgPicture.asset(
+                "login_in_book".svg,
+                height: config.sh(250),
+                width: config.sw(250),
+                alignment: Alignment.center,
+              ),
             ),
             const YMargin(20),
-            CustomBorderedButton(
-              text: "Login",
-              onTap: () {},
-            ),
-            const YMargin(20),
             CustomAuthButton(
-              text: "Log in as Owner",
               icon: const Icon(Icons.person, color: Colors.white),
+              text: "Log in as Owner",
               onTap: () {},
             ),
-            const YMargin(20),
-            const InfoWidget(
-              info: "Use the cashier code that can be created by the Owner in "
-              "Manage Store -> Cashier Code",
-            )
+            const YMargin(10),
+            Center(
+              child: Text("Or", style: CustomTextStyle.regular16,)
+            ),
+            const YMargin(10),
+            CustomAuthButton(
+              icon: const Icon(Icons.people, color: Colors.white),
+              text: "Log in as Employee",
+              onTap: () {},
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don't have an account? ",
+                  style: CustomTextStyle.regular16,
+                ),
+                TextButton(
+                  onPressed: () {}, 
+                  child: const Text("Sign Up")
+                )
+              ],
+            ),
+            const Spacer(),
           ],
         ),
       ),

@@ -21,6 +21,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   hooks_riverpod: ^2.3.6
   google_fonts: ^2.1.1
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -35,4 +36,10 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+
+  assets:
+    - assets/svg/
+    - assets/png/
+    - assets/
 
