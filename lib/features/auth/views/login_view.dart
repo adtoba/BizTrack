@@ -1,8 +1,10 @@
+import 'package:biz_track/features/auth/views/login_owner_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -64,7 +66,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
             CustomAuthButton(
               icon: const Icon(Icons.person, color: Colors.white),
               text: "Log in as Owner",
-              onTap: () {},
+              onTap: () {
+                push(const LoginOwnerView());
+              },
             ),
             const YMargin(10),
             Center(
