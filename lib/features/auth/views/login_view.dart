@@ -27,6 +27,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            if(Navigator.canPop(context)) Navigator.pop(context);
+          }, 
+          icon: SvgPicture.asset(
+            "back_button".svg,
+            height: config.sh(35),
+            width: config.sw(35),
+          )
+        ),
         title: const Text(
           "Log in"
         ),
@@ -37,7 +47,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
+        padding: EdgeInsets.symmetric(horizontal: config.sw(30)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -89,13 +99,18 @@ class _LoginViewState extends ConsumerState<LoginView> {
               children: [
                 Text(
                   "Don't have an account? ",
-                  style: CustomTextStyle.regular16,
+                  style: CustomTextStyle.regular14,
                 ),
                 TextButton(
                   onPressed: () {
                     push(const SignUpView());
                   }, 
-                  child: const Text("Sign Up")
+                  child: Text(
+                    "Sign Up",
+                    style: CustomTextStyle.regular14.copyWith(
+                      color: ColorPalette.primary
+                    ),
+                  )
                 )
               ],
             ),
