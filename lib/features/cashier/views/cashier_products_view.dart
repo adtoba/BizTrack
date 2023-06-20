@@ -15,6 +15,7 @@ class CashierProductsView extends ConsumerStatefulWidget {
 class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
 
   String selectedValue = "All Products";
+  bool isGridView = true;
 
   @override
   Widget build(BuildContext context) {
@@ -72,31 +73,55 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
                       color: Colors.grey,
                     ),
                     IconButton(
-                      onPressed: () {}, 
-                      icon: const Icon(Icons.list)
+                      onPressed: () {
+                        setState(() {
+                          isGridView = !isGridView;
+                        });
+                      }, 
+                      icon: isGridView 
+                        ? const Icon(Icons.list)
+                        : const Icon(Icons.grid_on)
                     )
                   ],
                 ),
               ),
               const YMargin(10),
-              Expanded(
-                child: GridView.builder(
-                  padding: EdgeInsets.only(left: config.sw(22), right: config.sw(22), bottom: config.sw(50)),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: config.sh(10),
-                    mainAxisSpacing: config.sw(10),
-                    childAspectRatio: .8
-                  ), 
-                  itemBuilder: (context, index) {
-                    return const CustomProductItem(
-                      productName: "Salad Tuna",
-                      productPrice: "\$29.99",
-                    );
-                  },
-                  itemCount: 6,
+              if(isGridView)...[
+                Expanded(
+                  child: GridView.builder(
+                    padding: EdgeInsets.only(left: config.sw(22), right: config.sw(22), bottom: config.sw(50)),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: config.sh(10),
+                      mainAxisSpacing: config.sw(10),
+                      childAspectRatio: .8
+                    ), 
+                    itemBuilder: (context, index) {
+                      return const CustomProductItem(
+                        productName: "Salad Tuna",
+                        productPrice: "\$29.99",
+                      );
+                    },
+                    itemCount: 6,
+                  ),
                 ),
-              ),
+              ] else ...[
+                Expanded(
+                  child: ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
+                    itemCount: 4,
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => const YMargin(20),
+                    itemBuilder: (c, i) {
+                      return const CustomListProductItem(
+                        productName: "Salad Tuna",
+                        productPrice: "\$29.99",
+                      );
+                    },
+                  ),
+                )
+              ],
+              
               const YMargin(10),
               // const CheckoutButton(),
               // const YMargin(10)

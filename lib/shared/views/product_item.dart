@@ -1,6 +1,7 @@
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 
@@ -69,9 +70,97 @@ class _CustomProductItemState extends State<CustomProductItem> {
                 IconButton(
                   onPressed: () {}, 
                   iconSize: 40,
-                  icon: Icon(Icons.add_box, color: ColorPalette.primary)
+                  icon: Image.asset(
+                    "add_icon".png,
+                    height: config.sh(35),
+                    width: config.sw(35),
+                  )
                 )
               ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+
+class CustomListProductItem extends StatefulWidget {
+  const CustomListProductItem({super.key, this.productName, this.info, this.productPrice});
+
+  final String? productName;
+  final String? info;
+  final String? productPrice;
+
+  @override
+  State<CustomListProductItem> createState() => _CustomListProductItemState();
+}
+
+class _CustomListProductItemState extends State<CustomListProductItem> {
+  @override
+  Widget build(BuildContext context) {
+    final config = SizeConfig();
+
+    return Container(
+      width: double.infinity,
+      height: config.sh(80),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20)
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: config.sh(80),
+            width: config.sw(100),
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage(
+                  "assets/png/food.jpeg",
+                ),
+                fit: BoxFit.cover
+              ),
+              borderRadius: BorderRadius.circular(20)
+            ),
+          ),
+          const XMargin(20),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: config.sh(15)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.productName!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomTextStyle.bold16,
+                  ),
+                  const Spacer(),
+                  Text(
+                    widget.productPrice!,
+                    style: CustomTextStyle.bold16.copyWith(
+                      color: ColorPalette.primary
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const XMargin(5),
+          Center(
+            child: IconButton(
+              onPressed: () {}, 
+              iconSize: 40,
+              icon: Image.asset(
+                "add_icon".png,
+                height: config.sh(40),
+                width: config.sw(40),
+              )
             ),
           )
         ],

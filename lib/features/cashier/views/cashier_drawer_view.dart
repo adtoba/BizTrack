@@ -1,7 +1,10 @@
+import 'package:biz_track/features/history/views/transaction_history_view.dart';
+import 'package:biz_track/features/report/views/report_view.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -74,7 +77,9 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             color: Colors.white,
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+            },
             leading: const Icon(Icons.money, color: Colors.white),
             title: Text(
               "Cashier",
@@ -84,7 +89,9 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              push(const TransactionHistoryView());
+            },
             leading: const Icon(Icons.history, color: Colors.white),
             title: Text(
               "Transaction History",
@@ -94,7 +101,9 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              push(const ReportView());
+            },
             leading: const Icon(Icons.report, color: Colors.white),
             title: Text(
               "Report",
