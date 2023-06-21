@@ -1,9 +1,18 @@
+import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/checkout_button.dart';
 import 'package:biz_track/shared/views/product_item.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+
+class SelectedProduct {
+  SelectedProduct({this.name, this.price, this.quantity});
+
+  String? name;
+  String? price;
+  int? quantity;
+}
 
 class CashierProductsView extends ConsumerStatefulWidget {
   const CashierProductsView({super.key});
@@ -16,6 +25,31 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
 
   String selectedValue = "All Products";
   bool isGridView = true;
+
+  List<SelectedProduct> products = [
+    SelectedProduct(
+      name: "Salad Tuna",
+      price: "\$29.99",
+      quantity: 0
+    ),
+    SelectedProduct(
+      name: "Pizza",
+      price: "\$10.99",
+      quantity: 0
+    ),
+    SelectedProduct(
+      name: "SandWich",
+      price: "\$9.88",
+      quantity: 0
+    ),
+    SelectedProduct(
+      name: "Salad Tuna",
+      price: "\$29.99",
+      quantity: 0
+    ),
+  ];
+
+  Map<String, int> selectedProducts = {};
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +73,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton(
                           items: dropdownItems,
+                          style: CustomTextStyle.regular16,
                           value: selectedValue,
                           onChanged: (value) {
                             setState(() {
@@ -56,23 +91,29 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
                     ),
                     IconButton(
                       onPressed: () {}, 
-                      icon: const Icon(Icons.search)
+                      icon: const Icon(Icons.search),
+                      iconSize: config.sh(30),
                     ),
+                    const XMargin(5),
                     Container(
                       height: double.infinity,
                       width: .2,
                       color: Colors.grey,
                     ),
+                    const XMargin(5),
                     IconButton(
                       onPressed: () {}, 
-                      icon: const Icon(Icons.qr_code_scanner)
+                      icon: const Icon(Icons.qr_code_scanner),
+                      iconSize: config.sh(30),
                     ),
+                    const XMargin(5),
                     Container(
                       height: double.infinity,
                       width: .2,
                       color: Colors.grey,
                     ),
                     IconButton(
+                      iconSize: config.sh(30),
                       onPressed: () {
                         setState(() {
                           isGridView = !isGridView;
@@ -88,23 +129,58 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
               const YMargin(10),
               if(isGridView)...[
                 Expanded(
-                  child: GridView.builder(
-                    padding: EdgeInsets.only(left: config.sw(22), right: config.sw(22), bottom: config.sw(50)),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: config.sh(10),
-                      mainAxisSpacing: config.sw(10),
-                      childAspectRatio: .8
-                    ), 
-                    itemBuilder: (context, index) {
-                      return const CustomProductItem(
-                        productName: "Salad Tuna",
-                        productPrice: "\$29.99",
-                      );
-                    },
-                    itemCount: 6,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: config.sh(50), left: config.sw(5), right: config.sw(5)),
+                      child: Wrap(
+                        spacing: config.sw(10),
+                        runSpacing: config.sh(10),
+                        children: products.map((e) {
+                          return CustomProductItem(
+                            productName: e.name,
+                            productPrice: e.price,
+                            quantity: selectedProducts[e.name] ?? 0,
+                            onTap: () {
+                              if(selectedProducts.containsKey(e.name)) {
+                                setState(() {
+                                  selectedProducts.addAll({
+                                    e.name! : selectedProducts[e.name]! + 1
+                                  });
+                                });
+                              } else {
+                                setState(() {
+                                  selectedProducts.addAll({
+                                    e.name! : 1
+                                  });
+                                }); 
+                              }
+
+                              print(selectedProducts);
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
                 ),
+                // Expanded(
+                //   child: GridView.builder(
+                //     padding: EdgeInsets.only(left: config.sw(22), right: config.sw(22), bottom: config.sw(50)),
+                //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //       crossAxisCount: 2,
+                //       crossAxisSpacing: config.sh(10),
+                //       mainAxisSpacing: config.sw(10),
+                //       childAspectRatio: .8
+                //     ), 
+                //     itemBuilder: (context, index) {
+                //       return const CustomProductItem(
+                //         productName: "Salad Tuna",
+                //         productPrice: "\$29.99",
+                //       );
+                //     },
+                //     itemCount: 6,
+                //   ),
+                // ),
               ] else ...[
                 Expanded(
                   child: ListView.separated(

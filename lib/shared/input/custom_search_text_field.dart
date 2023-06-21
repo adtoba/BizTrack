@@ -105,7 +105,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
             
           ),
           hintStyle: TextStyle(
-            fontSize: config.sp(13),
+            fontSize: config.sp(14),
             fontWeight: FontWeight.normal,
             color: isDarkMode ? const Color(0xff9A81D4) : ColorPalette.textColor.withOpacity(.8)
           ),

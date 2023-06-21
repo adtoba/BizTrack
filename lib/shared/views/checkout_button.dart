@@ -1,7 +1,9 @@
+import 'package:biz_track/features/cashier/views/order_details_view.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,7 +20,9 @@ class CheckoutButton extends ConsumerWidget {
     return MaterialButton(
       minWidth: double.infinity,
       height: config.sh(55),
-      onPressed: () {},
+      onPressed: () {
+        push(const OrderDetailsView());
+      },
       color: ColorPalette.primary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),

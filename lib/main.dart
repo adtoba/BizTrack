@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       navigatorKey: navigatorKey,
-      darkTheme: CustomTheme.darkTheme,
       theme: CustomTheme.lightTheme,
       home: Builder(
         builder: (context) {

@@ -33,7 +33,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const YMargin(70),
+          const YMargin(60),
           Text(
             "BizTrack!",
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -54,7 +54,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
           const YMargin(10),
           Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
+            padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: Colors.white.withOpacity(.2)
@@ -63,9 +63,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
               child: DropdownButton(
                 items: dropdownItems,
                 value: selectedValue,
-                style: const TextStyle(
-                  color: Colors.black
-                ),
+                style: CustomTextStyle.regular16,
                 onChanged: (value) {
                   setState(() {
                     selectedValue = value!;

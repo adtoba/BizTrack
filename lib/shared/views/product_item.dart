@@ -6,11 +6,13 @@ import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 
 class CustomProductItem extends StatefulWidget {
-  const CustomProductItem({super.key, this.productName, this.info, this.productPrice});
+  const CustomProductItem({super.key, this.productName, this.info, this.productPrice, this.onTap, this.quantity = 0});
 
   final String? productName;
   final String? info;
   final String? productPrice;
+  final VoidCallback? onTap;
+  final int? quantity;
 
   @override
   State<CustomProductItem> createState() => _CustomProductItemState();
@@ -21,64 +23,92 @@ class _CustomProductItemState extends State<CustomProductItem> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
 
-    return Container(
-      width: config.sw(160),
-      height: config.sh(200),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20)
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: widget.onTap,
+      child: Stack(
         children: [
           Container(
-            height: config.sh(100),
-            width: double.infinity,
+            width: config.sw(120),
+            height: config.sh(170),
             decoration: BoxDecoration(
-              image: const DecorationImage(
-                image: AssetImage(
-                  "assets/png/food.jpeg",
-                ),
-                fit: BoxFit.cover
-              ),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20)
             ),
-          ),
-          const YMargin(10),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
-            child: Text(
-              widget.productName!,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: CustomTextStyle.bold16,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
+                Container(
+                  height: config.sh(100),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(
+                      image: AssetImage(
+                        "assets/png/food.jpeg",
+                      ),
+                      fit: BoxFit.cover
+                    ),
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                ),
+                const YMargin(10),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
                   child: Text(
-                    widget.productPrice!,
+                    "${widget.productName}",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: CustomTextStyle.bold16.copyWith(
-                      color: ColorPalette.primary
+                      fontSize: config.sp(14)
                     ),
                   ),
                 ),
-                const XMargin(5),
-                IconButton(
-                  onPressed: () {}, 
-                  iconSize: 40,
-                  icon: Image.asset(
-                    "add_icon".png,
-                    height: config.sh(35),
-                    width: config.sw(35),
-                  )
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.productPrice!,
+                          style: CustomTextStyle.bold16.copyWith(
+                            color: ColorPalette.primary
+                          ),
+                        ),
+                      ),
+                      // const XMargin(5),
+                      // IconButton(
+                      //   onPressed: () {}, 
+                      //   iconSize: 40,
+                      //   icon: Image.asset(
+                      //     "add_icon".png,
+                      //     height: config.sh(35),
+                      //     width: config.sw(35),
+                      //   )
+                      // )
+                    ],
+                  ),
                 )
               ],
             ),
-          )
+          ),
+          if(widget.quantity! >= 1)...[
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                color: Colors.white.withOpacity(.5),
+                alignment: Alignment.center,
+                child: Text(
+                  "${widget.quantity}",
+                  style: CustomTextStyle.bold16.copyWith(
+                    color: Colors.red,
+                    fontSize: config.sp(30)
+                  ),
+                ),
+              ),
+            )
+          ],
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:biz_track/features/customer/views/customers_view.dart';
 import 'package:biz_track/features/employees/views/employees_view.dart';
+import 'package:biz_track/features/inventory/views/products_view.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
@@ -42,7 +43,9 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               const YMargin(10),
               ManageStoreItem(
                 title: "Products",
-                onTap: () {},
+                onTap: () {
+                  push(const ProductsView());
+                },
               ),
               const Divider(),
               ManageStoreItem(

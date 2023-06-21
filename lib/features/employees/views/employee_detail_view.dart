@@ -98,14 +98,15 @@ class _EmployeeDetailViewState extends ConsumerState<EmployeeDetailView> {
           child: Column(
             children: [
               CustomAuthButton(
-                text: "View Employee Transactions",
+                text: "All Transactions",
                 onTap: () {
                   
                 },
               ),
               const YMargin(10),
               CustomBorderedButton(
-                text: "Edit Detail",
+                text: "Delete Employee",
+                color: Colors.red,
                 onTap: () {
                   
                 },

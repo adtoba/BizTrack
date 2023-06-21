@@ -72,12 +72,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
             Center(
               child: SvgPicture.asset(
                 "login_in_book".svg,
-                height: config.sh(250),
-                width: config.sw(250),
                 alignment: Alignment.center,
               ),
             ),
             const YMargin(20),
+            const Spacer(),
             CustomAuthButton(
               icon: const Icon(Icons.person, color: Colors.white),
               text: "Log in as Owner",
@@ -85,11 +84,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 push(const LoginOwnerView());
               },
             ),
-            const YMargin(10),
+            const YMargin(20),
             Center(
               child: Text("Or", style: CustomTextStyle.regular16,)
             ),
-            const YMargin(10),
+            const YMargin(20),
             CustomAuthButton(
               icon: const Icon(Icons.people, color: Colors.white),
               text: "Log in as Employee",

@@ -1,24 +1,25 @@
-import 'package:biz_track/features/customer/views/add_customer_view.dart';
 import 'package:biz_track/features/customer/views/customer_detail_view.dart';
+import 'package:biz_track/features/inventory/views/add_product_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
+import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class CustomerView extends ConsumerStatefulWidget {
-  const CustomerView({super.key});
+class ProductsView extends ConsumerStatefulWidget {
+  const ProductsView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CustomerViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ProductsViewState();
 }
 
-class _CustomerViewState extends ConsumerState<CustomerView> {
+class _ProductsViewState extends ConsumerState<ProductsView> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
-        title: "Customer",
+        title: "Products",
       ),
       body: Column(
         children: [
@@ -39,7 +40,7 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
             ),
             color: Colors.white,
             child: const CustomSearchTextField(
-              hint: "Search name or email",
+              hint: "Search name of product",
               suffix: Icon(Icons.search),
             ),
           ),
@@ -50,26 +51,33 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
                 horizontal: config.sw(22), 
                 vertical: config.sh(20)
               ),
-              separatorBuilder: (c, i) => const Divider(),
+              separatorBuilder: (c, i) => const YMargin(10),
               itemBuilder: (c, i) {
-                return ListTile(
-                  title: Text(
-                    "John Doe",
-                    style: CustomTextStyle.regular16,
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20)
                   ),
-                  subtitle: Text(
-                    "email@email.com",
-                    style: CustomTextStyle.regular14,
+                  child: ListTile(
+                    title: Text(
+                      "Wagyu Sate",
+                      style: CustomTextStyle.bold16,
+                    ),
+                    subtitle: Text(
+                      "All Branch",
+                      style: CustomTextStyle.regular14,
+                    ),
+                    trailing: Text(
+                      "\$20.99",
+                      style: CustomTextStyle.regular16,
+                    ),
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    onTap: () {
+                      push(const CustomerDetailView());
+                    },
                   ),
-                  trailing: const Icon(
-                    Icons.arrow_forward_ios, 
-                    size: 15
-                  ),
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  onTap: () {
-                    push(const CustomerDetailView());
-                  },
                 ); 
               },
             ),
@@ -80,9 +88,9 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
           child: CustomAuthButton(
-            text: "Add New Customer",
+            text: "Add New Product",
             onTap: () {
-              push(const AddCustomerView());
+              push(const AddProductView());
             },
           ),
         )
