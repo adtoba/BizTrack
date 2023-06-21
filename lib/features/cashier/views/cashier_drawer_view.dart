@@ -1,3 +1,4 @@
+import 'package:biz_track/features/account/views/account_view.dart';
 import 'package:biz_track/features/history/views/transaction_history_view.dart';
 import 'package:biz_track/features/report/views/report_view.dart';
 import 'package:biz_track/features/store/views/manage_store_view.dart';
@@ -126,7 +127,9 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              push(const AccountView());
+            },
             leading: const Icon(Icons.account_box, color: Colors.white),
             title: Text(
               "Account",
@@ -156,6 +159,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
                       fontWeight: FontWeight.w700
                     ),
                   ),
+                  const YMargin(5),
                   Text(
                     "Monday, 01 July 2020\n(12:00 AM)",
                     style: CustomTextStyle.regular14.copyWith(
