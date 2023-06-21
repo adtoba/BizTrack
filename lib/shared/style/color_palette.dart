@@ -7,4 +7,6 @@ class ColorPalette {
   static Color darkBackground = const Color(0xff1D1A1A);
   static Color lightBlue = const Color(0xff1A72DD).withOpacity(0.1);
   static Color lightTextField = const Color(0xff000000).withOpacity(0.05);
+
+  static Color scaffoldBg = const Color(0xffF7F8FA);
 }

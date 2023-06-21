@@ -1,5 +1,8 @@
+import 'package:biz_track/features/customer/views/customers_view.dart';
+import 'package:biz_track/features/employees/views/employees_view.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -106,12 +109,16 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               const Divider(),
               ManageStoreItem(
                 title: "Employee List",
-                onTap: () {},
+                onTap: () {
+                  push(const EmployeesView());
+                },
               ),
               const Divider(),
               ManageStoreItem(
                 title: "Customer",
-                onTap: () {},
+                onTap: () {
+                  push(const CustomerView());
+                },
               ),
               const Divider(),
               const YMargin(30)
@@ -133,17 +140,20 @@ class ManageStoreItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final config = SizeConfig();
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: config.sh(8)),
-      child: Row(
-        children: [
-          Text(
-            "$title",
-            style: CustomTextStyle.regular16,
-          ),
-          const Spacer(),
-          const Icon(Icons.arrow_forward_ios, size: 20,)
-        ],
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: config.sh(8)),
+        child: Row(
+          children: [
+            Text(
+              "$title",
+              style: CustomTextStyle.regular16,
+            ),
+            const Spacer(),
+            const Icon(Icons.arrow_forward_ios, size: 20,)
+          ],
+        ),
       ),
     );
   }

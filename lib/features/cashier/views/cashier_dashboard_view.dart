@@ -38,9 +38,8 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     
-
     return Scaffold(
-      backgroundColor: const Color(0xffF7F8FA),
+      backgroundColor: ColorPalette.scaffoldBg,
       key: key,
       appBar: AppBar(
         elevation: 1,
