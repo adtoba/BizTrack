@@ -19,6 +19,9 @@ class CashierDashboardView extends ConsumerStatefulWidget {
 class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
 
   int currentIdx = 0;
+  
+  GlobalKey<ScaffoldState> key = GlobalKey();
+
   final PageController _pageController = PageController(
     initialPage: 0,
     keepPage: true
@@ -34,7 +37,7 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
-    GlobalKey<ScaffoldState> key = GlobalKey();
+    
 
     return Scaffold(
       backgroundColor: const Color(0xffF7F8FA),
@@ -63,9 +66,12 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
       body: PageView(
         controller: _pageController,
         onPageChanged: onPageChanged,
+        scrollDirection: Axis.horizontal,
         children: [
           const CashierProductsView(),
-          Container()
+          Container(
+            color: Colors.red,
+          )
         ],
       ),
       drawer: SafeArea(

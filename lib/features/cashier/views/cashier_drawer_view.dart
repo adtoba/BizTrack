@@ -1,5 +1,6 @@
 import 'package:biz_track/features/history/views/transaction_history_view.dart';
 import 'package:biz_track/features/report/views/report_view.dart';
+import 'package:biz_track/features/store/views/manage_store_view.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
@@ -113,7 +114,9 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              push(const ManageStoreView());
+            },
             leading: const Icon(Icons.settings, color: Colors.white),
             title: Text(
               "Manage Store",

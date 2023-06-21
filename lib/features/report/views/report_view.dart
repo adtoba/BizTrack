@@ -1,5 +1,6 @@
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
+import 'package:biz_track/shared/views/filter_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,10 +18,18 @@ class _ReportViewState extends ConsumerState<ReportView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     
-    return const Scaffold(
-      appBar: CustomAppBar(
+    return Scaffold(
+      backgroundColor: const Color(0xffF7F8FA),
+      appBar: const CustomAppBar(
         title: "Report",
-      )
+      ),
+      body: Column(
+        children: [
+          FilterButton(
+            onTap: () {},
+          ),
+        ],
+      ),
     );
   }
 }
