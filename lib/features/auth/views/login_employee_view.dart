@@ -4,6 +4,7 @@ import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
+import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/info_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,27 +25,8 @@ class __LoginEmployeeViewState extends ConsumerState<LoginEmployeeView> {
     final config = SizeConfig();
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            if(Navigator.canPop(context)) Navigator.pop(context);
-          }, 
-          icon: SvgPicture.asset(
-            "back_button".svg,
-            height: config.sh(35),
-            width: config.sw(35),
-          )
-        ),
-        title: Text(
-          "Log in as Employee",
-          style: GoogleFonts.rubik(),
-        ),
-        titleTextStyle: TextStyle(
-          fontSize: config.sp(20),
-          color: ColorPalette.primary,
-          fontWeight: FontWeight.w700
-        ),
+      appBar: const CustomAppBar(
+        title: "Log in as Employee",
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(22)),

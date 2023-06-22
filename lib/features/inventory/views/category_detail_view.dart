@@ -12,14 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class ProductsView extends ConsumerStatefulWidget {
-  const ProductsView({super.key});
+class CategoryDetailView extends ConsumerStatefulWidget {
+  const CategoryDetailView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ProductsViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CategoryDetailViewState();
 }
 
-class _ProductsViewState extends ConsumerState<ProductsView> {
+class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
 
   String? selectedValue = "Branch 1";
 
@@ -30,7 +30,7 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
-        title: "Products",
+        title: "Shoes",
       ),
       body: Column(
         children: [
@@ -44,46 +44,6 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
             child: const CustomSearchTextField(
               hint: "Search name of product",
               suffix: Icon(Icons.search),
-            ),
-          ),
-          const YMargin(10),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: ColorPalette.primary
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Choose Branch",
-                    style: CustomTextStyle.regular12.copyWith(
-                      color: Colors.white
-                    ),
-                  ),
-                  const YMargin(5),
-                  Row(
-                    children: [
-                      Text(
-                        "All Branch",
-                        style: CustomTextStyle.regular16.copyWith(
-                          color: Colors.white,
-                          fontSize: config.sp(18)
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down, 
-                        color: Colors.white, 
-                        size: config.sh(20)
-                      )
-                    ],
-                  )
-                ],
-              ),
             ),
           ),
           Expanded(

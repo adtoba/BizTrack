@@ -47,8 +47,9 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
           onPressed: () => key.currentState!.openDrawer(), 
           icon: SvgPicture.asset(
             "menu_icon".svg,
-            height: config.sh(50),
-            width: config.sw(50),
+            height: config.sh(15),
+            width: config.sw(15),
+            color: ColorPalette.primary,
           )
         ),
         centerTitle: true,

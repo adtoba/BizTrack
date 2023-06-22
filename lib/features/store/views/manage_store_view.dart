@@ -1,8 +1,12 @@
+import 'package:biz_track/features/branch/views/branches_view.dart';
 import 'package:biz_track/features/customer/views/customers_view.dart';
 import 'package:biz_track/features/employees/views/employees_view.dart';
+import 'package:biz_track/features/inventory/views/product_category_view.dart';
 import 'package:biz_track/features/inventory/views/products_view.dart';
+import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
@@ -35,13 +39,14 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
             children: [
               const YMargin(30),
               Text(
-                "Products",
+                "Inventory",
                 style: CustomTextStyle.bold16.copyWith(
                   fontSize: config.sp(18)
                 ),
               ),
               const YMargin(10),
               ManageStoreItem(
+                icon: "product",
                 title: "Products",
                 onTap: () {
                   push(const ProductsView());
@@ -49,11 +54,15 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ),
               const Divider(),
               ManageStoreItem(
+                icon: "category",
                 title: "Product Category",
-                onTap: () {},
+                onTap: () {
+                  push(const ProductCategoryView());
+                },
               ),
               const Divider(),
               ManageStoreItem(
+                icon: "discount",
                 title: "Discount",
                 onTap: () {},
               ),
@@ -68,11 +77,13 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ),
               const YMargin(10),
               ManageStoreItem(
+                icon: "payment_method",
                 title: "Payment Method",
                 onTap: () {},
               ),
               const Divider(),
               ManageStoreItem(
+                icon: "discount",
                 title: "Tax & Service Charge",
                 onTap: () {},
               ),
@@ -87,11 +98,13 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ),
               const YMargin(10),
               ManageStoreItem(
+                icon: "printer",
                 title: "Printer",
                 onTap: () {},
               ),
               const Divider(),
               ManageStoreItem(
+                icon: "receipt",
                 title: "Receipt",
                 onTap: () {},
               ),
@@ -99,25 +112,30 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
 
               const YMargin(20),
               Text(
-                "Branch & Employee",
+                "Manage Business",
                 style: CustomTextStyle.bold16.copyWith(
                   fontSize: config.sp(18)
                 ),
               ),
               const YMargin(10),
               ManageStoreItem(
-                title: "Branch List",
-                onTap: () {},
+                icon: "branch",
+                title: "Branches",
+                onTap: () {
+                  push(const BranchView());
+                },
               ),
               const Divider(),
               ManageStoreItem(
-                title: "Employee List",
+                icon: "employee",
+                title: "Employees",
                 onTap: () {
                   push(const EmployeesView());
                 },
               ),
               const Divider(),
               ManageStoreItem(
+                icon: "customer",
                 title: "Customer",
                 onTap: () {
                   push(const CustomerView());
@@ -134,9 +152,10 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
 }
 
 class ManageStoreItem extends StatelessWidget {
-  const ManageStoreItem({super.key, this.title, this.onTap});
+  const ManageStoreItem({super.key, this.title, this.onTap, this.icon});
 
   final String? title;
+  final String? icon;
   final VoidCallback? onTap;
 
   @override
@@ -146,15 +165,32 @@ class ManageStoreItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: config.sh(8)),
+        padding: EdgeInsets.symmetric(vertical: config.sh(8), horizontal: config.sw(5)),
         child: Row(
           children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: config.sw(8), vertical: config.sh(8)),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: ColorPalette.primary.withOpacity(.10)
+              ),
+              child: Image.asset(
+                icon!.png,
+                height: config.sh(20),
+                width: config.sw(20),
+                color: ColorPalette.primary,
+              ),
+            ),
+            const XMargin(10),
             Text(
               "$title",
               style: CustomTextStyle.regular16,
             ),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios, size: 20,)
+            Icon(
+              Icons.arrow_forward_ios, 
+              size: config.sh(15)
+            )
           ],
         ),
       ),

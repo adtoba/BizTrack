@@ -1,7 +1,7 @@
+import 'package:biz_track/shared/buttons/add_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
-import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 
@@ -134,7 +134,7 @@ class _CustomListProductItemState extends State<CustomListProductItem> {
 
     return Container(
       width: double.infinity,
-      height: config.sh(80),
+      height: config.sh(90),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20)
@@ -183,16 +183,11 @@ class _CustomListProductItemState extends State<CustomListProductItem> {
           ),
           const XMargin(5),
           Center(
-            child: IconButton(
-              onPressed: () {}, 
-              iconSize: 40,
-              icon: Image.asset(
-                "add_icon".png,
-                height: config.sh(40),
-                width: config.sw(40),
-              )
-            ),
-          )
+            child: AddButton(
+              onPressed: () {},
+            )
+          ),
+          const XMargin(20)
         ],
       ),
     );

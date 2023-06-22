@@ -1,14 +1,13 @@
+import 'package:biz_track/features/auth/views/forgot_password_view.dart';
 import 'package:biz_track/features/cashier/views/cashier_dashboard_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_text_field.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
-import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
+import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginOwnerView extends ConsumerStatefulWidget {
@@ -25,27 +24,8 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
     final config = SizeConfig();
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            if(Navigator.canPop(context)) Navigator.pop(context);
-          }, 
-          icon: SvgPicture.asset(
-            "back_button".svg,
-            height: config.sh(35),
-            width: config.sw(35),
-          )
-        ),
-        title: Text(
-          "Log in as Owner",
-          style: GoogleFonts.rubik(),
-        ),
-        titleTextStyle: TextStyle(
-          fontSize: config.sp(20),
-          color: ColorPalette.primary,
-          fontWeight: FontWeight.w700
-        ),
+      appBar: const CustomAppBar(
+        title: "Log in as Owner",
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
@@ -72,11 +52,14 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
                 },
               ),
               TextButton(
-                onPressed: () {}, 
+                onPressed: () {
+                  push(const ForgotPasswordView());
+                }, 
                 child: Text(
                   "Forgot Password?",
                   style: TextStyle(
                     fontSize: config.sp(14),
+                    color: ColorPalette.primary,
                     decoration: TextDecoration.underline
                   ),
                 )

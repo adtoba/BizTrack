@@ -8,12 +8,14 @@ class CustomAuthButton extends ConsumerWidget {
   const CustomAuthButton({
     super.key, 
     this.onTap, 
-    this.icon, this.text
+    this.icon, this.text, this.color, this.textColor
   });
 
   final VoidCallback? onTap;
   final Widget? icon;
   final String? text;
+  final Color? color;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +28,7 @@ class CustomAuthButton extends ConsumerWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      color: ColorPalette.primary,
+      color: color ?? ColorPalette.primary,
       child: text != null && icon != null
         ? Padding(
           padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
@@ -37,7 +39,7 @@ class CustomAuthButton extends ConsumerWidget {
               Text(
                 text ?? "",
                 style: TextStyle(
-                  color: ColorPalette.white,
+                  color: textColor ?? ColorPalette.white,
                   fontWeight: FontWeight.w700,
                   fontSize: config.sp(16)
                 ),
@@ -49,7 +51,7 @@ class CustomAuthButton extends ConsumerWidget {
         : Text(
           text ?? "",
           style: TextStyle(
-            color: ColorPalette.white,
+            color: textColor ?? ColorPalette.white,
             fontWeight: FontWeight.w700,
             fontSize: config.sp(16)
           ),

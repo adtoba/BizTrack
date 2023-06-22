@@ -8,9 +8,9 @@ import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
+import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -27,27 +27,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
     final config = SizeConfig();
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            if(Navigator.canPop(context)) Navigator.pop(context);
-          }, 
-          icon: SvgPicture.asset(
-            "back_button".svg,
-            height: config.sh(35),
-            width: config.sw(35),
-          )
-        ),
-        title: Text(
-          "Log in",
-          style: GoogleFonts.rubik(),
-        ),
-        titleTextStyle: TextStyle(
-          fontSize: config.sp(20),
-          color: ColorPalette.primary,
-          fontWeight: FontWeight.w700
-        ),
+      appBar: const CustomAppBar(
+        title: "Log In",
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
@@ -85,10 +66,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
               },
             ),
             const YMargin(20),
-            Center(
-              child: Text("Or", style: CustomTextStyle.regular16,)
-            ),
-            const YMargin(20),
+            // const YMargin(20),
+            // Center(
+            //   child: Text("Or", style: CustomTextStyle.regular16,)
+            // ),
+            // const YMargin(20),
             CustomAuthButton(
               icon: const Icon(Icons.people, color: Colors.white),
               text: "Log in as Employee",

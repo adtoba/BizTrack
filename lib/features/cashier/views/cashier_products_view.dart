@@ -163,24 +163,6 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> {
                     ),
                   ),
                 ),
-                // Expanded(
-                //   child: GridView.builder(
-                //     padding: EdgeInsets.only(left: config.sw(22), right: config.sw(22), bottom: config.sw(50)),
-                //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                //       crossAxisCount: 2,
-                //       crossAxisSpacing: config.sh(10),
-                //       mainAxisSpacing: config.sw(10),
-                //       childAspectRatio: .8
-                //     ), 
-                //     itemBuilder: (context, index) {
-                //       return const CustomProductItem(
-                //         productName: "Salad Tuna",
-                //         productPrice: "\$29.99",
-                //       );
-                //     },
-                //     itemCount: 6,
-                //   ),
-                // ),
               ] else ...[
                 Expanded(
                   child: ListView.separated(

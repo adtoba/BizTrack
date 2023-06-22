@@ -1,5 +1,5 @@
-import 'package:biz_track/features/employees/views/add_employee_view.dart';
-import 'package:biz_track/features/employees/views/employee_detail_view.dart';
+import 'package:biz_track/features/branch/views/add_branch_view.dart';
+import 'package:biz_track/features/branch/views/branch_detail_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class EmployeesView extends ConsumerStatefulWidget {
-  const EmployeesView({super.key});
+class BranchView extends ConsumerStatefulWidget {
+  const BranchView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _EmployeesViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BranchViewState();
 }
 
-class _EmployeesViewState extends ConsumerState<EmployeesView> {
+class _BranchViewState extends ConsumerState<BranchView> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
-        title: "Employees",
+        title: "Branches",
       ),
       body: Column(
         children: [
@@ -39,7 +39,7 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
             ),
             color: Colors.white,
             child: const CustomSearchTextField(
-              hint: "Search for an employee",
+              hint: "Search for a branch",
               suffix: Icon(Icons.search),
             ),
           ),
@@ -54,11 +54,11 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
               itemBuilder: (c, i) {
                 return ListTile(
                   title: Text(
-                    "John Doe",
+                    "Branch 1",
                     style: CustomTextStyle.regular16,
                   ),
                   subtitle: Text(
-                    "Cashier",
+                    "5 employees",
                     style: CustomTextStyle.regular14,
                   ),
                   trailing: const Icon(
@@ -68,7 +68,7 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   onTap: () {
-                    push(const EmployeeDetailView());
+                    push(const BranchDetailView());
                   },
                 ); 
               },
@@ -80,9 +80,9 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
           child: CustomAuthButton(
-            text: "Create New Employee",
+            text: "Create New Branch",
             onTap: () {
-              push(const AddEmployeeView());
+              push(const AddBranchView());
             },
           ),
         )

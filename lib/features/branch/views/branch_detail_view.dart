@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class CustomerDetailView extends ConsumerStatefulWidget {
-  const CustomerDetailView({super.key});
+class BranchDetailView extends ConsumerStatefulWidget {
+  const BranchDetailView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CustomerDetailViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BranchDetailViewState();
 }
 
-class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
+class _BranchDetailViewState extends ConsumerState<BranchDetailView> {
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
 
     return Scaffold(
       appBar: const CustomAppBar(
-        title: "Customer Detail",
+        title: "Branch Detail",
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
@@ -36,7 +36,7 @@ class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
                 Expanded(
                   child: EmployeeDetailItem(
                     title: "Name",
-                    text: "John Doe",
+                    text: "Branch 1",
                   ),
                 ),
                 XMargin(20),
@@ -66,24 +66,6 @@ class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
                 )
               ],
             ),
-            const YMargin(30),
-            Row(
-              children: const [
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Total Amount Paid",
-                    text: "\$1,000.00",
-                  ),    
-                ),
-                XMargin(20),
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Amount Due",
-                    text: "\$50.00",
-                  ),
-                )
-              ],
-            ),
           ],
         ),
       ),
@@ -93,14 +75,14 @@ class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
           child: Column(
             children: [
               CustomAuthButton(
-                text: "All Transactions",
+                text: "All Employees",
                 onTap: () {
                   
                 },
               ),
               const YMargin(10),
               CustomBorderedButton(
-                text: "Delete Customer",
+                text: "Delete Branch",
                 color: Colors.red,
                 onTap: () {
                   

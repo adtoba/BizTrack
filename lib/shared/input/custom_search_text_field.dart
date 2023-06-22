@@ -107,7 +107,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
           hintStyle: TextStyle(
             fontSize: config.sp(14),
             fontWeight: FontWeight.normal,
-            color: isDarkMode ? const Color(0xff9A81D4) : ColorPalette.textColor.withOpacity(.8)
+            color: Colors.grey
           ),
           border: border,
           filled: false,
@@ -117,11 +117,11 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
           ),
           enabledBorder: border,
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: Colors.red),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: Colors.red),
           ),
           focusedBorder: border.copyWith(
@@ -135,7 +135,7 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
   }
 
   OutlineInputBorder border = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5),
+    borderRadius: BorderRadius.circular(10),
     borderSide: const BorderSide(
       color: Color(0xffBDBDBD),
       width: .8
