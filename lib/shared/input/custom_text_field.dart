@@ -93,7 +93,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
           enabled: widget.enabled,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
             fontSize: config.sp(16),
             color: isDarkMode ? Colors.white : ColorPalette.textColor
           ),

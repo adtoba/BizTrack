@@ -1,15 +1,19 @@
 import 'package:biz_track/shared/buttons/add_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
+import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomProductItem extends StatefulWidget {
-  const CustomProductItem({super.key, this.productName, this.info, this.productPrice, this.onTap, this.quantity = 0});
+  const CustomProductItem({super.key, this.image, this.productName, this.info, this.productPrice, this.onTap, this.quantity = 0});
 
   final String? productName;
   final String? info;
+  final String? image;
   final String? productPrice;
   final VoidCallback? onTap;
   final int? quantity;
@@ -37,19 +41,35 @@ class _CustomProductItemState extends State<CustomProductItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: config.sh(100),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    image: const DecorationImage(
-                      image: AssetImage(
-                        "assets/png/food.jpeg",
-                      ),
-                      fit: BoxFit.cover
+                if(widget.image!.isEmpty)...[
+                  Container(
+                    height: config.sh(100),
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.grey.withOpacity(.4)
                     ),
-                    borderRadius: BorderRadius.circular(20)
+                    child: Image.asset(
+                      "empty".png,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
+                ] else ...[
+                  Container(
+                    height: config.sh(100),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          widget.image!,
+                        ),
+                        fit: BoxFit.cover
+                      ),
+                      borderRadius: BorderRadius.circular(20)
+                    ),
+                  ),
+                ],
                 const YMargin(10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
@@ -57,7 +77,8 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     "${widget.productName}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: CustomTextStyle.bold16.copyWith(
+                    textAlign: TextAlign.start,
+                    style: CustomTextStyle.regular16.copyWith(
                       fontSize: config.sp(14)
                     ),
                   ),
@@ -68,7 +89,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     children: [
                       Expanded(
                         child: Text(
-                          widget.productPrice!,
+                          "${currency()} ${parseAmount(widget.productPrice!)}",
                           style: CustomTextStyle.bold16.copyWith(
                             color: ColorPalette.primary
                           ),
@@ -117,10 +138,11 @@ class _CustomProductItemState extends State<CustomProductItem> {
 
 
 class CustomListProductItem extends StatefulWidget {
-  const CustomListProductItem({super.key, this.productName, this.info, this.productPrice});
+  const CustomListProductItem({super.key, this.productName, this.info, this.productPrice, this.image});
 
   final String? productName;
   final String? info;
+  final String? image;
   final String? productPrice;
 
   @override
@@ -143,19 +165,34 @@ class _CustomListProductItemState extends State<CustomListProductItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: config.sh(80),
-            width: config.sw(100),
-            decoration: BoxDecoration(
-              image: const DecorationImage(
-                image: AssetImage(
-                  "assets/png/food.jpeg",
-                ),
-                fit: BoxFit.cover
+          if(widget.image != null)...[
+            Container(
+              height: config.sh(80),
+              width: config.sw(100),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20)
               ),
-              borderRadius: BorderRadius.circular(20)
+              child: SvgPicture.asset(
+                "no_image".svg,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
+          ] else ...[
+            Container(
+              height: config.sh(80),
+              width: config.sw(100),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                    widget.image!,
+                  ),
+                  fit: BoxFit.cover
+                ),
+                borderRadius: BorderRadius.circular(20)
+              ),
+            ),
+          ],
+          
           const XMargin(20),
           Expanded(
             child: Padding(

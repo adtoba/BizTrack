@@ -1,6 +1,8 @@
 import 'package:biz_track/features/cashier/views/order_details_view.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
+import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
@@ -16,6 +18,7 @@ class CheckoutButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = SizeConfig();
+    var cartVm = ref.watch(cartViewModel);
 
     return MaterialButton(
       minWidth: double.infinity,
@@ -34,14 +37,14 @@ class CheckoutButton extends ConsumerWidget {
           ),
           const XMargin(5),
           Text(
-            "8 Items",
+            "${cartVm.selectedProducts.keys.length} Items",
             style: CustomTextStyle.bold16.copyWith(
               color: Colors.white
             ),
           ),
           const Spacer(),
           Text(
-            "Total: \$89.00",
+            "Total: ${currency()} ${parseAmount(cartVm.subTotal.toStringAsFixed(2))}",
             style: CustomTextStyle.bold16.copyWith(
               color: Colors.white
             ),

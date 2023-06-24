@@ -80,7 +80,7 @@ class _LoginOwnerViewState extends ConsumerState<LoginOwnerView> {
                     child: Text(
                       "Forgot Password?",
                       style: TextStyle(
-                        fontSize: config.sp(14),
+                        fontSize: config.sp(15),
                         color: ColorPalette.primary,
                         decoration: TextDecoration.underline
                       ),

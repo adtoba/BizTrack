@@ -3,8 +3,10 @@ import 'package:biz_track/features/customer/views/customers_view.dart';
 import 'package:biz_track/shared/buttons/add_button.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/buttons/minus_button.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
+import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
@@ -24,6 +26,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var cartProvider = ref.watch(cartViewModel);
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
@@ -60,33 +63,40 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                     separatorBuilder: (c, i) => Divider(
                       height: config.sh(30),
                     ),
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
-                    itemCount: 3,
+                    itemCount: cartProvider.selectedProducts.values.length,
                     itemBuilder: (c, i) {
+                      var product = cartProvider.selectedProducts.values.toList()[i];
+
                       return Row(
                         children: [
                           MinusButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              cartProvider.decrementQuantity(product.id!);
+                            },
                           ),
                           const XMargin(10),
                           Text(
-                            "1",
+                            "${product.quantity!}",
                             style: CustomTextStyle.regular16,
                           ),
                           const XMargin(10),
                           AddButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              cartProvider.incrementQuantity(product.id!);
+                            }
                           ),
                           const XMargin(20),
                           Expanded(
                             child: Text(
-                              "Wagyu Black Paper",
+                              product.name!,
                               style: CustomTextStyle.regular16
                             ),
                           ),
                           const XMargin(10),
                           Text(
-                            "\$20.00",
+                            "${currency()} ${parseAmount(product.price!.toStringAsFixed(2))}",
                             style: CustomTextStyle.bold16
                           ),
                         ],
@@ -115,7 +125,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                       style: CustomTextStyle.bold16,
                     ),
                     trailing: Text(
-                      "\$49.99",
+                      "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
                       style: CustomTextStyle.bold16,
                     ),
                     dense: true,
@@ -144,7 +154,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   ),
                   const Spacer(),
                   Text(
-                    "\$49.99",
+                    "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
                     style: CustomTextStyle.bold16,
                   )
                 ],
