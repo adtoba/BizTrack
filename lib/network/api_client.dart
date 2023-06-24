@@ -1,8 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:biz_track/shared/utils/constants.dart';
 import 'package:biz_track/shared/utils/storage.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+class DioTransformer extends DefaultTransformer {
+  DioTransformer() : super(jsonDecodeCallback: parseJson);
+}
 
 class ApiClient {
   late Dio http;
@@ -10,7 +17,7 @@ class ApiClient {
   ApiClient() {
     http = Dio(
       BaseOptions(
-        baseUrl: "127.0.0.1/api",
+        baseUrl: "http://127.0.0.1:8080/api",
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
         headers: {
@@ -37,6 +44,23 @@ class ApiClient {
           return handler.next(options);
         },
       )
-    );
+    )..transformer = DioTransformer();
+
+    http.interceptors.addAll([
+      PrettyDioLogger(
+        request: true,
+        requestBody: true,
+        responseBody: true,
+        error: true
+      )
+    ]);
   }
 }
+
+  _parseAndDecode(String response) {
+      return jsonDecode(response);
+  }
+
+  parseJson(String text) {
+    return compute(_parseAndDecode, text);
+  }
