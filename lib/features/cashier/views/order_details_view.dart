@@ -93,7 +93,9 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                       );
                     },
                   ),
-                  const Divider(),
+                  Divider(
+                    height: config.sh(20),
+                  ),
                   ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
                     title: Text(
@@ -103,7 +105,9 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                     dense: true,
                     trailing: Icon(Icons.arrow_forward_ios, size: config.sh(20)),
                   ),
-                  const Divider(),
+                  Divider(
+                    height: config.sh(20),
+                  ),
                   ListTile(
                     contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
                     title: Text(

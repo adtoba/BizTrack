@@ -55,6 +55,7 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                 text: "Sign Up",
                 onTap: () {},
               ),
+              const YMargin(30)
             ],
           ),
         ),
