@@ -1,22 +1,22 @@
 class CreateCustomerResponse {
   bool? status;
   String? message;
-  Customer? data;
+  Customer? customer;
 
-  CreateCustomerResponse({this.status, this.message, this.data});
+  CreateCustomerResponse({this.status, this.message, this.customer});
 
   CreateCustomerResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data'] != null ? Customer.fromJson(json['data']) : null;
+    customer = json['data'] != null ? Customer.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;
     data['message'] = message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
+    if (customer != null) {
+      data['data'] = customer!.toJson();
     }
     return data;
   }

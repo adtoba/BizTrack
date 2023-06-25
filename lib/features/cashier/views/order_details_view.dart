@@ -1,5 +1,7 @@
-import 'package:biz_track/features/cashier/views/successful_transaction_view.dart';
-import 'package:biz_track/features/customer/views/customers_view.dart';
+import 'package:biz_track/features/cashier/views/cashier_products_view.dart';
+import 'package:biz_track/features/customer/model/create_customer_response.dart';
+import 'package:biz_track/features/customer/views/select_customer_view.dart';
+import 'package:biz_track/features/order/models/create_order_request.dart';
 import 'package:biz_track/shared/buttons/add_button.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/buttons/minus_button.dart';
@@ -8,11 +10,12 @@ import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
-import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
+import 'package:biz_track/shared/views/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 class OrderDetailsView extends ConsumerStatefulWidget {
   const OrderDetailsView({super.key});
@@ -23,173 +26,228 @@ class OrderDetailsView extends ConsumerStatefulWidget {
 
 class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
 
+  Customer? selectedCustomer;
+
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var cartProvider = ref.watch(cartViewModel);
+    var orderProvider = ref.watch(orderViewModel);
 
-    return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
-      appBar: const CustomAppBar(
-        title: "Order Details",
-      ),
-      body: Column(
-        children: [
-          InkWell(
-            onTap: () => push(const CustomerView()),
-            child: Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: config.sw(22), vertical: config.sh(16)),
-              child: Row(
-                children: [
-                  Text(
-                    "Customer",
-                    style: CustomTextStyle.regular16,
-                  ),
-                  const Spacer(),
-                  const Icon(Icons.arrow_forward_ios, size: 20)
-                ],
-              ),
-            ),
-          ),
-          const YMargin(20),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ListView.separated(
-                    shrinkWrap: true,
-                    separatorBuilder: (c, i) => Divider(
-                      height: config.sh(30),
-                    ),
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
-                    itemCount: cartProvider.selectedProducts.values.length,
-                    itemBuilder: (c, i) {
-                      var product = cartProvider.selectedProducts.values.toList()[i];
+    return LoadingOverlay(
+      color: Colors.black,
+      isLoading: orderProvider.busy,
+      progressIndicator: const CustomLoadingIndicator(),
+      child: Scaffold(
+        backgroundColor: ColorPalette.scaffoldBg,
+        appBar: const CustomAppBar(
+          title: "Order Details",
+        ),
+        body: Column(
+          children: [
+            InkWell(
+              onTap: () async {
+                Customer? customer = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const SelectCustomerView();
+                }));
 
-                      return Row(
-                        children: [
-                          MinusButton(
-                            onPressed: () {
-                              cartProvider.decrementQuantity(product.id!);
-                            },
-                          ),
-                          const XMargin(10),
-                          Text(
-                            "${product.quantity!}",
-                            style: CustomTextStyle.regular16,
-                          ),
-                          const XMargin(10),
-                          AddButton(
-                            onPressed: () {
-                              cartProvider.incrementQuantity(product.id!);
-                            }
-                          ),
-                          const XMargin(20),
-                          Expanded(
-                            child: Text(
-                              product.name!,
-                              style: CustomTextStyle.regular16
-                            ),
-                          ),
-                          const XMargin(10),
-                          Text(
-                            "${currency()} ${parseAmount(product.price!.toStringAsFixed(2))}",
-                            style: CustomTextStyle.bold16
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  Divider(
-                    height: config.sh(20),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
-                    title: Text(
-                      "Discount",
+                if(customer != null) {
+                  setState(() {
+                    selectedCustomer = customer;
+                  });
+                }
+              },
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: config.sw(22), vertical: config.sh(16)),
+                child: Row(
+                  children: [
+                    Text(
+                      selectedCustomer == null 
+                        ? "Customer"
+                        : selectedCustomer!.name!,
                       style: CustomTextStyle.regular16,
                     ),
-                    dense: true,
-                    trailing: Icon(Icons.arrow_forward_ios, size: config.sh(20)),
-                  ),
-                  Divider(
-                    height: config.sh(20),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
-                    title: Text(
+                    const Spacer(),
+                    const Icon(Icons.arrow_forward_ios, size: 20)
+                  ],
+                ),
+              ),
+            ),
+            const YMargin(20),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.separated(
+                      shrinkWrap: true,
+                      separatorBuilder: (c, i) => Divider(
+                        height: config.sh(30),
+                      ),
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
+                      itemCount: cartProvider.selectedProducts.values.length,
+                      itemBuilder: (c, i) {
+                        var product = cartProvider.selectedProducts.values.toList()[i];
+
+                        return Row(
+                          children: [
+                            MinusButton(
+                              onPressed: () {
+                                cartProvider.decrementQuantity(product.id!);
+                              },
+                            ),
+                            const XMargin(10),
+                            Text(
+                              "${product.quantity!}",
+                              style: CustomTextStyle.regular16,
+                            ),
+                            const XMargin(10),
+                            AddButton(
+                              onPressed: () {
+                                cartProvider.incrementQuantity(product.id!);
+                              }
+                            ),
+                            const XMargin(20),
+                            Expanded(
+                              child: Text(
+                                product.name!,
+                                style: CustomTextStyle.regular16
+                              ),
+                            ),
+                            const XMargin(10),
+                            Text(
+                              "${currency()} ${parseAmount(product.price!.toStringAsFixed(2))}",
+                              style: CustomTextStyle.bold16
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    Divider(
+                      height: config.sh(20),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
+                      title: Text(
+                        "Discount",
+                        style: CustomTextStyle.regular16,
+                      ),
+                      dense: true,
+                      trailing: Icon(Icons.arrow_forward_ios, size: config.sh(20)),
+                    ),
+                    Divider(
+                      height: config.sh(20),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
+                      title: Text(
+                        "Subtotal",
+                        style: CustomTextStyle.bold16,
+                      ),
+                      trailing: Text(
+                        "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
+                        style: CustomTextStyle.bold16,
+                      ),
+                      dense: true,
+                    ),
+                    Divider(
+                      height: config.sh(30),
+                    ),
+                    const PaymentOptionsWidget(),
+                    const YMargin(10),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+        persistentFooterButtons: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
                       "Subtotal",
                       style: CustomTextStyle.bold16,
                     ),
-                    trailing: Text(
+                    const Spacer(),
+                    Text(
                       "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
                       style: CustomTextStyle.bold16,
-                    ),
-                    dense: true,
-                  ),
-                  Divider(
-                    height: config.sh(30),
-                  ),
-                  const PaymentOptionsWidget(),
-                  const YMargin(10),
-                ],
-              ),
+                    )
+                  ],
+                ),
+                const YMargin(10),
+                CustomAuthButton(
+                  text: "Place Order",
+                  onTap: () async {
+                    List<Orders> orders = [];
+                    List<SelectedProduct> products = cartProvider.selectedProducts.values.toList();
+                    for(SelectedProduct product in products) {
+                      orders.add(
+                        Orders(
+                          productId: product.id,
+                          quantity: product.quantity
+                        )
+                      );
+                    }
+                    var req = CreateOrderRequest(
+                      orders: orders,
+                      branch: "eac0b8b0-6816-4b1f-ac57-ca59073a3363",
+                      customer: selectedCustomer?.id,
+                      paymentMethod: cartProvider.selectedPaymentMethod,
+                      subtotal: cartProvider.subTotal
+                    );
+
+                    await orderProvider.createOrder(req);
+                  },
+                )
+              ],
             ),
           )
         ],
       ),
-      persistentFooterButtons: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Subtotal",
-                    style: CustomTextStyle.bold16,
-                  ),
-                  const Spacer(),
-                  Text(
-                    "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
-                    style: CustomTextStyle.bold16,
-                  )
-                ],
-              ),
-              const YMargin(10),
-              CustomAuthButton(
-                text: "Place Order",
-                onTap: () {
-                  push(const TransactionSuccessfulView());
-                },
-              )
-            ],
-          ),
-        )
-      ],
     );
   }
 }
 
-class PaymentOptionsWidget extends StatelessWidget {
-  const PaymentOptionsWidget({super.key});
+class PaymentOptionsWidget extends ConsumerStatefulWidget {
+  const PaymentOptionsWidget({super.key, this.isSelected});
+
+  final bool? isSelected;
 
   @override
+  ConsumerState<PaymentOptionsWidget> createState() => _PaymentOptionsWidgetState();
+}
+
+class _PaymentOptionsWidgetState extends ConsumerState<PaymentOptionsWidget> {
+  @override
   Widget build(BuildContext context) {
+    final cartProvider = ref.watch(cartViewModel);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         PaymentOptionItem(
           icon: Icons.money,
           title: "Cash",
+          isSelected: cartProvider.selectedPaymentMethod == "cash",
+          onTap: () {
+            cartProvider.setSelectedPaymentMethod("cash");
+          },
         ),
-        XMargin(30),
+        const XMargin(30),
         PaymentOptionItem(
           icon: Icons.credit_card,
           title: "Credit",
+          isSelected: cartProvider.selectedPaymentMethod == "credit",
+          onTap: () {
+            cartProvider.setSelectedPaymentMethod("credit");
+          },
         )
       ],
     );
@@ -197,10 +255,12 @@ class PaymentOptionsWidget extends StatelessWidget {
 }
 
 class PaymentOptionItem extends StatelessWidget {
-  const PaymentOptionItem({super.key, this.title, this.icon});
+  const PaymentOptionItem({super.key, this.title, this.onTap, this.icon, this.isSelected = false});
 
   final String? title;
   final IconData? icon;
+  final bool? isSelected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -209,16 +269,23 @@ class PaymentOptionItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: ColorPalette.primary.withOpacity(.10)
-          ),
-          child: Icon(
-            icon,
-            size: config.sh(30),
-            color: ColorPalette.primary,
+        InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: !isSelected! 
+                ? ColorPalette.primary.withOpacity(.10)
+                : ColorPalette.primary
+            ),
+            child: Icon(
+              icon,
+              size: config.sh(30),
+              color: !isSelected! 
+                ? ColorPalette.primary
+                : Colors.white,
+            ),
           ),
         ),
         const YMargin(5),

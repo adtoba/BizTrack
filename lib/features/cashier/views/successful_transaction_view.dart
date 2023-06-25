@@ -1,8 +1,10 @@
 import 'package:biz_track/features/cashier/views/cashier_dashboard_view.dart';
+import 'package:biz_track/features/order/models/create_order_response.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/buttons/bordered_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
+import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
@@ -12,7 +14,9 @@ import 'package:lottie/lottie.dart';
 
 
 class TransactionSuccessfulView extends StatefulWidget {
-  const TransactionSuccessfulView({super.key});
+  const TransactionSuccessfulView({super.key, this.data});
+
+  final CreateOrderResponse? data;
 
   @override
   State<TransactionSuccessfulView> createState() => _TransactionSuccessfulViewState();
@@ -76,14 +80,14 @@ class _TransactionSuccessfulViewState extends State<TransactionSuccessfulView> {
                     child: Column(
                       children: [
                         Text(
-                          "Payment Method: CASH",
+                          "Payment Method: ${widget.data?.data?.paymentMethod?.toUpperCase()}",
                           style: CustomTextStyle.bold16.copyWith(
                             color: Colors.white
                           ),
                         ),
                         Divider(height: config.sh(20), color: Colors.white),
                         Text(
-                          "Amount Paid: \$30.00",
+                          "Amount Paid: ${currency()} ${parseAmount(widget.data?.data?.subtotal.toString())}",
                           style: CustomTextStyle.bold16.copyWith(
                             color: Colors.white
                           ),

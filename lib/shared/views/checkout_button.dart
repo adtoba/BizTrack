@@ -37,7 +37,7 @@ class CheckoutButton extends ConsumerWidget {
           ),
           const XMargin(5),
           Text(
-            "${cartVm.selectedProducts.keys.length} Items",
+            "${cartVm.selectedProducts.keys.length} Item(s)",
             style: CustomTextStyle.bold16.copyWith(
               color: Colors.white
             ),

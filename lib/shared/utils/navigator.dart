@@ -18,3 +18,7 @@ pushAndRemoveUntil(Widget page) {
     return page;
   }), (route) => false);
 }
+
+pop() {
+  navigatorKey.currentState!.pop();
+}

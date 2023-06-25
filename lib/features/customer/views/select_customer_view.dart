@@ -1,5 +1,4 @@
 import 'package:biz_track/features/customer/views/add_customer_view.dart';
-import 'package:biz_track/features/customer/views/customer_detail_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
@@ -13,14 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class CustomerView extends ConsumerStatefulWidget {
-  const CustomerView({super.key});
+class SelectCustomerView extends ConsumerStatefulWidget {
+  const SelectCustomerView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CustomerViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SelectCustomerViewState();
 }
 
-class _CustomerViewState extends ConsumerState<CustomerView> {
+class _SelectCustomerViewState extends ConsumerState<SelectCustomerView> {
 
   late final Future myCustomers;
 
@@ -38,7 +37,7 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
-        title: "Customer",
+        title: "Select customer",
       ),
       body: Column(
         children: [
@@ -89,7 +88,7 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     onTap: () {
-                      push(const CustomerDetailView());
+                      Navigator.pop(context, customerProvider.customers?[i]);
                     },
                   ); 
                 },

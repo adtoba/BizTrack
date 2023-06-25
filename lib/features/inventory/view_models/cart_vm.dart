@@ -6,6 +6,12 @@ class CartVm extends ChangeNotifier {
 
   Map<String, SelectedProduct> selectedProducts = {};
   double subTotal = 0;
+  String? selectedPaymentMethod = "";
+
+  void setSelectedPaymentMethod(String value) {
+    selectedPaymentMethod = value;
+    notifyListeners();
+  }
 
   void addAllProducts(Map<String, SelectedProduct> products) {
     selectedProducts.addAll(products);
@@ -69,5 +75,12 @@ class CartVm extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  void clear() {
+    subTotal = 0;
+    selectedProducts.clear();
+    selectedPaymentMethod = null;
+    notifyListeners();
+  }
 
 }

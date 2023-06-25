@@ -62,14 +62,20 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 Expanded(
                   child: LoginWidget(
                     title: "Clock in as \nOwner",
-                    backgroundColor: ColorPalette.primary,
+                    // backgroundColor: ColorPalette.primary,
                     onTap: () => push(const LoginOwnerView()),
                     child: Icon(
                       Icons.person, 
                       size: config.sh(60), 
-                      color: ColorPalette.white
+                      color: ColorPalette.primary
                     )
                   ),
+                ),
+                const XMargin(20),
+                Container(
+                  height: config.sh(120),
+                  width: config.sw(1),
+                  color: Colors.grey,
                 ),
                 const XMargin(20),
                 Expanded(
@@ -161,7 +167,7 @@ class LoginWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: backgroundColor ?? Colors.white,
                 border: Border.all(
-                  color: Colors.grey,
+                  color: Colors.white,
                   width: 1
                 ),
                 borderRadius: BorderRadius.circular(8)
