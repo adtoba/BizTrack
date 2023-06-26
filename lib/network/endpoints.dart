@@ -7,11 +7,11 @@ class AppEndpoints {
 
   static const String customer = "/customer/";
 
-  static const String branch = "/branch";
+  static const String branch = "/branch/";
 
-  static const String product = "/product";
+  static const String product = "/product/";
 
   static const String order = "/order/";
 
-  static const String category = "/category";
+  static const String category = "/category/";
 }

@@ -33,7 +33,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
         children: [
           Container(
             width: config.sw(120),
-            height: config.sh(170),
+            height: config.sh(180),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20)
@@ -79,7 +79,8 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
                     style: CustomTextStyle.regular16.copyWith(
-                      fontSize: config.sp(14)
+                      fontSize: config.sp(14),
+                      fontFamily: "Apercu"
                     ),
                   ),
                 ),

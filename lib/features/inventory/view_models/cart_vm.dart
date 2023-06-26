@@ -44,15 +44,27 @@ class CartVm extends ChangeNotifier {
 
   void incrementQuantity(String productId) {
     SelectedProduct? product = selectedProducts[productId];
-    selectedProducts.addAll({
-      productId: SelectedProduct(
-        id: product!.id,
-        name: product.name,
-        price: product.price! + product.sellingPrice!,
-        quantity: product.quantity! + 1,
-        sellingPrice: product.sellingPrice
-      )
-    });
+    if(selectedProducts.containsKey(product!.id)) {
+       selectedProducts.addAll({
+        productId: SelectedProduct(
+          id: product.id,
+          name: product.name,
+          price: product.price! + product.sellingPrice!,
+          quantity: product.quantity! + 1,
+          sellingPrice: product.sellingPrice
+        )
+      });
+    } else {
+        addAllProducts({
+          product.id! : SelectedProduct(
+            name: product.name,
+            id: product.id,
+            price: double.parse(product.sellingPrice!.toStringAsFixed(2)),
+            quantity: 1,
+            sellingPrice: double.parse(product.sellingPrice!.toStringAsFixed(2))
+          )
+        });
+    }
     calculateSubTotal();
     notifyListeners();
   }

@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import 'package:biz_track/features/cashier/views/successful_transaction_view.dart';
 import 'package:biz_track/features/order/models/create_order_request.dart';
 import 'package:biz_track/features/order/models/create_order_response.dart';
@@ -23,6 +25,7 @@ class OrderVm extends ChangeNotifier {
   bool get busy => _busy;
 
   List<go.Data>? orders = [];
+  Map<dynamic, dynamic> groupOrdersByDate = {};
 
   
   Future<CreateOrderResponse?> createOrder(CreateOrderRequest request) async {
@@ -57,6 +60,10 @@ class OrderVm extends ChangeNotifier {
     try {
       final res = await orderApi.getOrders();
       orders = res?.data ?? [];
+
+      groupOrdersByDate = groupBy(orders!, (go.Data obj) => obj.createdAt!.substring(0, 10));
+      notifyListeners();
+
       return res;
     } on DioException catch (e){
       String error = ErrorUtil.error(e);

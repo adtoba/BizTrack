@@ -78,16 +78,18 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
                       "${customerProvider.customers?[i].name}",
                       style: CustomTextStyle.regular16,
                     ),
-                    subtitle: Text(
-                      "${customerProvider.customers?[i].email}",
-                      style: CustomTextStyle.regular14,
-                    ),
+                    // subtitle: Text(
+                    //   customerProvider.customers![i].email!.isEmpty 
+                    //     ? "No email added"
+                    //     : customerProvider.customers![i].email!,
+                    //   style: CustomTextStyle.regular14,
+                    // ),
                     trailing: const Icon(
                       Icons.arrow_forward_ios, 
                       size: 15
                     ),
                     dense: true,
-                    contentPadding: EdgeInsets.zero,
+                    contentPadding: EdgeInsets.symmetric(vertical: config.sh(5)),
                     onTap: () {
                       push(const CustomerDetailView());
                     },

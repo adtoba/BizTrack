@@ -156,7 +156,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                 ),
                 const YMargin(10),
                 if(isGridView)...[
-                  if(products!.isEmpty)...[
+                  if(products!.isEmpty && !inventoryProvider.busy)...[
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
