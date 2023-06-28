@@ -32,7 +32,8 @@ class AuthApi extends ApiClient {
       "businessName": businessName,
       "email": email,
       "password": password,
-      "phoneNumber": phoneNumber
+      "phoneNumber": phoneNumber,
+      "role": "owner"
     });
     return RegisterResponse.fromJson(res.data);
   }

@@ -37,21 +37,15 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
   Map<String, SelectedProduct> selectedProducts = {};
 
   List<Product>? products = [];
-  List<Category>? categories = [];
-
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final categoryRes = await ref.read(inventoryViewModel).getCategories();
+      await ref.read(inventoryViewModel).getCategories();
       final res = await ref.read(inventoryViewModel).getProducts();
       setState(() {
         products = res?.products ?? [];
-        categories?.add(Category(
-          name: "All Products",
-          id: "",
-        ));
-        categories?.addAll(categoryRes!.categories!);
+        ref.read(inventoryViewModel).populateCategories();
       });
     });
     super.initState();
@@ -261,7 +255,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
   }
 
   List<DropdownMenuItem<Category>> get dropdownItems{
-    List<DropdownMenuItem<Category>> menuItems =  categories!.map((e) {
+    List<DropdownMenuItem<Category>> menuItems =  ref.watch(inventoryViewModel).cashierCategories!.map((e) {
       return DropdownMenuItem<Category>(
         value: e, 
         child: Text(e.name!),

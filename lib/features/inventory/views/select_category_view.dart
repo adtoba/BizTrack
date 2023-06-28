@@ -12,14 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class ProductCategoryView extends ConsumerStatefulWidget {
-  const ProductCategoryView({super.key});
+class SelectCategoryView extends ConsumerStatefulWidget {
+  const SelectCategoryView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ProductCategoryViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SelectCategoryViewState();
 }
 
-class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
+class _SelectCategoryViewState extends ConsumerState<SelectCategoryView> {
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
-        title: "Product Category",
+        title: "Select Category",
       ),
       body: Column(
         children: [
@@ -88,7 +88,7 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
                     dense: true,
                     contentPadding: EdgeInsets.symmetric(vertical: config.sw(5)),
                     onTap: () {
-                      
+                      Navigator.pop(context, inventoryProvider.categories![i]);
                     },
                   ); 
                 },

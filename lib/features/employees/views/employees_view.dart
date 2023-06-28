@@ -2,11 +2,13 @@ import 'package:biz_track/features/employees/views/add_employee_view.dart';
 import 'package:biz_track/features/employees/views/employee_detail_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
+import 'package:biz_track/shared/views/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -21,8 +23,17 @@ class EmployeesView extends ConsumerStatefulWidget {
 class _EmployeesViewState extends ConsumerState<EmployeesView> {
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.watch(employeeViewModel).fetchEmployees();
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var employeeProvider = ref.watch(employeeViewModel);
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
@@ -43,37 +54,50 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
               suffix: Icon(Icons.search),
             ),
           ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: 4,
-              padding: EdgeInsets.symmetric(
-                horizontal: config.sw(22), 
-                vertical: config.sh(20)
+          if(employeeProvider.busy)...[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
+              child: const CircularProgressIndicator(),
+            )
+          ] else if(employeeProvider.employees.isEmpty)...[
+            const EmptyState(
+              text: "You have not created any employees yet",
+            )
+          ] else ...[
+            Expanded(
+              child: ListView.separated(
+                itemCount: employeeProvider.employees.length,
+                padding: EdgeInsets.symmetric(
+                  horizontal: config.sw(22), 
+                  vertical: config.sh(20)
+                ),
+                separatorBuilder: (c, i) => const Divider(),
+                itemBuilder: (c, i) {
+                  var employee = employeeProvider.employees[i];
+
+                  return ListTile(
+                    title: Text(
+                      employee.name!,
+                      style: CustomTextStyle.regular16,
+                    ),
+                    subtitle: Text(
+                      employee.role!,
+                      style: CustomTextStyle.regular14,
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios, 
+                      size: 15
+                    ),
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    onTap: () {
+                      push(const EmployeeDetailView());
+                    },
+                  ); 
+                },
               ),
-              separatorBuilder: (c, i) => const Divider(),
-              itemBuilder: (c, i) {
-                return ListTile(
-                  title: Text(
-                    "John Doe",
-                    style: CustomTextStyle.regular16,
-                  ),
-                  subtitle: Text(
-                    "Cashier",
-                    style: CustomTextStyle.regular14,
-                  ),
-                  trailing: const Icon(
-                    Icons.arrow_forward_ios, 
-                    size: 15
-                  ),
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  onTap: () {
-                    push(const EmployeeDetailView());
-                  },
-                ); 
-              },
-            ),
-          )
+            )
+          ]
         ],
       ),
       persistentFooterButtons: [

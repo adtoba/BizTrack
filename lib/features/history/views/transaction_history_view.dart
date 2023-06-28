@@ -78,7 +78,7 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                           Expanded(
                             child: Text(
                               DateFormat.yMMMMd("en_US").format(
-                                DateTime.parse(orders![i].createdAt!).toLocal()
+                                DateTime.parse(orders[i].createdAt!).toLocal()
                               ),
                               style: CustomTextStyle.regular12,
                             ),

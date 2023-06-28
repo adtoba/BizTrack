@@ -32,8 +32,8 @@ class _CustomProductItemState extends State<CustomProductItem> {
       child: Stack(
         children: [
           Container(
-            width: config.sw(120),
-            height: config.sh(180),
+            width: config.sw(170),
+            height: config.sh(170),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20)

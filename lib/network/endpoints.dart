@@ -3,7 +3,8 @@ class AppEndpoints {
   static const String register = "/user/register";
 
   static const String employeeLogin = "/employee/login";
-  static const String employee = "/employee";
+  
+  static const String employee = "/employee/";
 
   static const String customer = "/customer/";
 

@@ -1,4 +1,4 @@
-import 'package:biz_track/features/inventory/views/add_category_view.dart';
+import 'package:biz_track/features/branch/views/add_branch_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
@@ -12,19 +12,19 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
-class ProductCategoryView extends ConsumerStatefulWidget {
-  const ProductCategoryView({super.key});
+class SelectBranchView extends ConsumerStatefulWidget {
+  const SelectBranchView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ProductCategoryViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SelectBranchViewState();
 }
 
-class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
+class _SelectBranchViewState extends ConsumerState<SelectBranchView> {
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(inventoryViewModel).getCategories();
+      ref.read(branchViewModel).getBranches();
     });
     super.initState();
   }
@@ -32,12 +32,12 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
-    var inventoryProvider = ref.watch(inventoryViewModel);
+    var branchProvider = ref.watch(branchViewModel);
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
-        title: "Product Category",
+        title: "Branches",
       ),
       body: Column(
         children: [
@@ -49,23 +49,23 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
             ),
             color: Colors.white,
             child: const CustomSearchTextField(
-              hint: "Search for a category",
+              hint: "Search for a branch",
               suffix: Icon(Icons.search),
             ),
           ),
-          if(inventoryProvider.busy)...[
+          if(branchProvider.busy)...[
             Padding(
               padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
               child: const CircularProgressIndicator(),
             )
-          ] else if(inventoryProvider.categories!.isEmpty)...[
+          ] else if(branchProvider.branches.isEmpty)...[
             const EmptyState(
-              text: "You have not created any category yet",
+              text: "You have not created any branch yet",
             )
           ] else ...[
             Expanded(
               child:  ListView.separated(
-                itemCount: inventoryProvider.categories!.length,
+                itemCount: branchProvider.branches.length,
                 padding: EdgeInsets.symmetric(
                   horizontal: config.sw(22), 
                   vertical: config.sh(20)
@@ -74,7 +74,7 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
                 itemBuilder: (c, i) {
                   return ListTile(
                     title: Text(
-                      inventoryProvider.categories![i].name!,
+                      branchProvider.branches[i]!.name!,
                       style: CustomTextStyle.regular16,
                     ),
                     // subtitle: Text(
@@ -88,7 +88,7 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
                     dense: true,
                     contentPadding: EdgeInsets.symmetric(vertical: config.sw(5)),
                     onTap: () {
-                      
+                      Navigator.pop(context, branchProvider.branches[i]!);
                     },
                   ); 
                 },
@@ -101,9 +101,9 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
           child: CustomAuthButton(
-            text: "Create New Category",
+            text: "Create New Branch",
             onTap: () {
-              push(const AddCategoryView());
+              push(const AddBranchView());
             },
           ),
         )
