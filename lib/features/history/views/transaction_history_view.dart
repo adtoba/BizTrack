@@ -64,6 +64,7 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                 shrinkWrap: true,
                 itemBuilder: (context, i) {
                   var orders = orderProvider.groupOrdersByDate.values.elementAt(i);
+                  var keys = orderProvider.groupOrdersByDate.keys.toList();
                   int total = 0;
                   orders.forEach((e) {
                     total = (total + e.subtotal).toInt();
@@ -78,8 +79,9 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                           Expanded(
                             child: Text(
                               DateFormat.yMMMMd("en_US").format(
-                                DateTime.parse(orders[i].createdAt!).toLocal()
+                                DateTime.parse(keys[i]).toLocal()
                               ),
+                              // keys[i],
                               style: CustomTextStyle.regular12,
                             ),
                           ),
@@ -98,7 +100,7 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                         itemBuilder: ((context, index) {
                           var order = orders?[index];
                           var format = DateFormat.jm();
-                          var time = format.format(DateTime.parse(orders![i].createdAt!).toLocal());
+                          var time = format.format(DateTime.parse(order.createdAt!).toLocal());
 
                           return TransactionItem(
                             amount: "${currency()} ${parseAmount(order.subtotal!.toStringAsFixed(2))}",

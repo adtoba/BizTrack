@@ -8,12 +8,15 @@ import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthVm extends ChangeNotifier {
   late AuthApi authApi;
+  late ChangeNotifierProviderRef ref;
 
-  AuthVm() {
+  AuthVm(ChangeNotifierProviderRef providerRef) {
     authApi = AuthApi();
+    ref = providerRef;
   }
 
   bool _busy = false;

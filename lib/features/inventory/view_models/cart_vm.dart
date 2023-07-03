@@ -1,12 +1,73 @@
 import 'package:biz_track/features/cashier/views/cashier_products_view.dart';
+import 'package:biz_track/features/inventory/model/categories_response.dart';
+import 'package:biz_track/features/inventory/model/products_response.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 class CartVm extends ChangeNotifier {
+  late ChangeNotifierProviderRef ref;
+
+  CartVm(ChangeNotifierProviderRef providerRef) {
+    ref = providerRef;
+  }
+
+  List<Product>? allProducts = [];
+  List<Product>? products = [];
+
+  void setProducts(List<Product>? value) async {
+    products = value;
+    notifyListeners();
+  }
+
+  void setAllProducts(List<Product>? value) async {
+    allProducts = value;
+    notifyListeners();
+  }
+
+  Category? selectedCategory;
+
+  void loadProducts() async {
+    final res = await ref.read(inventoryViewModel).getProducts();
+    products = res?.products ?? [];
+    notifyListeners();
+  }
+
+  void onDropDownChange(Category? value) async {
+    if(value?.name == "All Products") {
+      final res = await ref.read(inventoryViewModel).getProducts();
+      products = res?.products ?? [];
+      notifyListeners();
+
+    } else {
+      final res = await ref.read(inventoryViewModel).getProductsByCategory(
+        categoryId: value?.id
+      );
+      products = res?.products ?? [];
+      notifyListeners();
+
+    }
+
+    selectedCategory = value;
+    notifyListeners();
+  }
+
+  List<DropdownMenuItem<Category>> get dropdownItems{
+    List<DropdownMenuItem<Category>> menuItems =  ref.watch(inventoryViewModel).cashierCategories!.map((e) {
+      return DropdownMenuItem<Category>(
+        value: e, 
+        child: Text(e.name!),
+      );
+    }).toList();
+    return menuItems;
+  }
 
   Map<String, SelectedProduct> selectedProducts = {};
   double subTotal = 0;
   String? selectedPaymentMethod = "";
+  
+
 
   void setSelectedPaymentMethod(String value) {
     selectedPaymentMethod = value;

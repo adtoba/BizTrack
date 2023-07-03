@@ -78,6 +78,7 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
         top: false,
         bottom: false,
         child: Drawer(
+          width: config.sw(250),
           backgroundColor: ColorPalette.primary,
           child: const CashierDrawerView(),
         ),

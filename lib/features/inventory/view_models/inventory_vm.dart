@@ -1,16 +1,20 @@
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
 import 'package:biz_track/network/api/inventory_api.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/utils/error_util.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class InventoryVm extends ChangeNotifier {
   late InventoryApi inventoryApi;
+  late ChangeNotifierProviderRef ref;
 
-  InventoryVm() {
+  InventoryVm(ChangeNotifierProviderRef providerRef) {
     inventoryApi = InventoryApi();
+    ref = providerRef;
   }
 
   bool _busy = false;
@@ -43,8 +47,7 @@ class InventoryVm extends ChangeNotifier {
       final res = await inventoryApi.createCategory(name: name);
 
       if(res != null) {
-        cashierCategories?.clear();
-        populateCategories();
+        ref.read(cashierDashboardViewModel).getCategories();
         pop();
       }
       
@@ -84,9 +87,8 @@ class InventoryVm extends ChangeNotifier {
       );
 
       if(res != null) {
-        cashierCategories?.clear();
-        populateCategories();
-        await getProducts();
+        ref.read(cashierDashboardViewModel).resetCategory(); 
+        await ref.read(cashierDashboardViewModel).getProducts();
         pop();
       }
 
@@ -161,7 +163,7 @@ class InventoryVm extends ChangeNotifier {
     
     try {
       final res = await inventoryApi.getProductsByBranch(branchId: branchId);
-      
+
       return res;
     } on DioException catch (e){
       String error = ErrorUtil.error(e);

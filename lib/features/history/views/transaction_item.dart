@@ -16,7 +16,7 @@ class TransactionItem extends StatelessWidget {
     final config = SizeConfig();
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
+      padding: EdgeInsets.symmetric(horizontal: config.sw(5), vertical: config.sh(10)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.white

@@ -95,7 +95,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             },
             leading: const Icon(Icons.history, color: Colors.white),
             title: Text(
-              "Transaction History",
+              "Orders",
               style: CustomTextStyle.regular16.copyWith(
                 color: Colors.white
               ),

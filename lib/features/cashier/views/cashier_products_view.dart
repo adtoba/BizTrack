@@ -41,12 +41,14 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(inventoryViewModel).getCategories();
-      final res = await ref.read(inventoryViewModel).getProducts();
-      setState(() {
-        products = res?.products ?? [];
-        ref.read(inventoryViewModel).populateCategories();
-      });
+      ref.read(cashierDashboardViewModel).getCategories();
+      ref.read(cashierDashboardViewModel).getProducts();
+      // await ref.read(inventoryViewModel).getCategories();
+      // final res = await ref.read(inventoryViewModel).getProducts();
+      // setState(() {
+      //   products = res?.products ?? [];
+      //   ref.read(inventoryViewModel).populateCategories();
+      // });
     });
     super.initState();
   }
@@ -56,6 +58,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
     final config = SizeConfig();
     var inventoryProvider = ref.watch(inventoryViewModel);
     var cartProvider = ref.watch(cartViewModel);
+    var cashierProvider = ref.watch(cashierDashboardViewModel);
 
     return LoadingOverlay(
       isLoading: inventoryProvider.busy,
@@ -67,6 +70,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   height: config.sh(55),
@@ -79,31 +83,14 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                       Expanded(
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<Category>(
-                            items: dropdownItems,
+                            items: cashierProvider.categoryItems,
                             style: CustomTextStyle.regular16,
                             hint: Text(
                               "Pick a category",
                               style: CustomTextStyle.regular16,
                             ),
-                            value: selectedCategory,
-                            onChanged: (value) async {
-                              if(value?.name == "All Products") {
-                                final res = await ref.read(inventoryViewModel).getProducts();
-                                setState(() {
-                                  products = res?.products ?? [];
-                                });
-                              } else {
-                                final res = await ref.read(inventoryViewModel).getProductsByCategory(
-                                  categoryId: value?.id
-                                );
-                                setState(() {
-                                  products = res?.products ?? [];
-                                });
-                              }
-                              setState(() {
-                                selectedCategory = value!;
-                              });
-                            }
+                            value: cashierProvider.selectedCategory,
+                            onChanged: cashierProvider.onCategoryChanged
                           ), 
                         )
                       ),
@@ -150,7 +137,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                 ),
                 const YMargin(10),
                 if(isGridView)...[
-                  if(products!.isEmpty && !inventoryProvider.busy)...[
+                  if(cashierProvider.products!.isEmpty)...[
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +168,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                           runSpacing: config.sh(10),
                           crossAxisAlignment: WrapCrossAlignment.center,
                           runAlignment: WrapAlignment.center,
-                          children: products!.map((e) {
+                          children: cashierProvider.products!.map((e) {
                             return CustomProductItem(
                               productName: e.name,
                               productPrice: e.sellingPrice,
@@ -253,17 +240,6 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
       ),
     );
   }
-
-  List<DropdownMenuItem<Category>> get dropdownItems{
-    List<DropdownMenuItem<Category>> menuItems =  ref.watch(inventoryViewModel).cashierCategories!.map((e) {
-      return DropdownMenuItem<Category>(
-        value: e, 
-        child: Text(e.name!),
-      );
-    }).toList();
-    return menuItems;
-  }
-
   @override
   bool get wantKeepAlive => true;
 }

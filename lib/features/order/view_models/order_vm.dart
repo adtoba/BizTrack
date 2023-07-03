@@ -61,7 +61,8 @@ class OrderVm extends ChangeNotifier {
       final res = await orderApi.getOrders();
       orders = res?.data ?? [];
 
-      groupOrdersByDate = groupBy(orders!, (go.Data obj) => obj.createdAt!.substring(0, 10));
+      groupOrdersByDate = groupBy(orders!, (go.Data obj) => obj.createdAt!.split("T").first);
+      print(groupOrdersByDate);
       notifyListeners();
 
       return res;

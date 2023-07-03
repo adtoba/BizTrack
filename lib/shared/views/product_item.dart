@@ -32,22 +32,23 @@ class _CustomProductItemState extends State<CustomProductItem> {
       child: Stack(
         children: [
           Container(
-            width: config.sw(170),
-            height: config.sh(170),
-            decoration: BoxDecoration(
+            width: config.sw(120),
+            height: config.sh(150),
+            decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20)
+              // borderRadius: BorderRadius.circular(20)
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 if(widget.image!.isEmpty)...[
                   Container(
-                    height: config.sh(100),
+                    height: config.sh(85),
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      // borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.withOpacity(.4)
                     ),
                     child: Image.asset(
@@ -57,7 +58,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                   ),
                 ] else ...[
                   Container(
-                    height: config.sh(100),
+                    height: config.sh(85),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -70,14 +71,14 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     ),
                   ),
                 ],
-                const YMargin(10),
+                const Spacer(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
                   child: Text(
                     "${widget.productName}",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
+                    textAlign: TextAlign.center,
                     style: CustomTextStyle.regular16.copyWith(
                       fontSize: config.sp(14),
                       fontFamily: "Apercu"
@@ -87,10 +88,13 @@ class _CustomProductItemState extends State<CustomProductItem> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
                         child: Text(
                           "${currency()} ${parseAmount(widget.productPrice!)}",
+                          textAlign: TextAlign.center,
                           style: CustomTextStyle.bold16.copyWith(
                             color: ColorPalette.primary
                           ),
