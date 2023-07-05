@@ -24,6 +24,9 @@ class OrderVm extends ChangeNotifier {
   bool _busy = false;
   bool get busy => _busy;
 
+  bool _getCashierOrdersBusy = false;
+  bool get getCashierOrdersBusy => _getCashierOrdersBusy;
+
   List<go.Data>? orders = [];
   Map<dynamic, dynamic> groupOrdersByDate = {};
 
@@ -62,7 +65,6 @@ class OrderVm extends ChangeNotifier {
       orders = res?.data ?? [];
 
       groupOrdersByDate = groupBy(orders!, (go.Data obj) => obj.createdAt!.split("T").first);
-      print(groupOrdersByDate);
       notifyListeners();
 
       return res;
@@ -71,6 +73,24 @@ class OrderVm extends ChangeNotifier {
       ErrorUtil.showErrorSnackbar(error);
     } finally {
       _busy = false;
+      notifyListeners();
+    }
+    return null;
+  }
+
+  Future<Map<dynamic, dynamic>?> getOrdersByCashier({String? cashierId}) async {
+    _getCashierOrdersBusy = true;
+    notifyListeners();
+
+    try {
+      final res = await orderApi.getOrdersByCashier(cashierId: cashierId);
+      var groupedOrders = groupBy(res!.data!, (go.Data obj) => obj.createdAt!.split("T").first);
+      return groupedOrders;
+    } on DioException catch (e){
+      String error = ErrorUtil.error(e);
+      ErrorUtil.showErrorSnackbar(error);
+    } finally {
+      _getCashierOrdersBusy = false;
       notifyListeners();
     }
     return null;

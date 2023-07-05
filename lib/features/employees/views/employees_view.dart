@@ -91,7 +91,9 @@ class _EmployeesViewState extends ConsumerState<EmployeesView> {
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     onTap: () {
-                      push(const EmployeeDetailView());
+                      push(EmployeeDetailView(
+                        employee: employee
+                      ));
                     },
                   ); 
                 },

@@ -32,7 +32,10 @@ class Data {
   List<Orders>? orders;
   String? paymentMethod;
   int? subtotal;
+  String? cashier;
+  String? cashierName;
   String? customer;
+  String? customerName;
   String? branch;
   String? userRole;
   String? createdBy;
@@ -46,6 +49,9 @@ class Data {
       this.subtotal,
       this.customer,
       this.branch,
+      this.cashier,
+      this.cashierName,
+      this.customerName,
       this.userRole,
       this.createdBy,
       this.createdAt,
@@ -61,6 +67,9 @@ class Data {
     }
     paymentMethod = json['paymentMethod'];
     subtotal = json['subtotal'];
+    cashier = json['cashier'];
+    cashierName = json['cashierName'];
+    customerName = json['customerName'];
     customer = json['customer'];
     branch = json['branch'];
     userRole = json['userRole'];
@@ -78,6 +87,9 @@ class Data {
     data['paymentMethod'] = paymentMethod;
     data['subtotal'] = subtotal;
     data['customer'] = customer;
+    data['customerName'] = customerName;
+    data['cashier'] = cashier;
+    data['cashierName'] = cashierName;
     data['branch'] = branch;
     data['userRole'] = userRole;
     data['createdBy'] = createdBy;
@@ -88,15 +100,18 @@ class Data {
 }
 
 class Orders {
+  String? name;
   String? id;
   String? productId;
   int? quantity;
   int? discount;
+  double? total;
   String? createdAt;
   String? updatedAt;
 
   Orders(
       {this.id,
+      this.name,
       this.productId,
       this.quantity,
       this.discount,
@@ -109,7 +124,9 @@ class Orders {
     quantity = json['quantity'];
     discount = json['discount'];
     createdAt = json['createdAt'];
+    total = double.parse(json['total'].toString());
     updatedAt = json['updatedAt'];
+    name = json['name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -118,8 +135,10 @@ class Orders {
     data['productId'] = productId;
     data['quantity'] = quantity;
     data['discount'] = discount;
+    data['total'] = total;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    data['name'] = name;
     return data;
   }
 }

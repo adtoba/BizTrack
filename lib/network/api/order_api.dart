@@ -16,5 +16,10 @@ class OrderApi extends ApiClient {
     return GetOrderResponse.fromJson(res.data);
   }
 
+  Future<GetOrderResponse?> getOrdersByCashier({String? cashierId}) async {
+    final res = await http.get("${AppEndpoints.order}/cashier/$cashierId");
+    return GetOrderResponse.fromJson(res.data);
+  }
+
   
 }

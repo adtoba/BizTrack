@@ -1,8 +1,11 @@
+import 'package:biz_track/features/history/views/transaction_detail_view.dart';
 import 'package:biz_track/features/history/views/transaction_item.dart';
+import 'package:biz_track/features/order/models/get_order_response.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/empty_state.dart';
@@ -98,7 +101,7 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: ((context, index) {
-                          var order = orders?[index];
+                          var order = orders?[index] as Data;
                           var format = DateFormat.jm();
                           var time = format.format(DateTime.parse(order.createdAt!).toLocal());
 
@@ -107,6 +110,11 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                             time: time,
                             trxRef: "#TRF454324223",
                             isFullyPaid: true,
+                            onTap: () {
+                              push(TransactionDetailView(
+                                order: order
+                              ));
+                            },
                           );
                         }),
                       ),

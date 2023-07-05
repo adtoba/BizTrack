@@ -32,6 +32,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var cartProvider = ref.watch(cartViewModel);
+    var loginProvider = ref.watch(authViewModel);
     var orderProvider = ref.watch(orderViewModel);
 
     return LoadingOverlay(
@@ -190,15 +191,30 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                     for(SelectedProduct product in products) {
                       orders.add(
                         Orders(
+                          name: product.name,
                           productId: product.id,
-                          quantity: product.quantity
+                          quantity: product.quantity,
+                          total: product.price
                         )
                       );
                     }
                     var req = CreateOrderRequest(
                       orders: orders,
-                      branch: "eac0b8b0-6816-4b1f-ac57-ca59073a3363",
-                      customer: selectedCustomer?.id,
+                      branch: loginProvider.loginResponse?.employee != null 
+                        ? loginProvider.loginResponse?.employee!.branch
+                        : null,
+                      customer: selectedCustomer != null 
+                        ?  selectedCustomer!.id
+                        : null,
+                      customerName: selectedCustomer != null
+                        ? selectedCustomer!.name
+                        : null,
+                      cashier: loginProvider.loginResponse?.employee != null 
+                        ? loginProvider.loginResponse?.employee?.id
+                        : loginProvider.loginResponse?.user?.id,
+                      cashierName: loginProvider.loginResponse?.employee != null 
+                        ? loginProvider.loginResponse?.employee?.name
+                        : "Owner",
                       paymentMethod: cartProvider.selectedPaymentMethod,
                       subtotal: cartProvider.subTotal
                     );
