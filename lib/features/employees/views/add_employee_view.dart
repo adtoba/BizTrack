@@ -4,12 +4,14 @@ import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
+import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/utils/validators.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/loading_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
@@ -35,6 +37,8 @@ class _AddEmployeeViewState extends ConsumerState<AddEmployeeView> {
 
   Branch? selectedBranch;
 
+  String? selectedRole;
+
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
@@ -57,6 +61,7 @@ class _AddEmployeeViewState extends ConsumerState<AddEmployeeView> {
             child: Form(
               key: formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const YMargin(30),
                   CustomTextField(
@@ -70,6 +75,7 @@ class _AddEmployeeViewState extends ConsumerState<AddEmployeeView> {
                     controller: phoneController,
                     label: "Phone Number",
                     hint: "08112341234",
+                    keyboardType: TextInputType.phone,
                     validator: Validators.validatePhone,
                   ),
                   const YMargin(20),
@@ -77,6 +83,7 @@ class _AddEmployeeViewState extends ConsumerState<AddEmployeeView> {
                     controller: emailController,
                     label: "Email",
                     hint: "email@email.com",
+                    keyboardType: TextInputType.emailAddress,
                     validator: Validators.validateEmail,
                   ),
                   const YMargin(20),
@@ -88,11 +95,58 @@ class _AddEmployeeViewState extends ConsumerState<AddEmployeeView> {
                     validator: Validators.validatePassword,
                   ),
                   const YMargin(20),
-                  CustomTextField(
-                    controller: roleController,
-                    label: "Employee Role",
-                    hint: "Cashier, Manager e.t.c.",
-                    validator: Validators.validateField,
+                  Text(
+                    "Employee Role",
+                    style: CustomTextStyle.regular16,
+                  ),
+                  const YMargin(10),
+                  Container(
+                    width: double.infinity,
+                    height: config.sh(55),
+                    padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
+                    decoration: BoxDecoration(
+                      color:Colors.grey.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(16)
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        items: const <DropdownMenuItem<String>>[
+                          DropdownMenuItem(
+                            value: "Cashier",
+                            child: Text(
+                              "Cashier"
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: "Manager",
+                            child: Text(
+                              "Manager"
+                            ),
+                          )
+                        ],
+                        value: selectedRole,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: config.sp(16),
+                          fontFamily: GoogleFonts.rubik().fontFamily,
+                          color: ColorPalette.textColor
+                        ),
+                        hint: Text(
+                          "Select role",
+                          style: TextStyle(
+                            fontSize: config.sp(13),
+                            fontWeight: FontWeight.normal,
+                            fontFamily: GoogleFonts.rubik().fontFamily,
+                            color: ColorPalette.textColor.withOpacity(.8)
+                          )
+                        ), 
+                        onChanged: ((value) {
+                          setState(() {
+                            selectedRole = value;
+                          });
+                        })
+                      ),
+                    ),
                   ),
                   const YMargin(20),
                   InkWell(
@@ -144,7 +198,7 @@ class _AddEmployeeViewState extends ConsumerState<AddEmployeeView> {
                     address: addressController.text,
                     assignedBranch: selectedBranch?.id,
                     email: emailController.text,
-                    employeeRole: roleController.text,
+                    employeeRole: selectedRole,
                     phoneNumber: phoneController.text
                   );
                 }

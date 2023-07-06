@@ -3,9 +3,11 @@ import 'package:biz_track/features/customer/views/customers_view.dart';
 import 'package:biz_track/features/employees/views/employees_view.dart';
 import 'package:biz_track/features/inventory/views/product_category_view.dart';
 import 'package:biz_track/features/inventory/views/products_view.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/error_util.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
@@ -26,6 +28,8 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var loginProvider = ref.watch(authViewModel);
+    var loginResponse = loginProvider.loginResponse;
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -122,7 +126,11 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                 icon: "branch",
                 title: "Branches",
                 onTap: () {
-                  push(const BranchView());
+                  if(loginResponse?.employee == null) {
+                    push(const BranchView());
+                  } else {
+                    ErrorUtil.showErrorSnackbar("Only owners can perform this action");
+                  }
                 },
               ),
               const Divider(),
@@ -130,7 +138,11 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                 icon: "employee",
                 title: "Employees",
                 onTap: () {
-                  push(const EmployeesView());
+                  if(loginResponse?.employee == null) {
+                    push(const EmployeesView());
+                  } else {
+                    ErrorUtil.showErrorSnackbar("Only owners can perform this action");
+                  }
                 },
               ),
               const Divider(),

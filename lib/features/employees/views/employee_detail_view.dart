@@ -71,7 +71,9 @@ class _EmployeeDetailViewState extends ConsumerState<EmployeeDetailView> {
             const YMargin(20),
             EmployeeDetailItem(
               title: "Assigned Branch: ",
-              text: widget.employee.branch,
+              text: widget.employee.branch!.name!.isNotEmpty
+                ? widget.employee.branch!.name
+                : "None",
             ),
             const YMargin(20),
             EmployeeDetailItem(

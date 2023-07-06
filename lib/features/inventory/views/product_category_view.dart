@@ -1,4 +1,5 @@
 import 'package:biz_track/features/inventory/views/add_category_view.dart';
+import 'package:biz_track/features/inventory/views/category_detail_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
@@ -88,7 +89,9 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
                     dense: true,
                     contentPadding: EdgeInsets.symmetric(vertical: config.sw(5)),
                     onTap: () {
-                      
+                      push(CategoryDetailView(
+                        category: inventoryProvider.categories![i],
+                      ));
                     },
                   ); 
                 },

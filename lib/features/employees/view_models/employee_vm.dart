@@ -16,7 +16,10 @@ class EmployeeViewModel extends ChangeNotifier {
   bool _busy = false;
   bool get busy => _busy;
 
-  List<Employee> employees = [];
+  bool _getEmployeeBusy = false;
+  bool get getEmployeeBusy => _getEmployeeBusy;
+
+  List<CreateEmployee> employees = [];
 
   Future<CreateEmployeeResponse?> createEmployee({
     String? name,
@@ -74,6 +77,25 @@ class EmployeeViewModel extends ChangeNotifier {
       ErrorUtil.showErrorSnackbar(message);
     } finally {
       _busy = false;
+      notifyListeners();
+    }
+    return null;
+  }
+
+  Future<Employee?> fetchEmployeeById({String? id}) async {
+    _getEmployeeBusy = true;
+    notifyListeners();
+
+    try {
+      final res = await employeeApi.fetchEmployeeById(id: id);
+
+      return res;
+
+    } on DioException catch (e) {
+      String message = ErrorUtil.error(e);
+      ErrorUtil.showErrorSnackbar(message);
+    } finally {
+      _getEmployeeBusy = false;
       notifyListeners();
     }
     return null;

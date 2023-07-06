@@ -1,3 +1,4 @@
+import 'package:biz_track/features/customer/model/create_customer_response.dart';
 import 'package:biz_track/features/employees/model/create_employee_response.dart';
 import 'package:biz_track/features/history/views/transaction_detail_view.dart';
 import 'package:biz_track/features/history/views/transaction_item.dart';
@@ -16,9 +17,10 @@ import 'package:intl/intl.dart';
 
 
 class AllTransactionsView extends ConsumerStatefulWidget {
-  const AllTransactionsView({super.key, required this.employee});
+  const AllTransactionsView({super.key, this.employee, this.customer});
 
-  final Employee employee;
+  final Employee? employee;
+  final Customer? customer;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AllTransactionsViewState();
@@ -31,13 +33,25 @@ class _AllTransactionsViewState extends ConsumerState<AllTransactionsView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      var res = await ref.read(orderViewModel).getOrdersByCashier(
-        cashierId: widget.employee.id
-      );
+      if(widget.customer != null) {
+        var res = await ref.read(orderViewModel).getOrdersByCustomer(
+          customerId: widget.customer!.id
+        );
+        setState(() {
+          groupedOrders = res ?? {};
+        });
+      }
 
-      setState(() {
-        groupedOrders = res ?? {};
-      });
+      if(widget.employee != null) {
+        var res = await ref.read(orderViewModel).getOrdersByCashier(
+          cashierId: widget.employee!.id
+        );
+
+        setState(() {
+          groupedOrders = res ?? {};
+        });
+      }
+      
     });
     super.initState();
   }

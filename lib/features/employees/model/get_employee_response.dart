@@ -4,7 +4,7 @@ import 'package:biz_track/features/employees/model/create_employee_response.dart
 class GetEmployeeResponse {
   bool? status;
   String? message;
-  List<Employee>? employees;
+  List<CreateEmployee>? employees;
 
   GetEmployeeResponse({this.status, this.message, this.employees});
 
@@ -12,9 +12,9 @@ class GetEmployeeResponse {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      employees = <Employee>[];
+      employees = <CreateEmployee>[];
       json['data'].forEach((v) {
-        employees!.add(Employee.fromJson(v));
+        employees!.add(CreateEmployee.fromJson(v));
       });
     }
   }

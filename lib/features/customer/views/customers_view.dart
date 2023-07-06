@@ -91,7 +91,9 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
                     dense: true,
                     contentPadding: EdgeInsets.symmetric(vertical: config.sh(5)),
                     onTap: () {
-                      push(const CustomerDetailView());
+                      push(CustomerDetailView(
+                        customer: customerProvider.customers![i],
+                      ));
                     },
                   ); 
                 },

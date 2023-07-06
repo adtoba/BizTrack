@@ -20,9 +20,10 @@ class InventoryVm extends ChangeNotifier {
   bool _busy = false;
   bool get busy => _busy;
 
-  List<Category>? categories = [];
+  bool _getProductsByCategoryBusy = false;
+  bool get getProductsByCategoryBusy => _getProductsByCategoryBusy;
 
-  List<Product>? productsByCategory = [];
+  List<Category>? categories = [];
 
   List<Product>? allProducts = [];
 
@@ -140,18 +141,17 @@ class InventoryVm extends ChangeNotifier {
   }
 
   Future<ProductsResponse?> getProductsByCategory({String? categoryId}) async {
-    _busy = true;
+    _getProductsByCategoryBusy = true;
     notifyListeners();
     
     try {
       final res = await inventoryApi.getProductsByCategory(categoryId: categoryId);
-      productsByCategory = res?.products ?? [];
       return res;
     } on DioException catch (e){
       String error = ErrorUtil.error(e);
       ErrorUtil.showErrorSnackbar(error);
     } finally {
-      _busy = false;
+      _getProductsByCategoryBusy = false;
       notifyListeners();
     }
     return null;

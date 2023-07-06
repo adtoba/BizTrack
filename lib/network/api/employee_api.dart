@@ -30,4 +30,9 @@ class EmployeeApi extends ApiClient {
     final res = await http.get(AppEndpoints.employee);
     return GetEmployeeResponse.fromJson(res.data);
   }
+
+  Future<Employee?> fetchEmployeeById({String? id}) async {
+    final res = await http.get("${AppEndpoints.employee}/$id");
+    return Employee.fromJson(res.data['data']);
+  }
 }

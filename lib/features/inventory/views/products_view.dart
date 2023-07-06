@@ -10,6 +10,7 @@ import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
@@ -152,15 +153,44 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                 separatorBuilder: (c, i) => const YMargin(10),
                 itemBuilder: (c, i) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(5)),
+                    padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20)
                     ),
                     child: ListTile(
+                      leading: products[i]!.image!.isEmpty 
+                        ? Container(
+                            height: config.sh(80),
+                            width: config.sw(80),
+                            decoration: const BoxDecoration(
+                              // borderRadius: BorderRadius.circular(20),
+                              color: Colors.transparent
+                            ),
+                            child: Image.asset(
+                              "empty".png,
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : Container(
+                            height: config.sh(80),
+                            width: config.sw(80),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  products[i]!.image!,
+                                ),
+                                fit: BoxFit.cover
+                              ),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                          ),
+                        
                       title: Text(
                         "${products[i]!.name}",
-                        style: CustomTextStyle.bold16,
+                        style: CustomTextStyle.bold16.copyWith(
+                          fontSize: config.sp(14)
+                        ),
                       ),
                       subtitle: Text(
                         "${products[i]!.stockCount} Items left",

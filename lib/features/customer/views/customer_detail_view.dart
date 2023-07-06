@@ -1,7 +1,9 @@
-import 'package:biz_track/shared/buttons/auth_button.dart';
-import 'package:biz_track/shared/buttons/bordered_button.dart';
+import 'package:biz_track/features/customer/model/create_customer_response.dart';
+import 'package:biz_track/features/history/views/all_transactions_view.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
 class CustomerDetailView extends ConsumerStatefulWidget {
-  const CustomerDetailView({super.key});
+  const CustomerDetailView({super.key, required this.customer});
+
+  final Customer customer;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _CustomerDetailViewState();
@@ -20,96 +24,96 @@ class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var orderProvider = ref.watch(orderViewModel);
 
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: "Customer Detail",
+      backgroundColor: const Color(0xffF7F8FA),
+      appBar: CustomAppBar(
+        title: widget.customer.name,
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const YMargin(30),
-            Row(
-              children: const [
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Name",
-                    text: "John Doe",
-                  ),
-                ),
-                XMargin(20),
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Email",
-                    text: "email@email.com",
-                  ),
-                ),
-              ],
-            ),        
-            const YMargin(30),
-            Row(
-              children: const [
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Phone Number",
-                    text: "08164818791",
-                  ),    
-                ),
-                XMargin(20),
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Address",
-                    text: "30 abiola adeyemi street",
+            const YMargin(20),
+            // Text(
+            //   "Employee Information",
+            //   style: CustomTextStyle.bold16.copyWith(
+            //     fontSize: config.sp(18)
+            //   ),
+            // ),
+            // const YMargin(20),
+            EmployeeDetailItem(
+              title: "Name: ",
+              text: "${widget.customer.name}",
+            ),
+            const YMargin(20),
+            EmployeeDetailItem(
+              title: "Email: ",
+              text: widget.customer.email!.isNotEmpty 
+                ? widget.customer.email
+                : "None",
+            ),
+            const YMargin(20),
+            EmployeeDetailItem(
+              title: "Phone Number:",
+              text: widget.customer.phoneNumber!.isNotEmpty 
+                ? widget.customer.phoneNumber
+                : "None",
+            ),
+            const YMargin(20),
+            EmployeeDetailItem(
+              title: "Address:",
+              text: widget.customer.address!.isNotEmpty
+                ? widget.customer.address
+                : "None",
+            ),
+            Divider(
+              height: config.sh(30),
+            ),
+            const YMargin(10),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  push(AllTransactionsView(
+                    customer: widget.customer
+                  ));
+                }, 
+                child: Text(
+                  "View Transactions >>>",
+                  style: CustomTextStyle.bold16.copyWith(
+                    color: Colors.red
                   ),
                 )
-              ],
-            ),
-            const YMargin(30),
-            Row(
-              children: const [
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Total Amount Paid",
-                    text: "\$1,000.00",
-                  ),    
-                ),
-                XMargin(20),
-                Expanded(
-                  child: EmployeeDetailItem(
-                    title: "Amount Due",
-                    text: "\$50.00",
-                  ),
-                )
-              ],
-            ),
+              ),
+            )       
           ],
         ),
       ),
-      persistentFooterButtons: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
-          child: Column(
-            children: [
-              CustomAuthButton(
-                text: "All Transactions",
-                onTap: () {
+      // persistentFooterButtons: [
+      //   Padding(
+      //     padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
+      //     child: Column(
+      //       children: [
+      //         CustomAuthButton(
+      //           text: "All Transactions",
+      //           onTap: () {
                   
-                },
-              ),
-              const YMargin(10),
-              CustomBorderedButton(
-                text: "Delete Customer",
-                color: Colors.red,
-                onTap: () {
+      //           },
+      //         ),
+      //         const YMargin(10),
+      //         CustomBorderedButton(
+      //           text: "Delete Employee",
+      //           color: Colors.red,
+      //           onTap: () {
                   
-                },
-              ),
-            ],
-          ),
-        )
-      ],
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   )
+      // ],
     );
   }
 }
@@ -122,18 +126,21 @@ class EmployeeDetailItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           title!,
-          style: CustomTextStyle.regular14,
-        ),
-        const YMargin(5),
-        SelectableText(
-          text!,
           style: CustomTextStyle.regular16,
+        ),
+        const YMargin(10),
+        Expanded(
+          child: SelectableText(
+            text!,
+            textAlign: TextAlign.end,
+            style: CustomTextStyle.bold16,
+          ),
         )
       ],
     );

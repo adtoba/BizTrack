@@ -125,7 +125,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                       "Item",
                       textAlign: TextAlign.start,
                       style: CustomTextStyle.bold16.copyWith(
-                        color: ColorPalette.primary
+                        color: ColorPalette.textColor
                       ),
                     ),
                   ),
@@ -134,7 +134,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                       "Quantity",
                       textAlign: TextAlign.center,
                       style: CustomTextStyle.bold16.copyWith(
-                        color: ColorPalette.primary
+                        color: ColorPalette.textColor
                       ),
                     ),
                   ),
@@ -143,7 +143,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                       "Total",
                       textAlign: TextAlign.end,
                       style: CustomTextStyle.bold16.copyWith(
-                        color: ColorPalette.primary
+                        color: ColorPalette.textColor
                       ),
                     ),
                   ),
