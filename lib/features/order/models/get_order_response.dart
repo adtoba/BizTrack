@@ -38,6 +38,7 @@ class Data {
   String? customerName;
   String? branch;
   String? userRole;
+  String? orderRef;
   String? createdBy;
   String? createdAt;
   String? updatedAt;
@@ -53,6 +54,7 @@ class Data {
       this.cashierName,
       this.customerName,
       this.userRole,
+      this.orderRef,
       this.createdBy,
       this.createdAt,
       this.updatedAt});
@@ -73,6 +75,7 @@ class Data {
     customer = json['customer'];
     branch = json['branch'];
     userRole = json['userRole'];
+    orderRef = json['orderRef'];
     createdBy = json['createdBy'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -92,6 +95,7 @@ class Data {
     data['cashierName'] = cashierName;
     data['branch'] = branch;
     data['userRole'] = userRole;
+    data['orderRef'] = orderRef;
     data['createdBy'] = createdBy;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;

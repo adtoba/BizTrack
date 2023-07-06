@@ -1,4 +1,4 @@
-import 'package:biz_track/features/auth/views/welcome_view.dart';
+import 'package:biz_track/features/auth/views/login_view.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/theme/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: Builder(
         builder: (context) {
           SizeConfig.init(context);
-          return const WelcomeView();
+          return const LoginView();
         }
       ),
     );

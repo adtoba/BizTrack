@@ -24,12 +24,15 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
-    var format = DateFormat.yMMMMEEEEd();
+    var format = DateFormat.jms();
     var time = format.format(DateTime.parse(widget.order!.createdAt!).toLocal());
+    
+    var dateFormat = DateFormat.yMMMEd();
+    var date = dateFormat.format(DateTime.parse(widget.order!.createdAt!).toLocal());
 
     return Scaffold(
       appBar: const CustomAppBar(
-        title: "Transaction Detail",
+        title: "Transaction",
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
@@ -78,7 +81,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   const XMargin(10),
                   const Spacer(),
                   Text(
-                    time,
+                    "$date, $time",
                     style: CustomTextStyle.bold16,
                   )
                 ],

@@ -7,9 +7,10 @@ import 'package:flutter_svg/svg.dart';
 
 
 class FilterButton extends StatelessWidget {
-  const FilterButton({super.key, this.onTap});
+  const FilterButton({super.key, this.onTap, this.text});
 
   final VoidCallback? onTap;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class FilterButton extends StatelessWidget {
             ),
             const XMargin(10),
             Text(
-              "Filter with date & time",
+              text ?? "Filter with date & time",
               style: CustomTextStyle.regular16,
             ),
             const Spacer(),

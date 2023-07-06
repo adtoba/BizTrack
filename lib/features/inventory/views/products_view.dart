@@ -1,5 +1,4 @@
 import 'package:biz_track/features/branch/models/get_branch_response.dart';
-import 'package:biz_track/features/branch/views/select_branch_view.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
 import 'package:biz_track/features/inventory/views/add_product_view.dart';
 import 'package:biz_track/features/inventory/views/edit_product_view.dart';
@@ -16,6 +15,7 @@ import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/empty_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
@@ -66,73 +66,86 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
               vertical: config.sh(10)
             ),
             color: Colors.white,
-            child: const CustomSearchTextField(
-              hint: "Search name of product",
-              suffix: Icon(Icons.search),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: CustomSearchTextField(
+                    hint: "Search name of product",
+                    suffix: Icon(Icons.search),
+                  ),
+                ),
+                const XMargin(20),
+                IconButton(
+                  onPressed: () {}, 
+                  icon: SvgPicture.asset(
+                    "filter_icon".svg
+                  ),
+                )
+              ],
             ),
           ),
           const YMargin(10),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
-            child: InkWell(
-              onTap: () async {
-                Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const SelectBranchView();
-                }));
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
+          //   child: InkWell(
+          //     onTap: () async {
+          //       Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //         return const SelectBranchView();
+          //       }));
                 
-                if(branch != null) {
-                  setState(() {
-                    selectedBranch = branch;
-                  });
+          //       if(branch != null) {
+          //         setState(() {
+          //           selectedBranch = branch;
+          //         });
 
-                  var result = await inventoryProvider.getProductsByBranch(
-                    branchId: branch.id
-                  );
+          //         var result = await inventoryProvider.getProductsByBranch(
+          //           branchId: branch.id
+          //         );
 
-                  setState(() {
-                    products = result!.products!;
-                  });
-                }
+          //         setState(() {
+          //           products = result!.products!;
+          //         });
+          //       }
 
-              },
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: ColorPalette.primary
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Choose Branch",
-                      style: CustomTextStyle.regular12.copyWith(
-                        color: Colors.white
-                      ),
-                    ),
-                    const YMargin(5),
-                    Row(
-                      children: [
-                        Text(
-                          selectedBranch?.name ?? "All Branch",
-                          style: CustomTextStyle.regular16.copyWith(
-                            color: Colors.white,
-                            fontSize: config.sp(18)
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_drop_down, 
-                          color: Colors.white, 
-                          size: config.sh(20)
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+          //     },
+          //     child: Container(
+          //       width: double.infinity,
+          //       padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+          //       decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(20),
+          //         color: ColorPalette.primary
+          //       ),
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             "Choose Branch",
+          //             style: CustomTextStyle.regular12.copyWith(
+          //               color: Colors.white
+          //             ),
+          //           ),
+          //           const YMargin(5),
+          //           Row(
+          //             children: [
+          //               Text(
+          //                 selectedBranch?.name ?? "All Branch",
+          //                 style: CustomTextStyle.regular16.copyWith(
+          //                   color: Colors.white,
+          //                   fontSize: config.sp(18)
+          //                 ),
+          //               ),
+          //               Icon(
+          //                 Icons.arrow_drop_down, 
+          //                 color: Colors.white, 
+          //                 size: config.sh(20)
+          //               )
+          //             ],
+          //           )
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           if(inventoryProvider.busy)...[
             Padding(
               padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
@@ -159,32 +172,32 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                       borderRadius: BorderRadius.circular(20)
                     ),
                     child: ListTile(
-                      leading: products[i]!.image!.isEmpty 
-                        ? Container(
-                            height: config.sh(80),
-                            width: config.sw(80),
-                            decoration: const BoxDecoration(
-                              // borderRadius: BorderRadius.circular(20),
-                              color: Colors.transparent
-                            ),
-                            child: Image.asset(
-                              "empty".png,
-                              fit: BoxFit.contain,
-                            ),
-                          )
-                        : Container(
-                            height: config.sh(80),
-                            width: config.sw(80),
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  products[i]!.image!,
-                                ),
-                                fit: BoxFit.cover
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                          ),
+                      // leading: products[i]!.image!.isEmpty 
+                      //   ? Container(
+                      //       height: config.sh(80),
+                      //       width: config.sw(80),
+                      //       decoration: const BoxDecoration(
+                      //         // borderRadius: BorderRadius.circular(20),
+                      //         color: Colors.transparent
+                      //       ),
+                      //       child: Image.asset(
+                      //         "empty".png,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //     )
+                      //   : Container(
+                      //       height: config.sh(80),
+                      //       width: config.sw(80),
+                      //       decoration: BoxDecoration(
+                      //         image: DecorationImage(
+                      //           image: NetworkImage(
+                      //             products[i]!.image!,
+                      //           ),
+                      //           fit: BoxFit.cover
+                      //         ),
+                      //         borderRadius: BorderRadius.circular(20)
+                      //       ),
+                      //     ),
                         
                       title: Text(
                         "${products[i]!.name}",
@@ -200,7 +213,6 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                         "${currency()} ${parseAmount(products[i]!.sellingPrice)}",
                         style: CustomTextStyle.regular16,
                       ),
-                      dense: true,
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
                         push(const EditProductView());
