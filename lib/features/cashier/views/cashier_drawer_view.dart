@@ -3,7 +3,6 @@ import 'package:biz_track/features/history/views/transaction_history_view.dart';
 import 'package:biz_track/features/report/views/report_view.dart';
 import 'package:biz_track/features/store/views/manage_store_view.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
-import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
@@ -28,6 +27,10 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var authProvider = ref.watch(authViewModel);
+    var loginResponse = authProvider.loginResponse;
+    var username = loginResponse?.employee == null 
+      ? "Owner"
+      : loginResponse!.employee!.name;
     
     return Container(
       padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
@@ -36,20 +39,18 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
         children: [
           const YMargin(60),
           Text(
-            "BizTrack!",
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: config.sp(20),
-              color: ColorPalette.white
-            ),
-          ),
-          const YMargin(16),
-          Text(
             authProvider.loginResponse!.user!.businessName!,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: Colors.white,
               fontSize: config.sp(22),
               fontWeight: FontWeight.bold
+            ),
+          ),
+          const YMargin(5),
+          Text(
+            "Logged in as $username",
+            style: CustomTextStyle.regular14.copyWith(
+              color: Colors.white,
             ),
           ),
           const YMargin(10),

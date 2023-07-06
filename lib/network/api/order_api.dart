@@ -27,5 +27,9 @@ class OrderApi extends ApiClient {
     return GetOrderResponse.fromJson(res.data);
   }
 
-  
+  Future<GetOrderResponse?> getOrdersByBranch({String? branchId}) async {
+    final res = await http.get("${AppEndpoints.order}/branch/$branchId");
+    return GetOrderResponse.fromJson(res.data);
+  }
+
 }

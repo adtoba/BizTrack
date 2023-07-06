@@ -116,4 +116,22 @@ class OrderVm extends ChangeNotifier {
     }
     return null;
   }
+
+  Future<Map<dynamic, dynamic>?> getOrdersByBranch({String? branchId}) async {
+    _getCashierOrdersBusy = true;
+    notifyListeners();
+
+    try {
+      final res = await orderApi.getOrdersByBranch(branchId: branchId);
+      var groupedOrders = groupBy(res!.data!, (go.Data obj) => obj.createdAt!.split("T").first);
+      return groupedOrders;
+    } on DioException catch (e){
+      String error = ErrorUtil.error(e);
+      ErrorUtil.showErrorSnackbar(error);
+    } finally {
+      _getCashierOrdersBusy = false;
+      notifyListeners();
+    }
+    return null;
+  }
 }

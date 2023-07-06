@@ -89,7 +89,9 @@ class _BranchViewState extends ConsumerState<BranchView> {
                     dense: true,
                     contentPadding: EdgeInsets.symmetric(vertical: config.sw(5)),
                     onTap: () {
-                      push(const BranchDetailView());
+                      push(BranchDetailView(
+                        branch: branchProvider.branches[i]
+                      ));
                     },
                   ); 
                 },

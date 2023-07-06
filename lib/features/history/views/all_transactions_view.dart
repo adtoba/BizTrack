@@ -1,3 +1,4 @@
+import 'package:biz_track/features/branch/models/get_branch_response.dart' as cb;
 import 'package:biz_track/features/customer/model/create_customer_response.dart';
 import 'package:biz_track/features/employees/model/create_employee_response.dart';
 import 'package:biz_track/features/history/views/transaction_detail_view.dart';
@@ -17,10 +18,11 @@ import 'package:intl/intl.dart';
 
 
 class AllTransactionsView extends ConsumerStatefulWidget {
-  const AllTransactionsView({super.key, this.employee, this.customer});
+  const AllTransactionsView({super.key, this.employee, this.customer, this.branch});
 
   final Employee? employee;
   final Customer? customer;
+  final cb.Branch? branch;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AllTransactionsViewState();
@@ -45,6 +47,16 @@ class _AllTransactionsViewState extends ConsumerState<AllTransactionsView> {
       if(widget.employee != null) {
         var res = await ref.read(orderViewModel).getOrdersByCashier(
           cashierId: widget.employee!.id
+        );
+
+        setState(() {
+          groupedOrders = res ?? {};
+        });
+      }
+
+      if(widget.branch != null) {
+        var res = await ref.read(orderViewModel).getOrdersByBranch(
+          branchId: widget.branch!.id
         );
 
         setState(() {
