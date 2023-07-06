@@ -1,5 +1,6 @@
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
+import 'package:biz_track/main.dart';
 import 'package:biz_track/network/api/inventory_api.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/utils/error_util.dart';
@@ -90,7 +91,7 @@ class InventoryVm extends ChangeNotifier {
       if(res != null) {
         ref.read(cashierDashboardViewModel).resetCategory(); 
         await ref.read(cashierDashboardViewModel).getProducts();
-        pop();
+        Navigator.pop(navigatorKey.currentContext!, res);
       }
 
       return res;

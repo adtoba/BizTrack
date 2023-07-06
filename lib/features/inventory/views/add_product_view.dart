@@ -20,7 +20,9 @@ import 'package:loading_overlay/loading_overlay.dart';
 
 
 class AddProductView extends ConsumerStatefulWidget {
-  const AddProductView({super.key});
+  const AddProductView({super.key, this.category});
+  
+  final Category? category;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AddProductViewState();
@@ -40,6 +42,19 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
 
   Branch? selectedBranch;
   Category? selectedCategory;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(widget.category != null) {
+        setState(() {
+          selectedCategory = widget.category;
+          categoryController.text = selectedCategory!.name!;
+        });
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +91,7 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                     controller: sellingPriceController,
                     label: "Selling Price",
                     hint: "\$100",
+                    keyboardType: TextInputType.number,
                     validator: Validators.validateField,
                   ),
                   const YMargin(20),
@@ -123,15 +139,17 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                   const YMargin(20),
                   InkWell(
                     onTap: () async {
-                      Category? category = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return const SelectCategoryView();
-                      }));
+                      if(widget.category == null) {
+                        Category? category = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return const SelectCategoryView();
+                        }));
 
-                      if(category != null) {
-                        setState(() {
-                          categoryController.text = category.name!;
-                          selectedCategory = category;
-                        });
+                        if(category != null) {
+                          setState(() {
+                            categoryController.text = category.name!;
+                            selectedCategory = category;
+                          });
+                        }
                       }
                     },
                     child: CustomTextField(
@@ -146,6 +164,7 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                   CustomTextField(
                     controller: purchasePriceController,
                     label: "Purchase Price",
+                    keyboardType: TextInputType.number,
                     hint: "\$80",
                   ),
                   const YMargin(20),
@@ -181,7 +200,8 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                   CustomTextField(
                     controller: stockCountController,
                     label: "Stock count",
-                    hint: "10",
+                    hint: "Enter no of items available",
+                    keyboardType: TextInputType.number,
                   ),
                   const YMargin(20),
                 ],
@@ -203,7 +223,7 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                     image: "",
                     purchasePrice: purchasePriceController.text,
                     sellingPrice: sellingPriceController.text,
-                    stockCount: 100,
+                    stockCount: int.parse(stockCountController.text),
                     barcode: barcodeController.text
                   );
                 }

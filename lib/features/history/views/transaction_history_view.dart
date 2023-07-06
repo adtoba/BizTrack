@@ -1,16 +1,18 @@
 import 'package:biz_track/features/history/views/transaction_detail_view.dart';
 import 'package:biz_track/features/history/views/transaction_item.dart';
 import 'package:biz_track/features/order/models/get_order_response.dart';
+import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/empty_state.dart';
-import 'package:biz_track/shared/views/filter_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -44,8 +46,30 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
       ),
       body: Column(
         children: [
-          FilterButton(
-            onTap: () {},
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              horizontal: config.sw(20), 
+              vertical: config.sh(10)
+            ),
+            color: Colors.white,
+            child: Row(
+              children: [
+                const Expanded(
+                  child: CustomSearchTextField(
+                    hint: "Search by transaction reference",
+                    suffix: Icon(Icons.search),
+                  ),
+                ),
+                const XMargin(20),
+                IconButton(
+                  onPressed: () {}, 
+                  icon: SvgPicture.asset(
+                    "filter_icon".svg
+                  ),
+                )
+              ],
+            ),
           ),
           if(orderProvider.busy)...[
             Padding(
@@ -108,7 +132,7 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                           return TransactionItem(
                             amount: "${currency()} ${parseAmount(order.subtotal!.toStringAsFixed(2))}",
                             time: time,
-                            trxRef: "#TRF454324223",
+                            trxRef: order.orderRef,
                             isFullyPaid: true,
                             onTap: () {
                               push(TransactionDetailView(

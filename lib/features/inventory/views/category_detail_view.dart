@@ -9,7 +9,6 @@ import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
-import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
@@ -97,32 +96,32 @@ class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
                       borderRadius: BorderRadius.circular(20)
                     ),
                     child: ListTile(
-                      leading: products[i].image!.isEmpty 
-                        ? Container(
-                            height: config.sh(80),
-                            width: config.sw(80),
-                            decoration: const BoxDecoration(
-                              // borderRadius: BorderRadius.circular(20),
-                              color: Colors.transparent
-                            ),
-                            child: Image.asset(
-                              "empty".png,
-                              fit: BoxFit.contain,
-                            ),
-                          )
-                        : Container(
-                            height: config.sh(80),
-                            width: config.sw(80),
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  products[i].image!,
-                                ),
-                                fit: BoxFit.cover
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                          ),
+                      // leading: products[i].image!.isEmpty 
+                      //   ? Container(
+                      //       height: config.sh(80),
+                      //       width: config.sw(80),
+                      //       decoration: const BoxDecoration(
+                      //         // borderRadius: BorderRadius.circular(20),
+                      //         color: Colors.transparent
+                      //       ),
+                      //       child: Image.asset(
+                      //         "empty".png,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //     )
+                      //   : Container(
+                      //       height: config.sh(80),
+                      //       width: config.sw(80),
+                      //       decoration: BoxDecoration(
+                      //         image: DecorationImage(
+                      //           image: NetworkImage(
+                      //             products[i].image!,
+                      //           ),
+                      //           fit: BoxFit.cover
+                      //         ),
+                      //         borderRadius: BorderRadius.circular(20)
+                      //       ),
+                      //     ),
                       title: Text(
                         "${products[i].name}",
                         style: CustomTextStyle.bold16.copyWith(
@@ -155,8 +154,22 @@ class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
           padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
           child: CustomAuthButton(
             text: "Add New Product",
-            onTap: () {
-              push(const AddProductView());
+            onTap: () async {
+              final res = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return AddProductView(
+                  category: widget.category
+                );
+              }));
+
+              if (res != null) {
+                final res = await ref.read(inventoryViewModel).getProductsByCategory(
+                  categoryId: widget.category!.id
+                );
+
+                setState(() {
+                  products = res!.products!;
+                });
+              }
             },
           ),
         )

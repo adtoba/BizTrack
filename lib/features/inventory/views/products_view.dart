@@ -166,7 +166,7 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                 separatorBuilder: (c, i) => const YMargin(10),
                 itemBuilder: (c, i) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
+                    padding: EdgeInsets.symmetric(horizontal: config.sw(15), vertical: config.sh(5)),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20)

@@ -66,7 +66,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   const XMargin(10),
                   const Spacer(),
                   Text(
-                    "TRXADAFAEFADASDF",
+                    widget.order!.orderRef!,
                     style: CustomTextStyle.bold16,
                   )
                 ],
@@ -191,7 +191,8 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   height: config.sh(30),
                 ), 
                 itemCount: widget.order!.orders!.length
-              )
+              ),
+              const YMargin(30)
             ],
           ),
         ),
