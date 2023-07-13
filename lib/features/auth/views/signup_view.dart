@@ -25,6 +25,7 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
   final passwordController = TextEditingController();
   final phoneController = TextEditingController();
   final businessNameController = TextEditingController();
+  final businessBranchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +57,10 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                   ),
                   const YMargin(20),
                   CustomTextField(
-                    controller: emailController,
-                    label: "Email Address",
-                    hint: "Enter your email address",
-                    validator: Validators.validateEmail,
+                    controller: businessBranchController,
+                    label: "Business Branch Name",
+                    hint: "e.g Branch 1, Lagos Branch",
+                    validator: Validators.validateField,
                   ),
                   const YMargin(20),
                   CustomTextField(
@@ -68,6 +69,13 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                     hint: "08112341234",
                     keyboardType: TextInputType.phone,
                     validator: Validators.validatePhone,
+                  ),
+                  const YMargin(20),
+                  CustomTextField(
+                    controller: emailController,
+                    label: "Email Address",
+                    hint: "Enter your email address",
+                    validator: Validators.validateEmail,
                   ),
                   const YMargin(20),
                   CustomTextField(
@@ -83,12 +91,14 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                     onTap: () async {
                       if(formKey.currentState!.validate()) {
                         String? businessName = businessNameController.text;
+                        String? branchName = businessBranchController.text;
                         String? email = emailController.text;
                         String? phone = phoneController.text;
                         String? password = passwordController.text;
 
                         await authProvider.register(
                           businessName: businessName,
+                          branchName: branchName,
                           email: email,
                           password: password,
                           phone: phone

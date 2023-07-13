@@ -17,4 +17,10 @@ class BranchApi extends ApiClient {
 
     return GetBranchResponse.fromJson(res.data);
   }
+
+  Future<Branch?> getBranchById({String? branchId}) async {
+    final res = await http.get("${AppEndpoints.branch}/$branchId");
+
+    return Branch.fromJson(res.data['data']);
+  }
 }

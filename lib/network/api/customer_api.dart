@@ -9,13 +9,15 @@ class CustomerApi extends ApiClient {
     String? name,
     String? phoneNumber,
     String? email,
-    String? address
+    String? address,
+    String? branch
   }) async {
     final res = await http.post(AppEndpoints.customer, data: {
       "name": name,
       "email": email,
       "phoneNumber": phoneNumber,
-      "address": address
+      "address": address,
+      "branch": branch
     });
     return CreateCustomerResponse.fromJson(res.data);
   }
@@ -27,6 +29,11 @@ class CustomerApi extends ApiClient {
 
   Future<CustomersResponse?> getCustomers() async {
     final res = await http.get(AppEndpoints.customer);
+    return CustomersResponse.fromJson(res.data);
+  }
+
+  Future<CustomersResponse?> getCustomersByBranch({String? branchId}) async {
+    final res = await http.get("${AppEndpoints.customer}/branch/$branchId");
     return CustomersResponse.fromJson(res.data);
   }
 

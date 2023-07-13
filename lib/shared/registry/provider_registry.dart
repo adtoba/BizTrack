@@ -16,7 +16,7 @@ final authViewModel = ChangeNotifierProvider((ref) => AuthVm(ref));
 final inventoryViewModel = ChangeNotifierProvider((ref) => InventoryVm(ref));
 final cartViewModel = ChangeNotifierProvider((ref) => CartVm(ref));
 final orderViewModel = ChangeNotifierProvider((ref) => OrderVm(ref));
-final customerViewModel = ChangeNotifierProvider((ref) => CustomerVm());
+final customerViewModel = ChangeNotifierProvider((ref) => CustomerVm(ref));
 final branchViewModel = ChangeNotifierProvider((ref) => BranchVm());
 final employeeViewModel = ChangeNotifierProvider((ref) => EmployeeViewModel());
 final cashierDashboardViewModel = ChangeNotifierProvider((ref) => CashierDashboardVm(ref));

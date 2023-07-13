@@ -30,7 +30,13 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.watch(orderViewModel).getOrders();
+      var employee = ref.read(authViewModel).loginResponse?.employee;
+      bool isEmployee = employee != null;
+      
+      ref.watch(orderViewModel).getOrders(
+        isEmployee: isEmployee,
+        branchId: employee?.branch
+      );
     });
   }
  
@@ -38,6 +44,11 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var orderProvider = ref.watch(orderViewModel);
+    var loginProvider = ref.watch(authViewModel);
+    var userBranch = loginProvider.userBranch;
+    var branch = loginProvider.loginResponse?.employee != null 
+      ? "${userBranch?.name}"
+      : "all branches";
     
     return Scaffold(
       backgroundColor: const Color(0xffF7F8FA),
@@ -69,6 +80,18 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                   ),
                 )
               ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Showing results for $branch",
+                style: CustomTextStyle.regular14.copyWith(
+                  fontStyle: FontStyle.normal
+                ),
+              ),
             ),
           ),
           if(orderProvider.busy)...[

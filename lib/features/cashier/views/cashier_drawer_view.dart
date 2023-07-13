@@ -28,9 +28,12 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
     final config = SizeConfig();
     var authProvider = ref.watch(authViewModel);
     var loginResponse = authProvider.loginResponse;
+    bool isEmployee = loginResponse?.employee != null;
+    var userBranch = authProvider.userBranch;
     var username = loginResponse?.employee == null 
       ? "Owner"
       : loginResponse!.employee!.name;
+      
     
     return Container(
       padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
@@ -54,27 +57,27 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
             ),
           ),
           const YMargin(10),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white.withOpacity(.2)
+          if(isEmployee)...[
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white.withOpacity(.2)
+              ),
+              child: Text(
+                userBranch != null
+                  ? userBranch.name!
+                  : "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: CustomTextStyle.regular16.copyWith(
+                  color: Colors.white
+                ),
+              )
             ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-                items: dropdownItems,
-                value: selectedValue,
-                style: CustomTextStyle.regular16,
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = value!;
-                  });
-                }
-              ), 
-            ),
-          ),
-          const YMargin(10),
+            const YMargin(10),
+          ],
           const Divider(
             color: Colors.white,
           ),

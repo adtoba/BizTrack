@@ -105,29 +105,36 @@ class CartVm extends ChangeNotifier {
 
   void incrementQuantity(String productId) {
     SelectedProduct? product = selectedProducts[productId];
-    if(selectedProducts.containsKey(product!.id)) {
-       selectedProducts.addAll({
-        productId: SelectedProduct(
-          id: product.id,
-          name: product.name,
-          price: product.price! + product.sellingPrice!,
-          quantity: product.quantity! + 1,
-          sellingPrice: product.sellingPrice
-        )
-      });
-    } else {
-        addAllProducts({
-          product.id! : SelectedProduct(
-            name: product.name,
+    if(product!.availableQuantity! - 1 >= product.quantity!) {
+      if(selectedProducts.containsKey(product.id)) {
+        selectedProducts.addAll({
+          productId: SelectedProduct(
             id: product.id,
-            price: double.parse(product.sellingPrice!.toStringAsFixed(2)),
-            quantity: 1,
-            sellingPrice: double.parse(product.sellingPrice!.toStringAsFixed(2))
+            name: product.name,
+            price: product.price! + product.sellingPrice!,
+            quantity: product.quantity! + 1,
+            availableQuantity: product.availableQuantity,
+            sellingPrice: product.sellingPrice
           )
         });
+      } else {
+          addAllProducts({
+            product.id! : SelectedProduct(
+              name: product.name,
+              id: product.id,
+              price: double.parse(product.sellingPrice!.toStringAsFixed(2)),
+              quantity: 1,
+              availableQuantity: product.availableQuantity,
+              sellingPrice: double.parse(product.sellingPrice!.toStringAsFixed(2))
+            )
+          });
+      }
+
+      calculateSubTotal();
+      notifyListeners();
     }
-    calculateSubTotal();
-    notifyListeners();
+    
+    
   }
 
   void decrementQuantity(String productId) {
@@ -140,6 +147,7 @@ class CartVm extends ChangeNotifier {
           name: product.name,
           price: product.price! - product.sellingPrice!,
           quantity: product.quantity! - 1,
+          availableQuantity: product.availableQuantity,
           sellingPrice: product.sellingPrice
         )
       });

@@ -39,7 +39,14 @@ class CashierDashboardVm extends ChangeNotifier {
   }
 
   Future<void> getProducts() async {
-    var res = await ref.read(inventoryViewModel).getProducts();
+    var employee = ref.read(authViewModel).loginResponse?.employee;
+    var isEmployee = employee != null;
+
+    var res = await ref.read(inventoryViewModel).getProducts(
+      isEmployee: isEmployee,
+      branchId: employee?.branch
+    );
+
     if(res != null) {
       _products = res.products;
       notifyListeners();
@@ -47,7 +54,14 @@ class CashierDashboardVm extends ChangeNotifier {
   }
 
   Future<void> getCategories() async {
-    var res = await ref.read(inventoryViewModel).getCategories();
+    var employee = ref.read(authViewModel).loginResponse?.employee;
+    var isEmployee = employee != null;
+
+    var res = await ref.read(inventoryViewModel).getCategories(
+      isEmployee: isEmployee,
+      branchId: employee?.branch
+    );
+    
     if(res != null) {
       resetCategory();
       _categories = [

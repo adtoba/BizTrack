@@ -3,6 +3,7 @@ import 'package:biz_track/features/inventory/model/products_response.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/error_util.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/checkout_button.dart';
@@ -13,12 +14,13 @@ import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 class SelectedProduct {
-  SelectedProduct({this.name, this.price, this.quantity, this.sellingPrice, this.id});
+  SelectedProduct({this.name, this.price, this.quantity, this.availableQuantity, this.sellingPrice, this.id});
 
   String? name;
   String? id;
   double? price;
   double? sellingPrice;
+  int? availableQuantity;
   int? quantity;
 }
 
@@ -69,7 +71,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
         body: Stack(
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
@@ -139,70 +141,88 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                 if(isGridView)...[
                   if(cashierProvider.products!.isEmpty && !inventoryProvider.busy)...[
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "out-of-stock".png,
-                            height: config.sh(100),
-                            width: config.sw(100),
-                          ),
-                          const YMargin(10),
-                          Text(
-                            selectedCategory == null 
-                              ? "No products found"
-                              : "No products found in this category",
-                            style: CustomTextStyle.regular14,
-                          )
-                        ],
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              "out-of-stock".png,
+                              height: config.sh(100),
+                              width: config.sw(100),
+                            ),
+                            const YMargin(10),
+                            Text(
+                              selectedCategory == null 
+                                ? "No products found"
+                                : "No products found in this category",
+                              style: CustomTextStyle.regular14,
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: config.sh(50), left: config.sw(5), right: config.sw(5)),
-                        child: Wrap(
-                          spacing: config.sw(10),
-                          runSpacing: config.sh(10),
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          runAlignment: WrapAlignment.center,
-                          children: cashierProvider.products!.map((e) {
-                            return CustomProductItem(
-                              productName: e.name,
-                              productPrice: e.sellingPrice,
-                              image: e.image,
-                              quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
-                              onTap: () {
-                                if(cartProvider.selectedProducts.containsKey(e.id)) {
-                                  setState(() {
-                                    cartProvider.addAllProducts({
-                                      e.id! : SelectedProduct(
-                                        name: cartProvider.selectedProducts[e.id]?.name,
-                                        price: cartProvider.selectedProducts[e.id]!.price! + double.parse(e.sellingPrice!),
-                                        quantity: cartProvider.selectedProducts[e.id]!.quantity! + 1,
-                                        id: cartProvider.selectedProducts[e.id]!.id,
-                                        sellingPrice: double.parse(e.sellingPrice!)
-                                      )
-                                    });
-                                  });
-                                } else {
-                                  setState(() {
-                                    cartProvider.addAllProducts({
-                                      e.id! : SelectedProduct(
-                                        name: e.name,
-                                        id: e.id,
-                                        price: double.parse(e.sellingPrice!),
-                                        quantity: 1,
-                                        sellingPrice: double.parse(e.sellingPrice!)
-                                      )
-                                    });
-                                  }); 
-                                }
-                              },
-                            );
-                          }).toList(),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: config.sh(50), left: config.sw(10), right: config.sw(10)),
+                          child: Wrap(
+                            spacing: config.sw(10),
+                            runSpacing: config.sh(10),
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.center,
+                            runAlignment: WrapAlignment.center,
+                            children: cashierProvider.products!.map((e) {
+                              return CustomProductItem(
+                                productName: e.name,
+                                productPrice: e.sellingPrice,
+                                image: e.image,
+                                productQuantity: e.stockCount,
+                                quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
+                                onTap: () {
+                                  if(cartProvider.selectedProducts.containsKey(e.id)) {
+                                    if(e.stockCount! != 0 && cartProvider.selectedProducts[e.id]!.quantity! <= e.stockCount! -1) {
+                                      setState(() {
+                                        cartProvider.addAllProducts({
+                                          e.id! : SelectedProduct(
+                                            name: cartProvider.selectedProducts[e.id]?.name,
+                                            price: cartProvider.selectedProducts[e.id]!.price! + double.parse(e.sellingPrice!),
+                                            quantity: cartProvider.selectedProducts[e.id]!.quantity! + 1,
+                                            id: cartProvider.selectedProducts[e.id]!.id,
+                                            availableQuantity: e.stockCount,
+                                            sellingPrice: double.parse(e.sellingPrice!)
+                                          )
+                                        });
+                                      });
+                                    } else {
+                                      ErrorUtil.showErrorSnackbar("You don't have any ${e.name} left");
+                                    }
+                                  } else {
+                                    if(e.stockCount! != 0) {
+                                      setState(() {
+                                        cartProvider.addAllProducts({
+                                          e.id! : SelectedProduct(
+                                            name: e.name,
+                                            id: e.id,
+                                            price: double.parse(e.sellingPrice!),
+                                            quantity: 1,
+                                            availableQuantity: e.stockCount,
+                                            sellingPrice: double.parse(e.sellingPrice!)
+                                          )
+                                        });
+                                      }); 
+                                    } else {
+                                      ErrorUtil.showErrorSnackbar("You don't have any ${e.name} left");
+                                    }
+                                  }
+                                },
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),

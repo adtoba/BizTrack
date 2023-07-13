@@ -1,4 +1,5 @@
 import 'package:biz_track/features/order/models/get_order_response.dart';
+import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
@@ -170,12 +171,14 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                           style: CustomTextStyle.regular14,
                         ),
                       ),
+                      const XMargin(10),
                       Expanded(
                         child: Text(
                           "${order.quantity}",
                           style: CustomTextStyle.regular14,
                         ),
                       ),
+                      const XMargin(10),
                       Expanded(
                         flex: 1,
                         child: Text(
@@ -229,6 +232,11 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   )
                 ],
               ),
+              const YMargin(20),
+              CustomAuthButton(
+                text: "PRINT RECEIPT",
+                onTap: () {},
+              )
             ],
           ),
         )

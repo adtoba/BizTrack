@@ -45,9 +45,10 @@ class InventoryApi extends ApiClient {
     return ProductsResponse.fromJson(res.data);
   }
 
-  Future<Response?> createCategory({String? name}) async {
+  Future<Response?> createCategory({String? name, String? branch}) async {
     final res = await http.post(AppEndpoints.category, data: {
-      "name": name
+      "name": name,
+      "branch": branch
     });
     return res;
   }
@@ -55,5 +56,15 @@ class InventoryApi extends ApiClient {
   Future<CategoriesResponse?> getCategories() async {
     final res = await http.get(AppEndpoints.category);
     return CategoriesResponse.fromJson(res.data);
+  }
+
+  Future<CategoriesResponse?> getCategoriesByBranch({String? branchId}) async {
+    final res = await http.get("${AppEndpoints.category}/branch/$branchId");
+    return CategoriesResponse.fromJson(res.data);
+  }
+
+  Future<Category?> getCategoryById({String? categoryId}) async {
+    final res = await http.get("${AppEndpoints.category}/$categoryId");
+    return Category.fromJson(res.data['data']);
   }
 }

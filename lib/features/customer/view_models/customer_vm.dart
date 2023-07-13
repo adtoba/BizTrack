@@ -1,15 +1,20 @@
 import 'package:biz_track/features/customer/model/create_customer_response.dart';
 import 'package:biz_track/features/customer/model/customers_response.dart';
 import 'package:biz_track/network/api/customer_api.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/utils/error_util.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CustomerVm extends ChangeNotifier {
   late CustomerApi customerApi;
-  CustomerVm() {
+  late ChangeNotifierProviderRef ref;
+
+  CustomerVm(ChangeNotifierProviderRef providerRef) {
     customerApi = CustomerApi();
+    ref = providerRef;
   }
 
   bool _busy = false;
@@ -21,7 +26,8 @@ class CustomerVm extends ChangeNotifier {
     String? name,
     String? phone,
     String? email,
-    String? address
+    String? address,
+    String? branch
   }) async {
     _busy = true;
     notifyListeners();
@@ -31,11 +37,19 @@ class CustomerVm extends ChangeNotifier {
         name: name,
         phoneNumber: phone,
         address: address,
-        email: email
+        email: email,
+        branch: branch
       );
 
       if(res != null) {
-        await getCustomers();
+        var employee = ref.read(authViewModel).loginResponse?.employee;
+        bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+
+        await getCustomers(
+          isEmployee: isEmployee,
+          branchId: employee?.branch
+        );
+
         pop();
       } 
 
@@ -50,12 +64,14 @@ class CustomerVm extends ChangeNotifier {
     return null;
   }
 
-  Future<CustomersResponse?> getCustomers() async {
+  Future<CustomersResponse?> getCustomers({bool? isEmployee, String? branchId}) async {
     _busy = true;
     notifyListeners();
 
     try {
-      final res = await customerApi.getCustomers();
+      final res = isEmployee!
+      ? await customerApi.getCustomersByBranch(branchId: branchId)
+      : await customerApi.getCustomers();
       
       if(res != null) {
         customers = res.customers ?? [];

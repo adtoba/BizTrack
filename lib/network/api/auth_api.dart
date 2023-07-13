@@ -24,12 +24,14 @@ class AuthApi extends ApiClient {
 
   Future<RegisterResponse?> register({
     String? businessName, 
+    String? branchName,
     String? email, 
     String? password, 
     String? phoneNumber
   }) async {
     final res = await http.post(AppEndpoints.register, data: {
       "businessName": businessName,
+      "branchName": branchName,
       "email": email,
       "password": password,
       "phoneNumber": phoneNumber,

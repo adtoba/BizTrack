@@ -25,8 +25,13 @@ class _SelectCustomerViewState extends ConsumerState<SelectCustomerView> {
 
   @override
   void initState() {
+    var employee = ref.read(authViewModel).loginResponse?.employee;
+    bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+    myCustomers = ref.read(customerViewModel).getCustomers(
+      isEmployee: isEmployee,
+      branchId: employee?.branch
+    );
     super.initState();
-    myCustomers = ref.read(customerViewModel).getCustomers();
   }
 
   @override

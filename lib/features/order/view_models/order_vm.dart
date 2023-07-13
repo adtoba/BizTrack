@@ -59,12 +59,15 @@ class OrderVm extends ChangeNotifier {
     return null;
   }
 
-  Future<go.GetOrderResponse?> getOrders() async {
+  Future<go.GetOrderResponse?> getOrders({bool? isEmployee = false, String? branchId}) async {
     _busy = true;
     notifyListeners();
 
     try {
-      final res = await orderApi.getOrders();
+      final res = isEmployee! 
+        ? await orderApi.getOrdersByBranch(branchId:branchId)
+        : await orderApi.getOrders();
+        
       orders = res?.data ?? [];
 
       groupOrdersByDate = groupBy(orders!, (go.Data obj) => obj.createdAt!.split("T").first);

@@ -6,13 +6,12 @@ import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
-import 'package:biz_track/shared/style/custom_text_styles.dart';
-import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/empty_state.dart';
+import 'package:biz_track/shared/views/products_item.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -84,65 +83,23 @@ class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
               child: ListView.separated(
                 itemCount: products.length,
                 padding: EdgeInsets.symmetric(
-                  horizontal: config.sw(22), 
+                  horizontal: config.sw(10), 
                   vertical: config.sh(20)
                 ),
                 separatorBuilder: (c, i) => const YMargin(10),
                 itemBuilder: (c, i) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(5)),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: ListTile(
-                      // leading: products[i].image!.isEmpty 
-                      //   ? Container(
-                      //       height: config.sh(80),
-                      //       width: config.sw(80),
-                      //       decoration: const BoxDecoration(
-                      //         // borderRadius: BorderRadius.circular(20),
-                      //         color: Colors.transparent
-                      //       ),
-                      //       child: Image.asset(
-                      //         "empty".png,
-                      //         fit: BoxFit.contain,
-                      //       ),
-                      //     )
-                      //   : Container(
-                      //       height: config.sh(80),
-                      //       width: config.sw(80),
-                      //       decoration: BoxDecoration(
-                      //         image: DecorationImage(
-                      //           image: NetworkImage(
-                      //             products[i].image!,
-                      //           ),
-                      //           fit: BoxFit.cover
-                      //         ),
-                      //         borderRadius: BorderRadius.circular(20)
-                      //       ),
-                      //     ),
-                      title: Text(
-                        "${products[i].name}",
-                        style: CustomTextStyle.bold16.copyWith(
-                          fontSize: config.sp(14)
-                        ),
-                      ),
-                      subtitle: Text(
-                        "${products[i].stockCount} Items left",
-                        style: CustomTextStyle.regular14,
-                      ),
-                      trailing: Text(
-                        "${currency()} ${parseAmount(products[i].sellingPrice)}",
-                        style: CustomTextStyle.regular16,
-                      ),
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      onTap: () {
-                        push(const EditProductView());
-                      },
-                    ),
-                  ); 
+                  return ProductItem(
+                    image: products[i].image,
+                    productName: products[i].name,
+                    quantityLeft: products[i].stockCount,
+                    sellingPrice: products[i].sellingPrice,
+                    onTap: () {
+                      push(EditProductView(
+                        product: products[i],
+                        category: widget.category,
+                      ));
+                    },
+                  );
                 },
               ),
             )

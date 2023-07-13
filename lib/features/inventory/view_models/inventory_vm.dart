@@ -21,6 +21,9 @@ class InventoryVm extends ChangeNotifier {
   bool _busy = false;
   bool get busy => _busy;
 
+  bool _categoryBusy = false;
+  bool get categoryBusy => _categoryBusy;
+
   bool _getProductsByCategoryBusy = false;
   bool get getProductsByCategoryBusy => _getProductsByCategoryBusy;
 
@@ -41,12 +44,12 @@ class InventoryVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createCategory({String? name}) async {
+  Future<void> createCategory({String? name, String? branch}) async {
     _busy = true;
     notifyListeners();
 
     try {
-      final res = await inventoryApi.createCategory(name: name);
+      final res = await inventoryApi.createCategory(name: name, branch: branch);
 
       if(res != null) {
         ref.read(cashierDashboardViewModel).getCategories();
@@ -105,12 +108,15 @@ class InventoryVm extends ChangeNotifier {
     return null;
   }
 
-  Future<CategoriesResponse?> getCategories() async {
+  Future<CategoriesResponse?> getCategories({bool? isEmployee, String? branchId}) async {
     _busy = true;
     notifyListeners();
 
     try {
-      final res = await inventoryApi.getCategories();
+      final res = isEmployee!
+      ? await inventoryApi.getCategoriesByBranch(branchId: branchId)
+      : await inventoryApi.getCategories();
+
       categories = res?.categories ?? [];
       return res;
     } on DioException catch (e){
@@ -123,14 +129,34 @@ class InventoryVm extends ChangeNotifier {
     return null;
   }
 
-  Future<ProductsResponse?> getProducts() async {
+  Future<Category?> getCategoryById({String? categoryId}) async {
+    _categoryBusy = true;
+    notifyListeners();
+
+    try {
+      final res = await inventoryApi.getCategoryById(categoryId: categoryId);
+      return res;
+    } on DioException catch (e){
+      String error = ErrorUtil.error(e);
+      ErrorUtil.showErrorSnackbar(error);
+    } finally {
+      _categoryBusy = false;
+      notifyListeners();
+    }
+    return null;
+  }
+
+  Future<ProductsResponse?> getProducts({bool? isEmployee = false, String? branchId}) async {
     _busy = true;
     notifyListeners();
 
     try {
-      final res = await inventoryApi.getProducts();
+      final res = isEmployee! 
+        ? await inventoryApi.getProductsByBranch(branchId: branchId)
+        : await inventoryApi.getProducts();
       allProducts = res?.products ?? [];
       return res;
+
     } on DioException catch (e){
       String error = ErrorUtil.error(e);
       ErrorUtil.showErrorSnackbar(error);

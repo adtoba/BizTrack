@@ -32,7 +32,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var cartProvider = ref.watch(cartViewModel);
-    var loginProvider = ref.watch(authViewModel);
+    var loginProvider = ref.read(authViewModel);
     var orderProvider = ref.watch(orderViewModel);
 
     return LoadingOverlay(

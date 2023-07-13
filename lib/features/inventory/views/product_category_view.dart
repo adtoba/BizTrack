@@ -25,6 +25,9 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      var employee = ref.read(authViewModel).loginResponse?.employee;
+      bool isEmployee = employee != null;
+
       ref.read(inventoryViewModel).getCategories();
     });
     super.initState();
@@ -34,6 +37,11 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var inventoryProvider = ref.watch(inventoryViewModel);
+    var loginProvider = ref.watch(authViewModel);
+    var userBranch = loginProvider.userBranch;
+    var branch = loginProvider.loginResponse?.employee != null 
+      ? "${userBranch?.name}"
+      : "all branches";
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
@@ -52,6 +60,18 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
             child: const CustomSearchTextField(
               hint: "Search for a category",
               suffix: Icon(Icons.search),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Showing results for $branch",
+                style: CustomTextStyle.regular14.copyWith(
+                  fontStyle: FontStyle.normal
+                ),
+              ),
             ),
           ),
           if(inventoryProvider.busy)...[

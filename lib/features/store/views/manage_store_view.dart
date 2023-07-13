@@ -30,6 +30,12 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
     final config = SizeConfig();
     var loginProvider = ref.watch(authViewModel);
     var loginResponse = loginProvider.loginResponse;
+    var employee = loginProvider.loginResponse?.employee;
+    var canManageBusiness = employee != null 
+      && employee.role?.toLowerCase() == "manager"
+    || employee == null && loginProvider.loginResponse?.user != null;
+
+    var isOwner = employee == null && loginProvider.loginResponse?.user != null;
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -41,57 +47,105 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const YMargin(30),
+              if(canManageBusiness)...[
+                const YMargin(30),
+                Text(
+                  "Inventory",
+                  style: CustomTextStyle.bold16.copyWith(
+                    fontSize: config.sp(18)
+                  ),
+                ),
+                const YMargin(10),
+                ManageStoreItem(
+                  icon: "product",
+                  title: "Products",
+                  onTap: () {
+                    push(const ProductsView());
+                  },
+                ),
+                const Divider(),
+                ManageStoreItem(
+                  icon: "category",
+                  title: "Product Category",
+                  onTap: () {
+                    push(const ProductCategoryView());
+                  },
+                ),
+                const Divider(),
+                ManageStoreItem(
+                  icon: "discount",
+                  title: "Discount",
+                  onTap: () {},
+                ),
+                const Divider(),
+              ],
+              
+              const YMargin(20),
               Text(
-                "Inventory",
+                "Manage Business",
                 style: CustomTextStyle.bold16.copyWith(
                   fontSize: config.sp(18)
                 ),
               ),
               const YMargin(10),
+              if(isOwner)...[
+                ManageStoreItem(
+                  icon: "branch",
+                  title: "Branches",
+                  onTap: () {
+                    if(loginResponse?.employee == null) {
+                      push(const BranchView());
+                    } else {
+                      ErrorUtil.showErrorSnackbar("Only owners can perform this action");
+                    }
+                  },
+                ),
+                const Divider(),
+                ManageStoreItem(
+                  icon: "employee",
+                  title: "Employees",
+                  onTap: () {
+                    if(loginResponse?.employee == null) {
+                      push(const EmployeesView());
+                    } else {
+                      ErrorUtil.showErrorSnackbar("Only owners can perform this action");
+                    }
+                  },
+                ),
+                const Divider(),
+              ],
               ManageStoreItem(
-                icon: "product",
-                title: "Products",
+                icon: "customer",
+                title: "Customer",
                 onTap: () {
-                  push(const ProductsView());
+                  push(const CustomerView());
                 },
-              ),
-              const Divider(),
-              ManageStoreItem(
-                icon: "category",
-                title: "Product Category",
-                onTap: () {
-                  push(const ProductCategoryView());
-                },
-              ),
-              const Divider(),
-              ManageStoreItem(
-                icon: "discount",
-                title: "Discount",
-                onTap: () {},
               ),
               const Divider(),
 
-              const YMargin(20),
-              Text(
-                "Cashier & Payment",
-                style: CustomTextStyle.bold16.copyWith(
-                  fontSize: config.sp(18)
+              if(canManageBusiness)...[
+                const YMargin(20),
+                Text(
+                  "Cashier & Payment",
+                  style: CustomTextStyle.bold16.copyWith(
+                    fontSize: config.sp(18)
+                  ),
                 ),
-              ),
-              const YMargin(10),
-              ManageStoreItem(
-                icon: "payment_method",
-                title: "Payment Method",
-                onTap: () {},
-              ),
-              const Divider(),
-              ManageStoreItem(
-                icon: "discount",
-                title: "Tax & Service Charge",
-                onTap: () {},
-              ),
-              const Divider(),
+                const YMargin(10),
+                ManageStoreItem(
+                  icon: "payment_method",
+                  title: "Payment Method",
+                  onTap: () {},
+                ),
+                const Divider(),
+                ManageStoreItem(
+                  icon: "discount",
+                  title: "Tax & Service Charge",
+                  onTap: () {},
+                ),
+                const Divider(),
+              ],
+              
 
               const YMargin(20),
               Text(
@@ -103,57 +157,18 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               const YMargin(10),
               ManageStoreItem(
                 icon: "printer",
-                title: "Printer",
+                title: "Printers",
                 onTap: () {},
               ),
               const Divider(),
               ManageStoreItem(
                 icon: "receipt",
-                title: "Receipt",
+                title: "Customize Receipt",
                 onTap: () {},
               ),
               const Divider(),
 
-              const YMargin(20),
-              Text(
-                "Manage Business",
-                style: CustomTextStyle.bold16.copyWith(
-                  fontSize: config.sp(18)
-                ),
-              ),
-              const YMargin(10),
-              ManageStoreItem(
-                icon: "branch",
-                title: "Branches",
-                onTap: () {
-                  if(loginResponse?.employee == null) {
-                    push(const BranchView());
-                  } else {
-                    ErrorUtil.showErrorSnackbar("Only owners can perform this action");
-                  }
-                },
-              ),
-              const Divider(),
-              ManageStoreItem(
-                icon: "employee",
-                title: "Employees",
-                onTap: () {
-                  if(loginResponse?.employee == null) {
-                    push(const EmployeesView());
-                  } else {
-                    ErrorUtil.showErrorSnackbar("Only owners can perform this action");
-                  }
-                },
-              ),
-              const Divider(),
-              ManageStoreItem(
-                icon: "customer",
-                title: "Customer",
-                onTap: () {
-                  push(const CustomerView());
-                },
-              ),
-              const Divider(),
+              
               const YMargin(30)
             ],
           ),

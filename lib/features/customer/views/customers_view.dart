@@ -22,18 +22,26 @@ class CustomerView extends ConsumerStatefulWidget {
 
 class _CustomerViewState extends ConsumerState<CustomerView> {
 
-  late final Future myCustomers;
-
   @override
   void initState() {
+    var employee = ref.read(authViewModel).loginResponse?.employee;
+    bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+    ref.read(customerViewModel).getCustomers(
+      isEmployee: isEmployee,
+      branchId: employee?.branch
+    );
     super.initState();
-    myCustomers = ref.read(customerViewModel).getCustomers();
   }
 
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var customerProvider = ref.watch(customerViewModel);
+    var loginProvider = ref.watch(authViewModel);
+    var userBranch = loginProvider.userBranch;
+    var branch = loginProvider.loginResponse?.employee != null 
+      ? "${userBranch?.name}"
+      : "all branches";
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
@@ -52,6 +60,18 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
             child: const CustomSearchTextField(
               hint: "Search name or email",
               suffix: Icon(Icons.search),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Showing results for $branch",
+                style: CustomTextStyle.regular14.copyWith(
+                  fontStyle: FontStyle.normal,
+                ),
+              ),
             ),
           ),
           if(customerProvider.busy)...[

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomProductItem extends StatefulWidget {
-  const CustomProductItem({super.key, this.image, this.productName, this.info, this.productPrice, this.onTap, this.quantity = 0});
+  const CustomProductItem({super.key, this.image, this.productQuantity, this.productName, this.info, this.productPrice, this.onTap, this.quantity = 0});
 
   final String? productName;
   final String? info;
@@ -17,6 +17,7 @@ class CustomProductItem extends StatefulWidget {
   final String? productPrice;
   final VoidCallback? onTap;
   final int? quantity;
+  final int? productQuantity;
 
   @override
   State<CustomProductItem> createState() => _CustomProductItemState();
@@ -112,7 +113,27 @@ class _CustomProductItemState extends State<CustomProductItem> {
                       // )
                     ],
                   ),
-                )
+                ),
+                if(widget.productQuantity! == 0)...[
+                  const YMargin(2),
+                  Text(
+                    "Out of stock",
+                    style: CustomTextStyle.regular12.copyWith(
+                      color: Colors.red
+                    ),
+                  ),
+                  const YMargin(2),
+                ] else ...[
+                  const YMargin(2),
+                  Text(
+                    "${widget.productQuantity} left",
+                    style: CustomTextStyle.regular12.copyWith(
+                      color: Colors.green
+                    ),
+                  ),
+                  const YMargin(2),
+                ]
+                
               ],
             ),
           ),

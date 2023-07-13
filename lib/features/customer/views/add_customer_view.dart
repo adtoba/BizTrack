@@ -1,3 +1,5 @@
+import 'package:biz_track/features/branch/models/get_branch_response.dart';
+import 'package:biz_track/features/branch/views/select_branch_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
@@ -27,11 +29,17 @@ class _AddCustomerViewState extends ConsumerState<AddCustomerView> {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final addressController = TextEditingController();
+  final branchController = TextEditingController();
+
+  Branch? selectedBranch;
 
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var customerProvider = ref.watch(customerViewModel);
+    var loginResponse = ref.read(authViewModel).loginResponse;
+    var employee = loginResponse?.employee;
+    var isEmployee = employee != null;
 
     return LoadingOverlay(
       isLoading: customerProvider.busy,
@@ -78,6 +86,30 @@ class _AddCustomerViewState extends ConsumerState<AddCustomerView> {
                     hint: "37 meadow street",
                     maxLines: 5,
                   ),
+                  if(!isEmployee)...[
+                    const YMargin(20),
+                    InkWell(
+                      onTap: () async {
+                        Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return const SelectBranchView();
+                        }));
+
+                        if(branch != null) {
+                          setState(() {
+                            branchController.text = branch.name!;
+                            selectedBranch = branch;
+                          });
+                        }
+                      },
+                      child: CustomTextField(
+                        controller: branchController,
+                        enabled: false,
+                        label: "Branch",
+                        hint: "Branch 1",
+                        suffix: const Icon(Icons.arrow_drop_down),
+                      ),
+                    ),
+                  ],
                   const YMargin(20),
                 ],
               ),
@@ -95,7 +127,10 @@ class _AddCustomerViewState extends ConsumerState<AddCustomerView> {
                     name: nameController.text,
                     email: emailController.text,
                     address: addressController.text,
-                    phone: phoneController.text
+                    phone: phoneController.text,
+                    branch: isEmployee 
+                      ? employee.branch
+                      : branchController.text
                   );
 
                   if(res != null) {
@@ -104,6 +139,7 @@ class _AddCustomerViewState extends ConsumerState<AddCustomerView> {
                       emailController.clear();
                       addressController.clear();
                       phoneController.clear();
+                      branchController.clear();
                     });
                   }
                 }
