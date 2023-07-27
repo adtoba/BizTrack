@@ -24,7 +24,9 @@ class CheckoutButton extends ConsumerWidget {
       minWidth: double.infinity,
       height: config.sh(55),
       onPressed: () {
-        push(const OrderDetailsView());
+        if(cartVm.selectedProducts.isNotEmpty) {
+          push(const OrderDetailsView());
+        }
       },
       color: ColorPalette.primary,
       shape: RoundedRectangleBorder(

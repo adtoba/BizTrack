@@ -1,8 +1,13 @@
+import 'package:biz_track/features/auth/views/login_view.dart';
 import 'package:biz_track/shared/buttons/bordered_button.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
+import 'package:biz_track/shared/utils/constants.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
+import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
+import 'package:biz_track/shared/utils/storage.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,6 +25,9 @@ class _AccountViewState extends ConsumerState<AccountView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var authProvider = ref.watch(authViewModel);
+    var loginResponse = authProvider.loginResponse;
+    var user = loginResponse!.user;
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -42,7 +50,7 @@ class _AccountViewState extends ConsumerState<AccountView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "MyNameStore",
+                        "${user?.businessName}",
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: ColorPalette.textColor,
                           fontSize: config.sp(22),
@@ -51,12 +59,12 @@ class _AccountViewState extends ConsumerState<AccountView> {
                       ),
                       const YMargin(5),
                       Text(
-                        "08164818791",
+                        "${user?.phoneNumber}",
                         style: CustomTextStyle.regular14,
                       ),
                       const YMargin(5),
                       Text(
-                        "owner@gmail.com",
+                        "${user?.email}",
                         style: CustomTextStyle.regular14,
                       )
                     ],
@@ -73,11 +81,11 @@ class _AccountViewState extends ConsumerState<AccountView> {
                 title: "Business Information",
                 onTap: () {},
               ),
-              const Divider(),
-              ManageStoreItem(
-                title: "Dashboard",
-                onTap: () {},
-              ),
+              // const Divider(),
+              // ManageStoreItem(
+              //   title: "Dashboard",
+              //   onTap: () {},
+              // ),
              
             ],
           ),
@@ -89,7 +97,10 @@ class _AccountViewState extends ConsumerState<AccountView> {
           child: CustomBorderedButton(
             color: Colors.red,
             text: "Log Out",
-            onTap: () {},
+            onTap: () async {
+              await LocalStorage.removeItem(AppConstants.token);
+              pushAndRemoveUntil(const LoginView());
+            },
           ),
         )
       ],

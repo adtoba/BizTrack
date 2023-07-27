@@ -100,7 +100,9 @@ class _AddCategoryViewState extends ConsumerState<AddCategoryView> {
                 if(formKey.currentState!.validate()) {
                   await inventoryProvider.createCategory(
                     name: nameController.text,
-                    branch: employee?.branch
+                    branch: !isEmployee
+                      ? selectedBranch?.id
+                      : employee.branch
                   );
                 }
               },

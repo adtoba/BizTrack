@@ -60,6 +60,9 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var inventoryProvider = ref.watch(inventoryViewModel);
+    var loginResponse = ref.read(authViewModel).loginResponse;
+    var employee = loginResponse?.employee;
+    var isEmployee = employee != null;
 
     return LoadingOverlay(
       isLoading: inventoryProvider.busy,
@@ -175,28 +178,30 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                     suffix: const Icon(Icons.qr_code_scanner),
                   ),
                   const YMargin(20),
-                  InkWell(
-                    onTap: () async {
-                      Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return const SelectBranchView();
-                      }));
+                  if(!isEmployee)...[
+                    InkWell(
+                      onTap: () async {
+                        Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return const SelectBranchView();
+                        }));
 
-                      if(branch != null) {
-                        setState(() {
-                          branchController.text = branch.name!;
-                          selectedBranch = branch;
-                        });
-                      }
-                    },
-                    child: CustomTextField(
-                      controller: branchController,
-                      enabled: false,
-                      label: "Branch",
-                      hint: "Branch 1",
-                      suffix: const Icon(Icons.arrow_drop_down),
+                        if(branch != null) {
+                          setState(() {
+                            branchController.text = branch.name!;
+                            selectedBranch = branch;
+                          });
+                        }
+                      },
+                      child: CustomTextField(
+                        controller: branchController,
+                        enabled: false,
+                        label: "Branch",
+                        hint: "Branch 1",
+                        suffix: const Icon(Icons.arrow_drop_down),
+                      ),
                     ),
-                  ),
-                  const YMargin(20),
+                    const YMargin(20),
+                  ],
                   CustomTextField(
                     controller: stockCountController,
                     label: "Stock count",
@@ -219,7 +224,9 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                   await inventoryProvider.createProduct(
                     productName: nameController.text,
                     category: selectedCategory!.id,
-                    branch: selectedBranch!.id,
+                    branch: !isEmployee
+                      ? selectedBranch?.id
+                      : employee.branch,
                     image: "",
                     purchasePrice: purchasePriceController.text,
                     sellingPrice: sellingPriceController.text,

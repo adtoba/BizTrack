@@ -53,7 +53,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                     widget.order!.customerName!.isNotEmpty 
                       ? widget.order!.customerName!
                       : "None",
-                    style: CustomTextStyle.bold16,
+                    style: CustomTextStyle.regular16,
                   )
                 ],
               ),
@@ -68,7 +68,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   const Spacer(),
                   Text(
                     widget.order!.orderRef!,
-                    style: CustomTextStyle.bold16,
+                    style: CustomTextStyle.regular16,
                   )
                 ],
               ),
@@ -83,7 +83,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   const Spacer(),
                   Text(
                     "$date, $time",
-                    style: CustomTextStyle.bold16,
+                    style: CustomTextStyle.regular16,
                   )
                 ],
               ),
@@ -98,7 +98,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   const Spacer(),
                   Text(
                     "${widget.order?.paymentMethod?.toUpperCase()}",
-                    style: CustomTextStyle.bold16,
+                    style: CustomTextStyle.regular16,
                   )
                 ],
               ),
@@ -113,7 +113,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                   const Spacer(),
                   Text(
                     "${widget.order?.cashierName}",
-                    style: CustomTextStyle.bold16,
+                    style: CustomTextStyle.regular16,
                   )
                 ],
               ),

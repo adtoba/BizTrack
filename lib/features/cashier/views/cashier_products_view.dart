@@ -174,7 +174,7 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                             spacing: config.sw(10),
                             runSpacing: config.sh(10),
                             crossAxisAlignment: WrapCrossAlignment.center,
-                            alignment: WrapAlignment.center,
+                            alignment: WrapAlignment.start,
                             runAlignment: WrapAlignment.center,
                             children: cashierProvider.products!.map((e) {
                               return CustomProductItem(

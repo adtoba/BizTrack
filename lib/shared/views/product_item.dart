@@ -35,9 +35,9 @@ class _CustomProductItemState extends State<CustomProductItem> {
           Container(
             width: config.sw(120),
             height: config.sh(150),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
-              // borderRadius: BorderRadius.circular(20)
+              borderRadius: BorderRadius.circular(10)
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,12 +49,13 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
                     decoration: BoxDecoration(
-                      // borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey.withOpacity(.4)
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey.withOpacity(.3)
                     ),
                     child: Image.asset(
                       "empty".png,
                       fit: BoxFit.contain,
+                      color: Colors.grey,
                     ),
                   ),
                 ] else ...[
@@ -68,7 +69,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                         ),
                         fit: BoxFit.cover
                       ),
-                      borderRadius: BorderRadius.circular(20)
+                      borderRadius: BorderRadius.circular(10)
                     ),
                   ),
                 ],

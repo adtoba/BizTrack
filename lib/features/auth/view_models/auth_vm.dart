@@ -63,10 +63,10 @@ class AuthVm extends ChangeNotifier {
 
       if(res != null) {
         loginResponse = res;
+        await LocalStorage.put(AppConstants.token, res.authToken);
         userBranch = await branchApi.getBranchById(
           branchId: res.employee?.branch
         );
-        await LocalStorage.put(AppConstants.token, res.authToken);
         pushAndRemoveUntil(const CashierDashboardView());
       }
     
