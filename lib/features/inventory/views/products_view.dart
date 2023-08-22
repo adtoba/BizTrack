@@ -35,6 +35,8 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
 
   List<Product?> products = [];
 
+  ValueNotifier<String?> searchNotifier = ValueNotifier("");
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -85,10 +87,13 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
               color: Colors.white,
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: CustomSearchTextField(
-                      hint: "Search name of product",
-                      suffix: Icon(Icons.search),
+                      hint: "Search product name",
+                      suffix: const Icon(Icons.search),
+                      onChanged: (String? value) {
+                        searchNotifier.value = value;
+                      },
                     ),
                   ),
                   const XMargin(20),
@@ -101,68 +106,7 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                 ],
               ),
             ),
-            // const YMargin(10),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
-            //   child: InkWell(
-            //     onTap: () async {
-            //       Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-            //         return const SelectBranchView();
-            //       }));
-                  
-            //       if(branch != null) {
-            //         setState(() {
-            //           selectedBranch = branch;
-            //         });
-
-            //         var result = await inventoryProvider.getProductsByBranch(
-            //           branchId: branch.id
-            //         );
-
-            //         setState(() {
-            //           products = result!.products!;
-            //         });
-            //       }
-
-            //     },
-            //     child: Container(
-            //       width: double.infinity,
-            //       padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-            //       decoration: BoxDecoration(
-            //         borderRadius: BorderRadius.circular(20),
-            //         color: ColorPalette.primary
-            //       ),
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Text(
-            //             "Choose Branch",
-            //             style: CustomTextStyle.regular12.copyWith(
-            //               color: Colors.white
-            //             ),
-            //           ),
-            //           const YMargin(5),
-            //           Row(
-            //             children: [
-            //               Text(
-            //                 selectedBranch?.name ?? "All Branch",
-            //                 style: CustomTextStyle.regular16.copyWith(
-            //                   color: Colors.white,
-            //                   fontSize: config.sp(18)
-            //                 ),
-            //               ),
-            //               Icon(
-            //                 Icons.arrow_drop_down, 
-            //                 color: Colors.white, 
-            //                 size: config.sh(20)
-            //               )
-            //             ],
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            
             if(inventoryProvider.busy)...[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
@@ -174,33 +118,19 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
               )
             ] else ...[
               Expanded(
-                child: ListView.separated(
-                  itemCount: products.length,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: config.sw(10), 
-                    vertical: config.sh(20)
-                  ),
-                  separatorBuilder: (c, i) => const YMargin(10),
-                  itemBuilder: (c, i) {
-                    return ProductItem(
-                      image: products[i]?.image,
-                      productName: products[i]?.name,
-                      quantityLeft: products[i]?.stockCount,
-                      sellingPrice: products[i]?.sellingPrice,
-                      onTap: () async {
-                        final res = await inventoryProvider.getCategoryById(
-                          categoryId: products[i]?.category
-                        );
+                child: ValueListenableBuilder<String?>(
+                  valueListenable: searchNotifier,
+                  builder: (context, value, _) {
+                    if(value == "") {
+                      return _buildListView(products);
+                    } else {
+                      var results = products.where((element) 
+                        => element!.name!.toLowerCase().contains(value!.toLowerCase())).toList();
 
-                        push(EditProductView(
-                          product: products[i],
-                          category: res,
-                          canEdit: true,
-                        ));
-                      },
-                    );
+                      return _buildListView(results);
+                    }
                   },
-                ),
+                )
               )
             ]
             
@@ -234,6 +164,39 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildListView(List<Product?> products) {
+    var config = SizeConfig();
+    var inventoryProvider = ref.watch(inventoryViewModel);
+
+    return ListView.separated(
+      itemCount: products.length,
+      padding: EdgeInsets.symmetric(
+        horizontal: config.sw(10), 
+        vertical: config.sh(20)
+      ),
+      separatorBuilder: (c, i) => const YMargin(10),
+      itemBuilder: (c, i) {
+        return ProductItem(
+          image: products[i]!.image,
+          productName: products[i]!.name,
+          quantityLeft: products[i]!.stockCount,
+          sellingPrice: products[i]!.sellingPrice,
+          onTap: () async {
+            final res = await inventoryProvider.getCategoryById(
+              categoryId: products[i]!.category
+            );
+
+            push(EditProductView(
+              product: products[i],
+              category: res,
+              canEdit: true,
+            ));
+          },
+        );
+      },
     );
   }
 
