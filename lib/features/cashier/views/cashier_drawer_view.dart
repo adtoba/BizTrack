@@ -27,6 +27,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
   Widget build(BuildContext context) {
     final config = SizeConfig();
     var authProvider = ref.watch(authViewModel);
+    var printerProvider = ref.watch(printerViewModel);
     var loginResponse = authProvider.loginResponse;
     bool isEmployee = loginResponse?.employee != null;
     var userBranch = authProvider.userBranch;
@@ -83,6 +84,7 @@ class _CashierDrawerViewState extends ConsumerState<CashierDrawerView> {
           ),
           ListTile(
             onTap: () {
+              printerProvider.disconnectPrinter();
               Navigator.pop(context);
             },
             leading: const Icon(Icons.money, color: Colors.white),

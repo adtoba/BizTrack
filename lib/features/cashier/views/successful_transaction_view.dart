@@ -2,6 +2,7 @@ import 'package:biz_track/features/cashier/views/cashier_dashboard_view.dart';
 import 'package:biz_track/features/order/models/create_order_response.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/buttons/bordered_button.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
@@ -10,22 +11,24 @@ import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 
-class TransactionSuccessfulView extends StatefulWidget {
+class TransactionSuccessfulView extends ConsumerStatefulWidget {
   const TransactionSuccessfulView({super.key, this.data});
 
   final CreateOrderResponse? data;
 
   @override
-  State<TransactionSuccessfulView> createState() => _TransactionSuccessfulViewState();
+  ConsumerState<TransactionSuccessfulView> createState() => _TransactionSuccessfulViewState();
 }
 
-class _TransactionSuccessfulViewState extends State<TransactionSuccessfulView> {
+class _TransactionSuccessfulViewState extends ConsumerState<TransactionSuccessfulView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var printerProvider = ref.watch(printerViewModel);
 
     return Scaffold(
       backgroundColor: ColorPalette.primary,
@@ -108,7 +111,9 @@ class _TransactionSuccessfulViewState extends State<TransactionSuccessfulView> {
             CustomBorderedButton(
               color: Colors.white,
               text: "PRINT RECEIPT",
-              onTap: () {},
+              onTap: () async {
+                printerProvider.printReceipt();
+              },
             ),
             const YMargin(20),
             CustomAuthButton(

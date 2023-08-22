@@ -1,6 +1,7 @@
 import 'package:biz_track/features/customer/views/customers_view.dart';
 import 'package:biz_track/features/inventory/views/product_category_view.dart';
 import 'package:biz_track/features/inventory/views/products_view.dart';
+import 'package:biz_track/features/printers/views/printer_bluetooth_view.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
@@ -113,7 +114,9 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ManageStoreItem(
                 icon: "printer",
                 title: "Printers",
-                onTap: () {},
+                onTap: () {
+                  push(const PrinterBluetoothView());
+                },
               ),
               const Divider(),
               ManageStoreItem(

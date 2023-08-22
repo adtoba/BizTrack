@@ -1,5 +1,6 @@
 import 'package:biz_track/features/cashier/views/cashier_drawer_view.dart';
 import 'package:biz_track/features/cashier/views/cashier_products_view.dart';
+import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
@@ -34,9 +35,20 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
     });
   }
 
+  bool? isConnected = false;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(printerViewModel).listenForPrinterState();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var printerProvider = ref.watch(printerViewModel);
     
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBg,
@@ -62,6 +74,31 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
           color: ColorPalette.primary,
           fontWeight: FontWeight.w700
         ),
+        actions: [
+          if(printerProvider.isConnected)...[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
+              child: Text(
+                "PRINTER CONNECTED",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: config.sp(10)
+                ),
+              ),
+            )
+          ] else ...[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
+              child: Text(
+                "PRINTER DISCONNECTED",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: config.sp(10)
+                ),
+              ),
+            )
+          ]
+        ],
       ),
       body: PageView(
         controller: _pageController,
