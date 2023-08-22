@@ -1,13 +1,10 @@
-import 'package:biz_track/features/branch/views/branches_view.dart';
 import 'package:biz_track/features/customer/views/customers_view.dart';
-import 'package:biz_track/features/employees/views/employees_view.dart';
 import 'package:biz_track/features/inventory/views/product_category_view.dart';
 import 'package:biz_track/features/inventory/views/products_view.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
-import 'package:biz_track/shared/utils/error_util.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
@@ -47,76 +44,34 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if(canManageBusiness)...[
-                const YMargin(30),
-                Text(
-                  "Inventory",
-                  style: CustomTextStyle.bold16.copyWith(
-                    fontSize: config.sp(18)
-                  ),
-                ),
-                const YMargin(10),
-                ManageStoreItem(
-                  icon: "product",
-                  title: "Products",
-                  onTap: () {
-                    push(const ProductsView());
-                  },
-                ),
-                const Divider(),
-                ManageStoreItem(
-                  icon: "category",
-                  title: "Product Category",
-                  onTap: () {
-                    push(const ProductCategoryView());
-                  },
-                ),
-                const Divider(),
-                ManageStoreItem(
-                  icon: "discount",
-                  title: "Discount",
-                  onTap: () {},
-                ),
-                const Divider(),
-              ],
-              
-              const YMargin(20),
+              const YMargin(30),
               Text(
                 "Manage Business",
                 style: CustomTextStyle.bold16.copyWith(
                   fontSize: config.sp(18)
                 ),
               ),
+
               const YMargin(10),
-              if(isOwner)...[
-                ManageStoreItem(
-                  icon: "branch",
-                  title: "Branches",
-                  onTap: () {
-                    if(loginResponse?.employee == null) {
-                      push(const BranchView());
-                    } else {
-                      ErrorUtil.showErrorSnackbar("Only owners can perform this action");
-                    }
-                  },
-                ),
-                const Divider(),
-                ManageStoreItem(
-                  icon: "employee",
-                  title: "Employees",
-                  onTap: () {
-                    if(loginResponse?.employee == null) {
-                      push(const EmployeesView());
-                    } else {
-                      ErrorUtil.showErrorSnackbar("Only owners can perform this action");
-                    }
-                  },
-                ),
-                const Divider(),
-              ],
+              ManageStoreItem(
+                icon: "product",
+                title: "Products",
+                onTap: () {
+                  push(const ProductsView());
+                },
+              ),
+              const Divider(),
+              ManageStoreItem(
+                icon: "category",
+                title: "Category",
+                onTap: () {
+                  push(const ProductCategoryView());
+                },
+              ),
+              const Divider(),
               ManageStoreItem(
                 icon: "customer",
-                title: "Customer",
+                title: "Customers",
                 onTap: () {
                   push(const CustomerView());
                 },
@@ -126,7 +81,7 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               if(canManageBusiness)...[
                 const YMargin(20),
                 Text(
-                  "Cashier & Payment",
+                  "Payment",
                   style: CustomTextStyle.bold16.copyWith(
                     fontSize: config.sp(18)
                   ),

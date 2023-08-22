@@ -85,18 +85,18 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Showing results for $branch",
-                style: CustomTextStyle.regular14.copyWith(
-                  fontStyle: FontStyle.normal
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
+          //   child: Align(
+          //     alignment: Alignment.centerLeft,
+          //     child: Text(
+          //       "Showing results for $branch",
+          //       style: CustomTextStyle.regular14.copyWith(
+          //         fontStyle: FontStyle.normal
+          //       ),
+          //     ),
+          //   ),
+          // ),
           if(orderProvider.busy)...[
             Padding(
               padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),

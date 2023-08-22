@@ -1,5 +1,4 @@
 import 'package:biz_track/features/branch/models/get_branch_response.dart';
-import 'package:biz_track/features/branch/views/select_branch_view.dart';
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/views/select_category_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
@@ -14,6 +13,7 @@ import 'package:biz_track/shared/utils/validators.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/loading_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -42,6 +42,8 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
 
   Branch? selectedBranch;
   Category? selectedCategory;
+
+  String? barcodeResult;
 
   @override
   void initState() {
@@ -171,37 +173,29 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                     hint: "\$80",
                   ),
                   const YMargin(20),
-                  CustomTextField(
-                    controller: barcodeController,
-                    label: "Barcode",
-                    hint: "10",
-                    suffix: const Icon(Icons.qr_code_scanner),
+                  InkWell(
+                    onTap: () async {
+                      String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+                        "#000000",
+                        "Cancel",
+                        true,
+                        ScanMode.BARCODE
+                      );
+
+                      setState(() {
+                        barcodeResult = barcodeScanRes;
+                        barcodeController.text = barcodeScanRes;
+                      });
+                    },
+                    child: CustomTextField(
+                      controller: barcodeController,
+                      label: "Barcode",
+                      hint: "10",
+                      enabled: false,
+                      suffix: const Icon(Icons.qr_code_scanner),
+                    ),
                   ),
                   const YMargin(20),
-                  if(!isEmployee)...[
-                    InkWell(
-                      onTap: () async {
-                        Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return const SelectBranchView();
-                        }));
-
-                        if(branch != null) {
-                          setState(() {
-                            branchController.text = branch.name!;
-                            selectedBranch = branch;
-                          });
-                        }
-                      },
-                      child: CustomTextField(
-                        controller: branchController,
-                        enabled: false,
-                        label: "Branch",
-                        hint: "Branch 1",
-                        suffix: const Icon(Icons.arrow_drop_down),
-                      ),
-                    ),
-                    const YMargin(20),
-                  ],
                   CustomTextField(
                     controller: stockCountController,
                     label: "Stock count",
@@ -224,9 +218,7 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                   await inventoryProvider.createProduct(
                     productName: nameController.text,
                     category: selectedCategory!.id,
-                    branch: !isEmployee
-                      ? selectedBranch?.id
-                      : employee.branch,
+                    branch: "",
                     image: "",
                     purchasePrice: purchasePriceController.text,
                     sellingPrice: sellingPriceController.text,

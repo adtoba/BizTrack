@@ -1,5 +1,4 @@
 import 'package:biz_track/features/branch/models/get_branch_response.dart';
-import 'package:biz_track/features/branch/views/select_branch_view.dart';
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
 import 'package:biz_track/features/inventory/views/select_category_view.dart';
@@ -191,31 +190,6 @@ class _EditProductViewState extends ConsumerState<EditProductView> {
                     hint: "10",
                     suffix: const Icon(Icons.qr_code_scanner),
                   ),
-                  const YMargin(20),
-                  if(!isEmployee)...[
-                    InkWell(
-                      onTap: () async {
-                        Branch? branch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return const SelectBranchView();
-                        }));
-
-                        if(branch != null) {
-                          setState(() {
-                            branchController.text = branch.name!;
-                            selectedBranch = branch;
-                          });
-                        }
-                      },
-                      child: CustomTextField(
-                        controller: branchController,
-                        enabled: false,
-                        label: "Branch",
-                        hint: "Branch 1",
-                        suffix: const Icon(Icons.arrow_drop_down),
-                      ),
-                    ),
-                    const YMargin(20),
-                  ],
                   const YMargin(20),
                   CustomTextField(
                     controller: stockCountController,

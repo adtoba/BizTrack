@@ -62,18 +62,6 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
               suffix: Icon(Icons.search),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Showing results for $branch",
-                style: CustomTextStyle.regular14.copyWith(
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ),
           if(customerProvider.busy)...[
             Padding(
               padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),

@@ -6,7 +6,6 @@ import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
-import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
@@ -103,18 +102,6 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
               ),
             ),
             // const YMargin(10),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Showing results for $branch",
-                  style: CustomTextStyle.regular14.copyWith(
-                    fontStyle: FontStyle.normal
-                  ),
-                ),
-              ),
-            ),
             // Padding(
             //   padding: EdgeInsets.symmetric(horizontal: config.sw(22)),
             //   child: InkWell(

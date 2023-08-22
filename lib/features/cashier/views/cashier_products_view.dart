@@ -1,5 +1,6 @@
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
+import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
@@ -9,6 +10,7 @@ import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/checkout_button.dart';
 import 'package:biz_track/shared/views/loading_indicator.dart';
 import 'package:biz_track/shared/views/product_item.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -39,6 +41,13 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
   Map<String, SelectedProduct> selectedProducts = {};
 
   List<Product>? products = [];
+
+  bool? isSearch = false;
+
+  final ValueNotifier<String?> _searchNotifier = ValueNotifier("");
+
+  FocusNode searchNode = FocusNode();
+
 
   @override
   void initState() {
@@ -80,7 +89,32 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                   decoration: const BoxDecoration(
                     color: Colors.white
                   ),
-                  child: Row(
+                  child: isSearch! 
+                  ? Row(
+                    children: [
+                      Expanded(
+                        child: CustomSearchTextField(
+                          hint: "Search name of product",
+                          focusNode: searchNode,
+                          suffix: const Icon(Icons.search),
+                          onChanged: (String? value) {
+                            _searchNotifier.value = value;
+                          },
+                        ),
+                      ),
+                      const XMargin(20),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isSearch = false;
+                            _searchNotifier.value = "";
+                          });
+                        }, 
+                        icon: const Icon(Icons.close),
+                      )
+                    ],
+                  )
+                  : Row(
                     children: [
                       Expanded(
                         child: DropdownButtonHideUnderline(
@@ -103,7 +137,13 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                         color: Colors.grey,
                       ),
                       IconButton(
-                        onPressed: () {}, 
+                        onPressed: () {
+                          setState(() {
+                            searchNode.requestFocus();
+                            isSearch = true;
+                            _searchNotifier.value = "";
+                          });
+                        }, 
                         icon: const Icon(Icons.search),
                         iconSize: config.sh(30),
                       ),
@@ -115,7 +155,25 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                       ),
                       const XMargin(5),
                       IconButton(
-                        onPressed: () {}, 
+                        onPressed: () async {
+                          String barCodeRes = await FlutterBarcodeScanner.scanBarcode(
+                            "#000000",
+                            "Cancel",
+                            true,
+                            ScanMode.BARCODE
+                          );
+
+                          if(barCodeRes.isNotEmpty) {
+                            var searchResult = cashierProvider.products!.where((element) 
+                              => element.barCode == barCodeRes).toList();
+
+                            if(searchResult.isNotEmpty) {
+                              Product product = searchResult.first;
+                              _selectProduct(product);
+                            }
+                          }
+                          
+                        }, 
                         icon: const Icon(Icons.qr_code_scanner),
                         iconSize: config.sh(30),
                       ),
@@ -170,59 +228,20 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                       child: SingleChildScrollView(
                         child: Padding(
                           padding: EdgeInsets.only(bottom: config.sh(50), left: config.sw(10), right: config.sw(10)),
-                          child: Wrap(
-                            spacing: config.sw(10),
-                            runSpacing: config.sh(10),
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            alignment: WrapAlignment.start,
-                            runAlignment: WrapAlignment.center,
-                            children: cashierProvider.products!.map((e) {
-                              return CustomProductItem(
-                                productName: e.name,
-                                productPrice: e.sellingPrice,
-                                image: e.image,
-                                productQuantity: e.stockCount,
-                                quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
-                                onTap: () {
-                                  if(cartProvider.selectedProducts.containsKey(e.id)) {
-                                    if(e.stockCount! != 0 && cartProvider.selectedProducts[e.id]!.quantity! <= e.stockCount! -1) {
-                                      setState(() {
-                                        cartProvider.addAllProducts({
-                                          e.id! : SelectedProduct(
-                                            name: cartProvider.selectedProducts[e.id]?.name,
-                                            price: cartProvider.selectedProducts[e.id]!.price! + double.parse(e.sellingPrice!),
-                                            quantity: cartProvider.selectedProducts[e.id]!.quantity! + 1,
-                                            id: cartProvider.selectedProducts[e.id]!.id,
-                                            availableQuantity: e.stockCount,
-                                            sellingPrice: double.parse(e.sellingPrice!)
-                                          )
-                                        });
-                                      });
-                                    } else {
-                                      ErrorUtil.showErrorSnackbar("You don't have any ${e.name} left");
-                                    }
-                                  } else {
-                                    if(e.stockCount! != 0) {
-                                      setState(() {
-                                        cartProvider.addAllProducts({
-                                          e.id! : SelectedProduct(
-                                            name: e.name,
-                                            id: e.id,
-                                            price: double.parse(e.sellingPrice!),
-                                            quantity: 1,
-                                            availableQuantity: e.stockCount,
-                                            sellingPrice: double.parse(e.sellingPrice!)
-                                          )
-                                        });
-                                      }); 
-                                    } else {
-                                      ErrorUtil.showErrorSnackbar("You don't have any ${e.name} left");
-                                    }
-                                  }
-                                },
-                              );
-                            }).toList(),
-                          ),
+                          child: ValueListenableBuilder<String?>(
+                            valueListenable: _searchNotifier,
+                            builder: (context, value, _) {
+                              if(value == "") {
+                                return _buildListView(cashierProvider.products);
+                              } else {
+                                var results = cashierProvider.products!.where((element) 
+                                  => element.name!.toLowerCase().contains(value!.toLowerCase())).toList();
+                                
+                                return _buildListView(results);
+                              }
+                              
+                            }
+                          )
                         ),
                       ),
                     ),
@@ -260,6 +279,71 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
       ),
     );
   }
+
+  Widget _buildListView(List<Product>? products) {
+    var config = SizeConfig();
+    var cartProvider = ref.watch(cartViewModel);
+
+    return Wrap(
+      spacing: config.sw(10),
+      runSpacing: config.sh(10),
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.start,
+      runAlignment: WrapAlignment.center,
+      children: products!.map((e) {
+        return CustomProductItem(
+          productName: e.name,
+          productPrice: e.sellingPrice,
+          image: e.image,
+          productQuantity: e.stockCount,
+          quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
+          onTap: () {
+            _selectProduct(e);
+          },
+        );
+      }).toList(),
+    );
+  }
+ 
+  void _selectProduct(Product e) {
+    var cartProvider = ref.watch(cartViewModel);
+    if(cartProvider.selectedProducts.containsKey(e.id)) {
+      if(e.stockCount! != 0 && cartProvider.selectedProducts[e.id]!.quantity! <= e.stockCount! -1) {
+        setState(() {
+          cartProvider.addAllProducts({
+            e.id! : SelectedProduct(
+              name: cartProvider.selectedProducts[e.id]?.name,
+              price: cartProvider.selectedProducts[e.id]!.price! + double.parse(e.sellingPrice!),
+              quantity: cartProvider.selectedProducts[e.id]!.quantity! + 1,
+              id: cartProvider.selectedProducts[e.id]!.id,
+              availableQuantity: e.stockCount,
+              sellingPrice: double.parse(e.sellingPrice!)
+            )
+          });
+        });
+      } else {
+        ErrorUtil.showErrorSnackbar("You don't have any ${e.name} left");
+      }
+    } else {
+      if(e.stockCount! != 0) {
+        setState(() {
+          cartProvider.addAllProducts({
+            e.id! : SelectedProduct(
+              name: e.name,
+              id: e.id,
+              price: double.parse(e.sellingPrice!),
+              quantity: 1,
+              availableQuantity: e.stockCount,
+              sellingPrice: double.parse(e.sellingPrice!)
+            )
+          });
+        }); 
+      } else {
+        ErrorUtil.showErrorSnackbar("You don't have any ${e.name} left");
+      }
+    }
+  }
+
   @override
   bool get wantKeepAlive => true;
 }
