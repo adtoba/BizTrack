@@ -1,3 +1,4 @@
+import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/views/add_category_view.dart';
 import 'package:biz_track/features/inventory/views/category_detail_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
@@ -21,6 +22,8 @@ class ProductCategoryView extends ConsumerStatefulWidget {
 }
 
 class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
+
+  ValueNotifier<String?> searchNotifier = ValueNotifier("");
 
   @override
   void initState() {
@@ -57,9 +60,12 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
               vertical: config.sh(10)
             ),
             color: Colors.white,
-            child: const CustomSearchTextField(
-              hint: "Search for a category",
-              suffix: Icon(Icons.search),
+            child: CustomSearchTextField(
+              hint: "Search product category",
+              suffix: const Icon(Icons.search),
+              onChanged: (String? value) {
+                searchNotifier.value = value;
+              },
             ),
           ),
           if(inventoryProvider.busy)...[
@@ -73,38 +79,19 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
             )
           ] else ...[
             Expanded(
-              child:  ListView.separated(
-                itemCount: inventoryProvider.categories!.length,
-                padding: EdgeInsets.symmetric(
-                  horizontal: config.sw(22), 
-                  vertical: config.sh(20)
-                ),
-                separatorBuilder: (c, i) => const Divider(),
-                itemBuilder: (c, i) {
-                  return ListTile(
-                    title: Text(
-                      inventoryProvider.categories![i].name!,
-                      style: CustomTextStyle.regular16,
-                    ),
-                    // subtitle: Text(
-                    //   "5 employees",
-                    //   style: CustomTextStyle.regular14,
-                    // ),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios, 
-                      size: 15
-                    ),
-                    dense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: config.sw(5)),
-                    onTap: () {
-                      push(CategoryDetailView(
-                        category: inventoryProvider.categories![i],
-                      ));
-                    },
-                  ); 
+              child: ValueListenableBuilder<String?>(
+                valueListenable: searchNotifier,
+                builder: (context, value, _) {
+                  if(value == "") {
+                    return _buildListView(inventoryProvider.categories);
+                  } else {
+                    var results = inventoryProvider.categories!.where((element) 
+                      => element.name!.toLowerCase().contains(value!.toLowerCase())).toList();
+                    return _buildListView(results);
+                  }
                 },
               ),
-            )
+            ),
           ],
         ],
       ),
@@ -119,6 +106,39 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _buildListView(List<Category>? categories) {
+    var config = SizeConfig();
+    var inventoryProvider = ref.watch(inventoryViewModel);
+
+    return ListView.separated(
+      itemCount: categories!.length,
+      padding: EdgeInsets.symmetric(
+        horizontal: config.sw(22), 
+        vertical: config.sh(20)
+      ),
+      separatorBuilder: (c, i) => const Divider(),
+      itemBuilder: (c, i) {
+        return ListTile(
+          title: Text(
+            categories[i].name!,
+            style: CustomTextStyle.regular16,
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios, 
+            size: 15
+          ),
+          dense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: config.sw(5)),
+          onTap: () {
+            push(CategoryDetailView(
+              category: categories[i],
+            ));
+          },
+        ); 
+      },
     );
   }
 }
