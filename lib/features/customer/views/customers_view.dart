@@ -1,3 +1,4 @@
+import 'package:biz_track/features/customer/model/create_customer_response.dart';
 import 'package:biz_track/features/customer/views/add_customer_view.dart';
 import 'package:biz_track/features/customer/views/customer_detail_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
@@ -21,6 +22,10 @@ class CustomerView extends ConsumerStatefulWidget {
 }
 
 class _CustomerViewState extends ConsumerState<CustomerView> {
+
+  final ValueNotifier _searchNotifier = ValueNotifier("");
+
+  final searchController = TextEditingController();
 
   @override
   void initState() {
@@ -57,9 +62,13 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
               vertical: config.sh(10)
             ),
             color: Colors.white,
-            child: const CustomSearchTextField(
-              hint: "Search name or email",
-              suffix: Icon(Icons.search),
+            child: CustomSearchTextField(
+              controller: searchController,
+              hint: "Search customer name",
+              suffix: const Icon(Icons.search),
+              onChanged: (String? value) {
+                _searchNotifier.value = value;
+              },
             ),
           ),
           if(customerProvider.busy)...[
@@ -73,39 +82,19 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
             )
           ] else ...[
             Expanded(
-              child: ListView.separated(
-                itemCount: customerProvider.customers!.length,
-                padding: EdgeInsets.symmetric(
-                  horizontal: config.sw(22), 
-                  vertical: config.sh(20)
-                ),
-                separatorBuilder: (c, i) => const Divider(),
-                itemBuilder: (c, i) {
-                  return ListTile(
-                    title: Text(
-                      "${customerProvider.customers?[i].name}",
-                      style: CustomTextStyle.regular16,
-                    ),
-                    // subtitle: Text(
-                    //   customerProvider.customers![i].email!.isEmpty 
-                    //     ? "No email added"
-                    //     : customerProvider.customers![i].email!,
-                    //   style: CustomTextStyle.regular14,
-                    // ),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios, 
-                      size: 15
-                    ),
-                    dense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: config.sh(5)),
-                    onTap: () {
-                      push(CustomerDetailView(
-                        customer: customerProvider.customers![i],
-                      ));
-                    },
-                  ); 
+              child: ValueListenableBuilder(
+                valueListenable: _searchNotifier,
+                builder: (context, value, _) {
+                  if(value == "") {
+                    return _buildListView(customerProvider.customers);
+                  } else {
+                    var result = customerProvider.customers!.where((element) 
+                      => element.name!.toLowerCase().contains(value)).toList();
+                    
+                    return _buildListView(result);
+                  }
                 },
-              ),
+              )
             )
           ],
         ],
@@ -121,6 +110,44 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _buildListView(List<Customer>? customers) {
+    var config = SizeConfig();
+
+    return ListView.separated(
+      itemCount: customers!.length,
+      padding: EdgeInsets.symmetric(
+        horizontal: config.sw(22), 
+        vertical: config.sh(20)
+      ),
+      separatorBuilder: (c, i) => const Divider(),
+      itemBuilder: (c, i) {
+        return ListTile(
+          title: Text(
+            "${customers[i].name}",
+            style: CustomTextStyle.regular16,
+          ),
+          // subtitle: Text(
+          //   customerProvider.customers![i].email!.isEmpty 
+          //     ? "No email added"
+          //     : customerProvider.customers![i].email!,
+          //   style: CustomTextStyle.regular14,
+          // ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios, 
+            size: 15
+          ),
+          dense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: config.sh(5)),
+          onTap: () {
+            push(CustomerDetailView(
+              customer: customers[i],
+            ));
+          },
+        ); 
+      },
     );
   }
 }
