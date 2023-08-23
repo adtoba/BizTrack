@@ -287,25 +287,49 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
     var config = SizeConfig();
     var cartProvider = ref.watch(cartViewModel);
 
-    return Wrap(
-      spacing: config.sw(10),
-      runSpacing: config.sh(10),
-      crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: WrapAlignment.start,
-      runAlignment: WrapAlignment.center,
-      children: products!.map((e) {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        mainAxisSpacing: 5,
+        crossAxisCount: 2,
+        childAspectRatio: 1,
+        crossAxisSpacing: 10
+      ), 
+      itemCount: products!.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
         return CustomProductItem(
-          productName: e.name,
-          productPrice: e.sellingPrice,
-          image: e.image,
-          productQuantity: e.stockCount,
-          quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
+          productName: products[index].name,
+          productPrice: products[index].sellingPrice,
+          image: products[index].image,
+          productQuantity: products[index].stockCount,
+          quantity: cartProvider.selectedProducts[products[index].id]?.quantity ?? 0,
           onTap: () {
-            _selectProduct(e);
+            _selectProduct(products[index]);
           },
         );
-      }).toList(),
+      }
     );
+
+    // return Wrap(
+    //   spacing: config.sw(10),
+    //   runSpacing: config.sh(10),
+    //   crossAxisAlignment: WrapCrossAlignment.center,
+    //   alignment: WrapAlignment.start,
+    //   runAlignment: WrapAlignment.center,
+    //   children: products.map((e) {
+    //     return CustomProductItem(
+    //       productName: e.name,
+    //       productPrice: e.sellingPrice,
+    //       image: e.image,
+    //       productQuantity: e.stockCount,
+    //       quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
+    //       onTap: () {
+    //         _selectProduct(e);
+    //       },
+    //     );
+    //   }).toList(),
+    // );
   }
  
   void _selectProduct(Product e) {

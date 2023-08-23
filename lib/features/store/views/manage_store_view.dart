@@ -57,6 +57,7 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ManageStoreItem(
                 icon: "product",
                 title: "Products",
+                subtitle: "Manage your products",
                 onTap: () {
                   push(const ProductsView());
                 },
@@ -65,6 +66,7 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ManageStoreItem(
                 icon: "category",
                 title: "Category",
+                subtitle: "See and manage all your products categories",
                 onTap: () {
                   push(const ProductCategoryView());
                 },
@@ -73,6 +75,7 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ManageStoreItem(
                 icon: "customer",
                 title: "Customers",
+                subtitle: "Manage all your saved customers",
                 onTap: () {
                   push(const CustomerView());
                 },
@@ -91,12 +94,14 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                 ManageStoreItem(
                   icon: "payment_method",
                   title: "Payment Method",
+                  subtitle: "Create and edit your payment methods",
                   onTap: () {},
                 ),
                 const Divider(),
                 ManageStoreItem(
                   icon: "discount",
-                  title: "Tax & Service Charge",
+                  title: "Discounts",
+                  subtitle: "Create and manage all your discounts",
                   onTap: () {},
                 ),
                 const Divider(),
@@ -114,6 +119,7 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ManageStoreItem(
                 icon: "printer",
                 title: "Printers",
+                subtitle: "Find & connect your printer",
                 onTap: () {
                   push(const PrinterBluetoothView());
                 },
@@ -122,6 +128,7 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               ManageStoreItem(
                 icon: "receipt",
                 title: "Customize Receipt",
+                subtitle: "Customize your receipt to your taste",
                 onTap: () {},
               ),
               const Divider(),
@@ -137,9 +144,10 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
 }
 
 class ManageStoreItem extends StatelessWidget {
-  const ManageStoreItem({super.key, this.title, this.onTap, this.icon});
+  const ManageStoreItem({super.key, this.title, this.subtitle, this.onTap, this.icon});
 
   final String? title;
+  final String? subtitle;
   final String? icon;
   final VoidCallback? onTap;
 
@@ -167,9 +175,21 @@ class ManageStoreItem extends StatelessWidget {
               ),
             ),
             const XMargin(10),
-            Text(
-              "$title",
-              style: CustomTextStyle.regular16,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "$title",
+                  style: CustomTextStyle.regular16,
+                ),
+                const YMargin(5),
+                Text(
+                  "$subtitle",
+                  style: CustomTextStyle.regular14.copyWith(
+                    color: Colors.grey
+                  ),
+                ),
+              ],
             ),
             const Spacer(),
             Icon(

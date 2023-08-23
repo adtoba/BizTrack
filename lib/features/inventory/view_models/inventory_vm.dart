@@ -111,6 +111,50 @@ class InventoryVm extends ChangeNotifier {
     return null;
   }
 
+  Future<Response?> editProduct({
+    String? productId,
+    String? productName,
+    String? sellingPrice,
+    String? category,
+    String? image,
+    String? purchasePrice,
+    String? branch,
+    int? stockCount,
+    String? barcode
+  }) async {
+    _busy = true;
+    notifyListeners();
+
+    try {
+      final res = await inventoryApi.editProduct(
+        productId: productId,
+        name: productName,
+        sellingPrice: sellingPrice,
+        category: category,
+        image: image,
+        purchasePrice: purchasePrice,
+        branch: branch,
+        stockCount: stockCount,
+        barcode: barcode,
+      );
+
+      if(res != null) {
+        ref.read(cashierDashboardViewModel).resetCategory(); 
+        await ref.read(cashierDashboardViewModel).getProducts();
+        Navigator.pop(navigatorKey.currentContext!, res);
+      }
+
+      return res;
+    } on DioException catch (e) {
+      String message = ErrorUtil.error(e);
+      ErrorUtil.showErrorSnackbar(message);
+    } finally {
+      _busy = false;
+      notifyListeners();
+    }
+    return null;
+  }
+
   Future<CategoriesResponse?> getCategories({bool? isEmployee, String? branchId}) async {
     _busy = true;
     notifyListeners();

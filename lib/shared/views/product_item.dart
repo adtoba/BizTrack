@@ -33,7 +33,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
       child: Stack(
         children: [
           Container(
-            width: config.sw(120),
+            width: config.sw(200),
             height: config.sh(160),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -41,7 +41,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 if(widget.image!.isEmpty)...[
                   Container(
@@ -73,12 +73,12 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     ),
                   ),
                 ],
-                const Spacer(),
+                const YMargin(10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
                   child: Text(
                     "${widget.productName}",
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: CustomTextStyle.regular16.copyWith(
@@ -123,7 +123,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                       color: Colors.red
                     ),
                   ),
-                  const YMargin(2),
+                  const YMargin(10),
                 ] else ...[
                   const YMargin(2),
                   Text(
@@ -132,7 +132,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                       color: Colors.green
                     ),
                   ),
-                  const YMargin(2),
+                  const YMargin(10),
                 ]
                 
               ],
@@ -143,7 +143,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
               left: 0,
               right: 0,
               top: 0,
-              bottom: 0,
+              bottom: 10,
               child: Container(
                 color: Colors.white.withOpacity(.5),
                 alignment: Alignment.center,
