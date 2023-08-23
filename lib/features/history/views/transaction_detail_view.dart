@@ -25,6 +25,9 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    
     var format = DateFormat.jms();
     var time = format.format(DateTime.parse(widget.order!.createdAt!).toLocal());
     
@@ -45,7 +48,9 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                 children: [
                   Text(
                     "Customer :",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.grey : ColorPalette.textColor
+                    ),
                   ),
                   const XMargin(10),
                   const Spacer(),
@@ -53,7 +58,9 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                     widget.order!.customerName!.isNotEmpty 
                       ? widget.order!.customerName!
                       : "None",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   )
                 ],
               ),
@@ -62,13 +69,17 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                 children: [
                   Text(
                     "Transaction Ref :",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.grey : ColorPalette.textColor
+                    ),
                   ),
                   const XMargin(10),
                   const Spacer(),
                   Text(
                     widget.order!.orderRef!,
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   )
                 ],
               ),
@@ -77,13 +88,17 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                 children: [
                   Text(
                     "Transaction Date :",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.grey : ColorPalette.textColor
+                    ),
                   ),
                   const XMargin(10),
                   const Spacer(),
                   Text(
                     "$date, $time",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   )
                 ],
               ),
@@ -92,13 +107,17 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                 children: [
                   Text(
                     "Payment Method : ",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.grey : ColorPalette.textColor
+                    ),
                   ),
                   const XMargin(10),
                   const Spacer(),
                   Text(
                     "${widget.order?.paymentMethod?.toUpperCase()}",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   )
                 ],
               ),
@@ -107,13 +126,17 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                 children: [
                   Text(
                     "Cashier : ",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.grey : ColorPalette.textColor
+                    ),
                   ),
                   const XMargin(10),
                   const Spacer(),
                   Text(
                     "${widget.order?.cashierName}",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   )
                 ],
               ),
@@ -129,7 +152,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                       "Item",
                       textAlign: TextAlign.start,
                       style: CustomTextStyle.bold16.copyWith(
-                        color: ColorPalette.textColor
+                        color: isDarkMode ? Colors.grey : ColorPalette.textColor
                       ),
                     ),
                   ),
@@ -138,7 +161,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                       "Quantity",
                       textAlign: TextAlign.center,
                       style: CustomTextStyle.bold16.copyWith(
-                        color: ColorPalette.textColor
+                        color: isDarkMode ? Colors.grey : ColorPalette.textColor
                       ),
                     ),
                   ),
@@ -147,7 +170,7 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                       "Total",
                       textAlign: TextAlign.end,
                       style: CustomTextStyle.bold16.copyWith(
-                        color: ColorPalette.textColor
+                        color: isDarkMode ? Colors.grey : ColorPalette.textColor
                       ),
                     ),
                   ),
@@ -168,14 +191,18 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                         child: Text(
                           "${order.name}",
                           textAlign: TextAlign.start,
-                          style: CustomTextStyle.regular14,
+                          style: CustomTextStyle.regular14.copyWith(
+                            color: isDarkMode ? Colors.white : ColorPalette.textColor
+                          ),
                         ),
                       ),
                       const XMargin(10),
                       Expanded(
                         child: Text(
                           "${order.quantity}",
-                          style: CustomTextStyle.regular14,
+                          style: CustomTextStyle.regular14.copyWith(
+                            color: isDarkMode ? Colors.white : ColorPalette.textColor
+                          ),
                         ),
                       ),
                       const XMargin(10),
@@ -184,7 +211,9 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                         child: Text(
                           parseAmount(order.total.toString()),
                           textAlign: TextAlign.end,
-                          style: CustomTextStyle.regular14,
+                          style: CustomTextStyle.regular14.copyWith(
+                            color: isDarkMode ? Colors.white : ColorPalette.textColor
+                          ),
                         ),
                       ),
                     ],
@@ -209,12 +238,16 @@ class _TransactionDetailViewState extends ConsumerState<TransactionDetailView> {
                 children: [
                   Text(
                     "Subtotal",
-                    style: CustomTextStyle.regular16,
+                    style: CustomTextStyle.regular16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   ),
                   const Spacer(),
                   Text(
                     "${currency()} ${parseAmount(widget.order?.subtotal!.toStringAsFixed(2))}",
-                    style: CustomTextStyle.bold16,
+                    style: CustomTextStyle.bold16.copyWith(
+                      color: isDarkMode ? Colors.white : ColorPalette.textColor
+                    ),
                   )
                 ],
               ),

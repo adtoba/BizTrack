@@ -1,4 +1,3 @@
-import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,20 +14,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       centerTitle: true,
-      iconTheme: IconThemeData(
-        color: ColorPalette.primary
-      ),
+      iconTheme: Theme.of(context).appBarTheme.iconTheme,
       automaticallyImplyLeading: true,
-      elevation: .5,
+      elevation: Theme.of(context).appBarTheme.elevation,
       title: Text(
         "$title",
         style: GoogleFonts.rubik(),
       ),
-      titleTextStyle: TextStyle(
-        fontSize: config.sp(20),
-        color: ColorPalette.primary,
-        fontWeight: FontWeight.w700
-      ),
+      titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+        fontSize: config.sp(20)
+      )
     );
   }
 

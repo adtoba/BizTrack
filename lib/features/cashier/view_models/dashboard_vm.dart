@@ -1,6 +1,9 @@
+
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
+import 'package:biz_track/main.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
+import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -97,10 +100,25 @@ class CashierDashboardVm extends ChangeNotifier {
   }
 
   List<DropdownMenuItem<Category>> populateItems() {
+    var brightness = Theme.of(navigatorKey.currentContext!).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     List<DropdownMenuItem<Category>> menu = _categories.map((e) {
       return DropdownMenuItem<Category>(
         value: e,
-        child: Text(e.name!),
+        child: Theme(
+          data: Theme.of(navigatorKey.currentContext!).copyWith(
+            textTheme: TextTheme(
+              bodyText1: TextStyle(
+                color: isDarkMode ? Colors.white : ColorPalette.textColor
+              )
+            )
+          ),
+          child: Text(
+            e.name!,
+            style: Theme.of(navigatorKey.currentContext!).textTheme.bodyText1,
+          ),
+        ),
       );
     }).toList();
 

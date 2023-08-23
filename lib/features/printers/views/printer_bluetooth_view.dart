@@ -1,6 +1,7 @@
 
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
+import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,12 @@ class _PrinterBluetoothViewState extends ConsumerState<PrinterBluetoothView> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var printerProvider = ref.watch(printerViewModel);
 
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
         title: "Printers",
       ),
@@ -39,8 +42,18 @@ class _PrinterBluetoothViewState extends ConsumerState<PrinterBluetoothView> {
         builder: (context, snapshot) {
           return Column(
             children: snapshot.data!.map((d) => ListTile(
-              title: Text(d.name ?? ''),
-              subtitle: Text(d.address ?? ''),
+              title: Text(
+                d.name ?? '', 
+                style: CustomTextStyle.regular16.copyWith(
+                  color: isDarkMode ? Colors.white : ColorPalette.textColor
+                )
+              ),
+              subtitle: Text(
+                d.address ?? '',
+                style: CustomTextStyle.regular14.copyWith(
+                  color: Colors.grey
+                )
+              ),
               onTap: () async {
                 printerProvider.initDevice(d);
                 await printerProvider.connectDevice(d);

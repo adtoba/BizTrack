@@ -5,9 +5,7 @@ import 'package:biz_track/features/inventory/views/edit_product_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
-import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
-import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/empty_state.dart';
@@ -48,10 +46,12 @@ class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    
     var inventoryProvider = ref.watch(inventoryViewModel);
 
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
       appBar: CustomAppBar(
         title: widget.category!.name,
       ),
@@ -63,7 +63,7 @@ class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
               horizontal: config.sw(20), 
               vertical: config.sh(10)
             ),
-            color: Colors.white,
+            color: isDarkMode ? Colors.transparent : Colors.white,
             child: const CustomSearchTextField(
               hint: "Search name of product",
               suffix: Icon(Icons.search),
@@ -93,11 +93,23 @@ class _CategoryDetailViewState extends ConsumerState<CategoryDetailView> {
                     productName: products[i].name,
                     quantityLeft: products[i].stockCount,
                     sellingPrice: products[i].sellingPrice,
-                    onTap: () {
-                      push(EditProductView(
-                        product: products[i],
-                        category: widget.category,
-                      ));
+                    onTap: () async {
+                      final res = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return EditProductView(
+                          product: products[i],
+                          category: widget.category
+                        );
+                      }));
+
+                      if (res != null) {
+                        final res = await ref.read(inventoryViewModel).getProductsByCategory(
+                          categoryId: widget.category!.id
+                        );
+
+                        setState(() {
+                          products = res!.products!;
+                        });
+                      }
                     },
                   );
                 },

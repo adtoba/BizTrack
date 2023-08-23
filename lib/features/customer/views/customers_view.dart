@@ -41,6 +41,9 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var customerProvider = ref.watch(customerViewModel);
     var loginProvider = ref.watch(authViewModel);
     var userBranch = loginProvider.userBranch;
@@ -49,7 +52,6 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
       : "all branches";
 
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
         title: "Customer",
       ),
@@ -61,7 +63,7 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
               horizontal: config.sw(20), 
               vertical: config.sh(10)
             ),
-            color: Colors.white,
+            color: isDarkMode ? Colors.transparent : Colors.white,
             child: CustomSearchTextField(
               controller: searchController,
               hint: "Search customer name",
@@ -115,6 +117,8 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
 
   Widget _buildListView(List<Customer>? customers) {
     var config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
     return ListView.separated(
       itemCount: customers!.length,
@@ -127,7 +131,9 @@ class _CustomerViewState extends ConsumerState<CustomerView> {
         return ListTile(
           title: Text(
             "${customers[i].name}",
-            style: CustomTextStyle.regular16,
+            style: CustomTextStyle.regular16.copyWith(
+              color: isDarkMode ? Colors.white : ColorPalette.textColor
+            ),
           ),
           // subtitle: Text(
           //   customerProvider.customers![i].email!.isEmpty 

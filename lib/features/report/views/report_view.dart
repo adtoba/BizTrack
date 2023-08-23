@@ -19,7 +19,6 @@ class _ReportViewState extends ConsumerState<ReportView> {
     final config = SizeConfig();
     
     return Scaffold(
-      backgroundColor: const Color(0xffF7F8FA),
       appBar: const CustomAppBar(
         title: "Report",
       ),

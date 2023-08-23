@@ -88,7 +88,6 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
       progressIndicator: const CustomLoadingIndicator(),
       color: Colors.black,
       child: Scaffold(
-        backgroundColor: ColorPalette.scaffoldBg,
         appBar: const CustomAppBar(
           title: "Add Product",
         ),

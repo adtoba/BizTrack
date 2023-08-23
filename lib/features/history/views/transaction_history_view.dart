@@ -3,6 +3,7 @@ import 'package:biz_track/features/history/views/transaction_item.dart';
 import 'package:biz_track/features/order/models/get_order_response.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
+import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
@@ -45,6 +46,9 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    
     var orderProvider = ref.watch(orderViewModel);
     var loginProvider = ref.watch(authViewModel);
     var userBranch = loginProvider.userBranch;
@@ -53,7 +57,6 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
       : "all branches";
     
     return Scaffold(
-      backgroundColor: const Color(0xffF7F8FA),
       appBar: const CustomAppBar(
         title: "Transaction History",
       ),
@@ -65,21 +68,22 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
               horizontal: config.sw(20), 
               vertical: config.sh(10)
             ),
-            color: Colors.white,
+            color: isDarkMode ? Colors.transparent : Colors.white,
             child: Row(
               children: [
                 Expanded(
                   child: CustomSearchTextField(
                     controller: searchController,
                     hint: "Search by transaction reference",
-                    suffix: const Icon(Icons.search),
+                    prefix: const Icon(Icons.search),
                   ),
                 ),
                 const XMargin(20),
                 IconButton(
                   onPressed: () {}, 
                   icon: SvgPicture.asset(
-                    "filter_icon".svg
+                    "filter_icon".svg,
+                    color: isDarkMode ? Colors.grey : Colors.black,
                   ),
                 )
               ],
@@ -126,6 +130,8 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
 
   Widget _buildListView(Map<dynamic, dynamic> ordersMap) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
     return ListView.separated(
       separatorBuilder: (context, i) => const YMargin(10),
@@ -151,12 +157,16 @@ class _TransactionHistoryViewState extends ConsumerState<TransactionHistoryView>
                       DateTime.parse(keys[i]).toLocal()
                     ),
                     // keys[i],
-                    style: CustomTextStyle.regular12,
+                    style: CustomTextStyle.regular12.copyWith(
+                      color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
+                    ),
                   ),
                 ),
                 Text(
                   "${currency()} ${parseAmount(total.toStringAsFixed(2))}",
-                  style: CustomTextStyle.bold16,
+                  style: CustomTextStyle.bold16.copyWith(
+                    color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
+                  ),
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:biz_track/features/history/views/transaction_detail_view.dart';
 import 'package:biz_track/features/history/views/transaction_item.dart';
 import 'package:biz_track/features/order/models/get_order_response.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
+import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/amount_parser.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
@@ -71,10 +72,12 @@ class _AllTransactionsViewState extends ConsumerState<AllTransactionsView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+    
     var orderProvider = ref.watch(orderViewModel);
 
     return Scaffold(
-      backgroundColor: const Color(0xffF7F8FA),
       appBar: const CustomAppBar(
         title: "",
       ),
@@ -116,12 +119,16 @@ class _AllTransactionsViewState extends ConsumerState<AllTransactionsView> {
                               DateTime.parse(keys[i]).toLocal()
                             ),
                             // keys[i],
-                            style: CustomTextStyle.regular12,
+                            style: CustomTextStyle.regular12.copyWith(
+                              color: isDarkMode ? Colors.white : ColorPalette.textColor
+                            ),
                           ),
                         ),
                         Text(
                           "${currency()} ${parseAmount(total.toStringAsFixed(2))}",
-                          style: CustomTextStyle.bold16,
+                          style: CustomTextStyle.bold16.copyWith(
+                            color: isDarkMode ? Colors.white : ColorPalette.textColor
+                          ),
                         ),
                       ],
                     ),

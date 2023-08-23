@@ -39,6 +39,9 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var inventoryProvider = ref.watch(inventoryViewModel);
     var loginProvider = ref.watch(authViewModel);
     var userBranch = loginProvider.userBranch;
@@ -47,7 +50,6 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
       : "all branches";
 
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
         title: "Product Category",
       ),
@@ -59,10 +61,10 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
               horizontal: config.sw(20), 
               vertical: config.sh(10)
             ),
-            color: Colors.white,
+            color: isDarkMode ? Colors.transparent : Colors.white,
             child: CustomSearchTextField(
               hint: "Search product category",
-              suffix: const Icon(Icons.search),
+              prefix: const Icon(Icons.search),
               onChanged: (String? value) {
                 searchNotifier.value = value;
               },
@@ -111,7 +113,8 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
 
   Widget _buildListView(List<Category>? categories) {
     var config = SizeConfig();
-    var inventoryProvider = ref.watch(inventoryViewModel);
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
     return ListView.separated(
       itemCount: categories!.length,
@@ -119,12 +122,16 @@ class _ProductCategoryViewState extends ConsumerState<ProductCategoryView> {
         horizontal: config.sw(22), 
         vertical: config.sh(20)
       ),
-      separatorBuilder: (c, i) => const Divider(),
+      separatorBuilder: (c, i) => const Divider(
+        color: Colors.white30,
+      ),
       itemBuilder: (c, i) {
         return ListTile(
           title: Text(
             categories[i].name!,
-            style: CustomTextStyle.regular16,
+            style: CustomTextStyle.regular16.copyWith(
+              color: isDarkMode ? Colors.white : ColorPalette.textColor
+            ),
           ),
           trailing: const Icon(
             Icons.arrow_forward_ios, 

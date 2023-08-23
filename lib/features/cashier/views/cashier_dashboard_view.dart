@@ -51,17 +51,17 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
     var printerProvider = ref.watch(printerViewModel);
     
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
       key: key,
       appBar: AppBar(
-        elevation: 1,
+        elevation: Theme.of(context).appBarTheme.elevation,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
         leading: IconButton(
           onPressed: () => key.currentState!.openDrawer(), 
           icon: SvgPicture.asset(
             "menu_icon".svg,
             height: config.sh(15),
             width: config.sw(15),
-            color: ColorPalette.primary,
+            color: Theme.of(context).appBarTheme.iconTheme?.color,
           )
         ),
         centerTitle: true,
@@ -69,48 +69,45 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
           "Cashier",
           style: GoogleFonts.rubik(),
         ),
-        titleTextStyle: TextStyle(
-          fontSize: config.sp(20),
-          color: ColorPalette.primary,
-          fontWeight: FontWeight.w700
+        titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+          fontSize: config.sp(20)
         ),
         actions: [
-          if(printerProvider.isConnected)...[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
-              child: Text(
-                "PRINTER CONNECTED",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontSize: config.sp(12)
-                ),
+          Row(
+            children: [
+              Image.asset(
+                "printer".png,
+                height: config.sh(20),
+                width: config.sw(20),
+                color: ColorPalette.primary,
               ),
-            )
-          ] else ...[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
-              child: Text(
-                "PRINTER DISCONNECTED",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: config.sp(12)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
+                child: Text(
+                  printerProvider.isConnected ? "CONNECTED" : "DISCONNECTED",
+                  style: TextStyle(
+                    color: printerProvider.isConnected ? Colors.green : Colors.red,
+                    fontSize: config.sp(12)
+                  ),
                 ),
-              ),
-            )
-          ]
+              )
+            ],
+          ),
         ],
       ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: onPageChanged,
-        scrollDirection: Axis.horizontal,
-        children: [
-          const CashierProductsView(),
-          Container(
-            color: Colors.red,
-          )
-        ],
-      ),
+      body: const CashierProductsView(),
+      // PageView(
+        
+      //   controller: _pageController,
+      //   onPageChanged: onPageChanged,
+      //   scrollDirection: Axis.horizontal,
+      //   children: [
+      //     const CashierProductsView(),
+      //     Container(
+      //       color: Colors.red,
+      //     )
+      //   ],
+      // ),
       drawer: SafeArea(
         top: false,
         bottom: false,
@@ -120,37 +117,37 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
           child: const CashierDrawerView(),
         ),
       ),
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24)
-        ),
-        child: BottomAppBar(
-          child: SizedBox(
-            height: config.sh(50),
-            width: double.infinity,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  BottomNavItem(
-                    icon: "cashier_products",
-                    label: "Products",
-                    isSelected: currentIdx == 0,
-                    onTap: () => onPageChanged(0),
-                  ),
-                  BottomNavItem(
-                    icon: "cashier_favorites",
-                    label: "Favorites",
-                    isSelected: currentIdx == 1,
-                    onTap: () => onPageChanged(1),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      )
+      // bottomNavigationBar: ClipRRect(
+      //   borderRadius: const BorderRadius.only(
+      //     topLeft: Radius.circular(24),
+      //     topRight: Radius.circular(24)
+      //   ),
+      //   child: BottomAppBar(
+      //     child: SizedBox(
+      //       height: config.sh(50),
+      //       width: double.infinity,
+      //       child: Center(
+      //         child: Row(
+      //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //           children: [
+      //             BottomNavItem(
+      //               icon: "cashier_products",
+      //               label: "Products",
+      //               isSelected: currentIdx == 0,
+      //               onTap: () => onPageChanged(0),
+      //             ),
+      //             BottomNavItem(
+      //               icon: "cashier_favorites",
+      //               label: "Favorites",
+      //               isSelected: currentIdx == 1,
+      //               onTap: () => onPageChanged(1),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // )
     );
   }
 }

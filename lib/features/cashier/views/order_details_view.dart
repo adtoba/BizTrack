@@ -31,6 +31,9 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var cartProvider = ref.watch(cartViewModel);
     var loginProvider = ref.read(authViewModel);
     var orderProvider = ref.watch(orderViewModel);
@@ -40,7 +43,6 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
       isLoading: orderProvider.busy,
       progressIndicator: const CustomLoadingIndicator(),
       child: Scaffold(
-        backgroundColor: ColorPalette.scaffoldBg,
         appBar: const CustomAppBar(
           title: "Order Details",
         ),
@@ -60,7 +62,7 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
               },
               child: Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: isDarkMode ? ColorPalette.itemDarkBg : Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: config.sw(22), vertical: config.sh(16)),
                 child: Row(
                   children: [
@@ -68,7 +70,9 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                       selectedCustomer == null 
                         ? "Customer"
                         : selectedCustomer!.name!,
-                      style: CustomTextStyle.regular16,
+                      style: CustomTextStyle.regular16.copyWith(
+                        color: isDarkMode ? Colors.white : ColorPalette.textColor
+                      ),
                     ),
                     const Spacer(),
                     const Icon(Icons.arrow_forward_ios, size: 20)
@@ -102,7 +106,9 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                             const XMargin(10),
                             Text(
                               "${product.quantity!}",
-                              style: CustomTextStyle.regular16,
+                              style: CustomTextStyle.regular16.copyWith(
+                                color: isDarkMode ? Colors.white : ColorPalette.textColor
+                              ),
                             ),
                             const XMargin(10),
                             AddButton(
@@ -114,13 +120,17 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                             Expanded(
                               child: Text(
                                 product.name!,
-                                style: CustomTextStyle.regular16
+                                style: CustomTextStyle.regular16.copyWith(
+                                  color: isDarkMode ? Colors.white : ColorPalette.textColor
+                                )
                               ),
                             ),
                             const XMargin(10),
                             Text(
                               "${currency()} ${parseAmount(product.price!.toStringAsFixed(2))}",
-                              style: CustomTextStyle.bold16
+                              style: CustomTextStyle.bold16.copyWith(
+                                color: isDarkMode ? Colors.white : ColorPalette.textColor
+                              )
                             ),
                           ],
                         );
@@ -133,7 +143,9 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                       contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
                       title: Text(
                         "Discount",
-                        style: CustomTextStyle.regular16,
+                        style: CustomTextStyle.regular16.copyWith(
+                          color: isDarkMode ? Colors.white : ColorPalette.textColor
+                        ),
                       ),
                       dense: true,
                       trailing: Icon(Icons.arrow_forward_ios, size: config.sh(20)),
@@ -145,11 +157,15 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                       contentPadding: EdgeInsets.symmetric(horizontal: config.sw(20)),
                       title: Text(
                         "Subtotal",
-                        style: CustomTextStyle.bold16,
+                        style: CustomTextStyle.bold16.copyWith(
+                          color: isDarkMode ? Colors.white : ColorPalette.textColor
+                        ),
                       ),
                       trailing: Text(
                         "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
-                        style: CustomTextStyle.bold16,
+                        style: CustomTextStyle.bold16.copyWith(
+                          color: isDarkMode ? Colors.white : ColorPalette.textColor
+                        ),
                       ),
                       dense: true,
                     ),
@@ -173,12 +189,16 @@ class _OrderDetailsViewState extends ConsumerState<OrderDetailsView> {
                   children: [
                     Text(
                       "Subtotal",
-                      style: CustomTextStyle.bold16,
+                      style: CustomTextStyle.bold16.copyWith(
+                        color: isDarkMode ? Colors.white : ColorPalette.textColor
+                      ),
                     ),
                     const Spacer(),
                     Text(
                       "${currency()} ${parseAmount(cartProvider.subTotal.toStringAsFixed(2))}",
-                      style: CustomTextStyle.bold16,
+                      style: CustomTextStyle.bold16.copyWith(
+                        color: isDarkMode ? Colors.white : ColorPalette.textColor
+                      ),
                     )
                   ],
                 ),
@@ -281,6 +301,8 @@ class PaymentOptionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -291,15 +313,21 @@ class PaymentOptionItem extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: !isSelected! 
+              color: !isSelected! && isDarkMode
+                ? ColorPalette.itemDarkBg
+                : !isSelected! && !isDarkMode
                 ? ColorPalette.primary.withOpacity(.10)
                 : ColorPalette.primary
             ),
             child: Icon(
               icon,
               size: config.sh(30),
-              color: !isSelected! 
+              color: !isSelected! && isDarkMode
                 ? ColorPalette.primary
+                : !isSelected! && !isDarkMode
+                ? ColorPalette.primary
+                : isSelected! && isDarkMode
+                ? Colors.white
                 : Colors.white,
             ),
           ),
@@ -307,7 +335,9 @@ class PaymentOptionItem extends StatelessWidget {
         const YMargin(5),
         Text(
           "$title",
-          style: CustomTextStyle.regular14,
+          style: CustomTextStyle.regular14.copyWith(
+            color: isDarkMode ? Colors.white : ColorPalette.textColor
+          ),
         )
       ],
     );

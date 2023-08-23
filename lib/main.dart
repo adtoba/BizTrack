@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       navigatorKey: navigatorKey,
-      theme: CustomTheme.lightTheme,
+      theme: CustomTheme.darkTheme,
       home: Builder(
         builder: (context) {
           SizeConfig.init(context);

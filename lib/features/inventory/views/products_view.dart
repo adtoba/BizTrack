@@ -5,7 +5,6 @@ import 'package:biz_track/features/inventory/views/edit_product_view.dart';
 import 'package:biz_track/shared/buttons/auth_button.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
-import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
@@ -59,6 +58,9 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var inventoryProvider = ref.watch(inventoryViewModel);
     var loginProvider = ref.watch(authViewModel);
     var userBranch = loginProvider.userBranch;
@@ -71,7 +73,6 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
       progressIndicator: const CustomLoadingIndicator(),
       color: Colors.black,
       child: Scaffold(
-        backgroundColor: ColorPalette.scaffoldBg,
         appBar: const CustomAppBar(
           title: "Products",
         ),
@@ -83,13 +84,13 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                 horizontal: config.sw(20), 
                 vertical: config.sh(10)
               ),
-              color: Colors.white,
+              color: isDarkMode ? Colors.transparent : Colors.white,
               child: Row(
                 children: [
                   Expanded(
                     child: CustomSearchTextField(
                       hint: "Search product name",
-                      suffix: const Icon(Icons.search),
+                      prefix: const Icon(Icons.search),
                       onChanged: (String? value) {
                         searchNotifier.value = value;
                       },
@@ -99,7 +100,8 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                   IconButton(
                     onPressed: () {}, 
                     icon: SvgPicture.asset(
-                      "filter_icon".svg
+                      "filter_icon".svg,
+                      color: isDarkMode ? Colors.grey : Colors.black,
                     ),
                   )
                 ],
@@ -116,105 +118,111 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                 text: "You have not created any product yet",
               )
             ] else ...[
+              const YMargin(10),
               Expanded(
-                child: ValueListenableBuilder<String?>(
-                  valueListenable: searchNotifier,
-                  builder: (context, value, _) {
-                    if(value == "") {
-                      return ListView.separated(
-                        itemCount: products.length,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: config.sw(10), 
-                          vertical: config.sh(20)
-                        ),
-                        separatorBuilder: (c, i) => const YMargin(10),
-                        itemBuilder: (c, i) {
-                          return ProductItem(
-                            image: products[i]!.image,
-                            productName: products[i]!.name,
-                            quantityLeft: products[i]!.stockCount,
-                            sellingPrice: products[i]!.sellingPrice,
-                            onTap: () async {
-                              final category = await inventoryProvider.getCategoryById(
-                                categoryId: products[i]!.category
+                child: SingleChildScrollView(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ValueListenableBuilder<String?>(
+                      valueListenable: searchNotifier,
+                      builder: (context, value, _) {
+                        if(value == "") {
+                          return Wrap(
+                            spacing: config.sw(10),
+                            runSpacing: config.sh(10),
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.start,
+                            runAlignment: WrapAlignment.center,
+                            children: products.map((e) {
+                              return ProductItem(
+                                image: e!.image,
+                                productName: e.name,
+                                quantityLeft: e.stockCount,
+                                sellingPrice: e.sellingPrice,
+                                onTap: () async {
+                                  final category = await inventoryProvider.getCategoryById(
+                                    categoryId: e.category
+                                  );
+
+                                  // ignore: use_build_context_synchronously
+                                  final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return EditProductView(
+                                      product: e,
+                                      category: category,
+                                      canEdit: true,
+                                    );
+                                  }));
+
+                                  if (editRes != null) {
+                                    bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+                                    var employee = ref.read(authViewModel).loginResponse?.employee;
+
+                                    final res = await ref.read(inventoryViewModel).getProducts(
+                                      isEmployee: isEmployee,
+                                      branchId: employee?.branch
+                                    );
+                                        
+                                    setState(() {
+                                      products = res!.products!;
+
+                                    });
+                                  }
+                                },
                               );
-
-                              final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return EditProductView(
-                                  product: products[i],
-                                  category: category,
-                                  canEdit: true,
-                                );
-                              }));
-
-                              if (editRes != null) {
-                                bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
-                                var employee = ref.read(authViewModel).loginResponse?.employee;
-
-                                final res = await ref.read(inventoryViewModel).getProducts(
-                                  isEmployee: isEmployee,
-                                  branchId: employee?.branch
-                                );
-                                    
-                                setState(() {
-                                  products = res!.products!;
-
-                                });
-                              }
-                            },
+                            }).toList(),
                           );
-                        },
-                      );
-                    } else {
-                      var results = products.where((element) 
-                        => element!.name!.toLowerCase().contains(value!.toLowerCase())).toList();
+                        } else {
+                          var results = products.where((element) 
+                            => element!.name!.toLowerCase().contains(value!.toLowerCase())).toList();
 
-                      return ListView.separated(
-                        itemCount: results.length,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: config.sw(10), 
-                          vertical: config.sh(20)
-                        ),
-                        separatorBuilder: (c, i) => const YMargin(10),
-                        itemBuilder: (c, i) {
-                          return ProductItem(
-                            image: results[i]!.image,
-                            productName: results[i]!.name,
-                            quantityLeft: results[i]!.stockCount,
-                            sellingPrice: results[i]!.sellingPrice,
-                            onTap: () async {
-                              final category = await inventoryProvider.getCategoryById(
-                                categoryId: results[i]!.category
-                              );
+                            return Wrap(
+                              spacing: config.sw(10),
+                              runSpacing: config.sh(10),
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              alignment: WrapAlignment.start,
+                              runAlignment: WrapAlignment.center,
+                              children: results.map((e) {
+                                return ProductItem(
+                                  image: e!.image,
+                                  productName: e.name,
+                                  quantityLeft: e.stockCount,
+                                  sellingPrice: e.sellingPrice,
+                                  onTap: () async {
+                                    final category = await inventoryProvider.getCategoryById(
+                                      categoryId: e.category
+                                    );
 
-                              final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return EditProductView(
-                                  product: results[i],
-                                  category: category,
-                                  canEdit: true,
+                                    // ignore: use_build_context_synchronously
+                                    final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                      return EditProductView(
+                                        product: e,
+                                        category: category,
+                                        canEdit: true,
+                                      );
+                                    }));
+
+                                    if (editRes != null) {
+                                      bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+                                      var employee = ref.read(authViewModel).loginResponse?.employee;
+
+                                      final res = await ref.read(inventoryViewModel).getProducts(
+                                        isEmployee: isEmployee,
+                                        branchId: employee?.branch
+                                      );
+                                          
+                                      setState(() {
+                                        products = res!.products!;
+
+                                      });
+                                    }
+                                  },
                                 );
-                              }));
-
-                              if (editRes != null) {
-                                bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
-                                var employee = ref.read(authViewModel).loginResponse?.employee;
-
-                                final res = await ref.read(inventoryViewModel).getProducts(
-                                  isEmployee: isEmployee,
-                                  branchId: employee?.branch
-                                );
-                                    
-                                setState(() {
-                                  products = res!.products!;
-
-                                });
-                              }
-                            },
-                          );
-                        },
-                      );
-                    }
-                  },
+                              }).toList(),
+                            );
+                        }
+                      },
+                    ),
+                  ),
                 )
               )
             ]

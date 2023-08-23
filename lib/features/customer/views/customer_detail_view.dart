@@ -1,6 +1,7 @@
 import 'package:biz_track/features/customer/model/create_customer_response.dart';
 import 'package:biz_track/features/history/views/all_transactions_view.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
+import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
@@ -27,7 +28,6 @@ class _CustomerDetailViewState extends ConsumerState<CustomerDetailView> {
     var orderProvider = ref.watch(orderViewModel);
 
     return Scaffold(
-      backgroundColor: const Color(0xffF7F8FA),
       appBar: CustomAppBar(
         title: widget.customer.name,
       ),
@@ -126,20 +126,27 @@ class EmployeeDetailItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           title!,
-          style: CustomTextStyle.regular16,
+          style: CustomTextStyle.regular16.copyWith(
+            color: isDarkMode ? Colors.white : ColorPalette.textColor
+          ),
         ),
         const YMargin(10),
         Expanded(
           child: SelectableText(
             text!,
             textAlign: TextAlign.end,
-            style: CustomTextStyle.bold16,
+            style: CustomTextStyle.bold16.copyWith(
+              color: isDarkMode ? Colors.white : ColorPalette.textColor
+            ),
           ),
         )
       ],

@@ -37,10 +37,12 @@ class _SelectCustomerViewState extends ConsumerState<SelectCustomerView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var customerProvider = ref.watch(customerViewModel);
 
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBg,
       appBar: const CustomAppBar(
         title: "Select customer",
       ),
@@ -52,7 +54,7 @@ class _SelectCustomerViewState extends ConsumerState<SelectCustomerView> {
               horizontal: config.sw(20), 
               vertical: config.sh(10)
             ),
-            color: Colors.white,
+            color: isDarkMode ? Colors.transparent : Colors.white,
             child: const CustomSearchTextField(
               hint: "Search name or email",
               suffix: Icon(Icons.search),
@@ -80,7 +82,9 @@ class _SelectCustomerViewState extends ConsumerState<SelectCustomerView> {
                   return ListTile(
                     title: Text(
                       "${customerProvider.customers?[i].name}",
-                      style: CustomTextStyle.regular16,
+                      style: CustomTextStyle.regular16.copyWith(
+                        color: isDarkMode ? Colors.white : ColorPalette.textColor
+                      ),
                     ),
                     // subtitle: Text(
                     //   "${customerProvider.customers?[i].email}",

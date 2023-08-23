@@ -77,7 +77,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if(widget.label != null)...[
           Text(
             widget.label!,
-            style: CustomTextStyle.regular16,
+            style: CustomTextStyle.regular16.copyWith(
+              color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
+            ),
           ),
           const YMargin(10),
         ],
@@ -120,11 +122,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
               hintStyle: TextStyle(
                 fontSize: config.sp(13),
                 fontWeight: FontWeight.normal,
-                color: isDarkMode ? const Color(0xff9A81D4) : ColorPalette.textColor.withOpacity(.8)
+                color: isDarkMode ? Colors.grey : ColorPalette.textColor.withOpacity(.8)
               ),
               border: border,
               filled: true,
-              fillColor: isDarkMode ? const Color(0xff481F9F) : Colors.grey.withOpacity(.1),
+              fillColor: isDarkMode ? ColorPalette.itemDarkBg.withOpacity(.9) : Colors.grey.withOpacity(.1),
               errorStyle: TextStyle(
                 fontSize: config.sp(14),
               ),

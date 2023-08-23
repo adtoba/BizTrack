@@ -27,16 +27,121 @@ class _CustomProductItemState extends State<CustomProductItem> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
 
     return InkWell(
       onTap: widget.onTap,
       child: Stack(
         children: [
           Container(
-            width: config.sw(200),
-            height: config.sh(160),
+            width: config.sw(120),
+            height: config.sh(140),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDarkMode ? ColorPalette.itemDarkBg : Colors.white
+            ),
+            child: Column(
+              children: [
+                if(widget.image!.isEmpty)...[
+                    Container(
+                      height: config.sh(120),
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(.3)
+                      ),
+                      child: Image.asset(
+                        "empty".png,
+                        fit: BoxFit.contain,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ] else ...[
+                    Container(
+                      height: config.sh(120),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            widget.image!,
+                          ),
+                          fit: BoxFit.cover
+                        ),
+                      ),
+                    ),
+                  ],
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: config.sh(10)),
+              decoration: BoxDecoration(
+                color: isDarkMode ? ColorPalette.itemDarkBg : Colors.grey,
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "${widget.productName}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: CustomTextStyle.regular16.copyWith(
+                      fontSize: config.sp(14),
+                      color: isDarkMode ? Colors.white60 : ColorPalette.textColor,
+                      fontFamily: "Apercu"
+                    ),
+                  ),
+                  const YMargin(5),
+                  Text(
+                    "${currency()} ${parseAmount(widget.productPrice!)}",
+                    textAlign: TextAlign.center,
+                    style: CustomTextStyle.bold16.copyWith(
+                      color: isDarkMode ? ColorPalette.white : ColorPalette.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if(widget.quantity! >= 1)...[
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.5),
+                ),
+                child: Text(
+                  "${widget.quantity}",
+                  style: CustomTextStyle.bold16.copyWith(
+                    color: Colors.red,
+                    fontSize: config.sp(30)
+                  ),
+                ),
+              ),
+            )
+          ],
+        ],
+      ),
+    );
+
+    return InkWell(
+      onTap: widget.onTap,
+      child: Stack(
+        children: [
+          Container(
+            width: config.sw(180),
+            height: config.sh(180),
+            decoration: BoxDecoration(
+              color: isDarkMode ? ColorPalette.itemDarkBg : Colors.white,
               borderRadius: BorderRadius.circular(10)
             ),
             child: Column(
@@ -45,7 +150,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
               children: [
                 if(widget.image!.isEmpty)...[
                   Container(
-                    height: config.sh(85),
+                    height: config.sh(100),
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(20)),
                     decoration: BoxDecoration(
@@ -60,7 +165,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                   ),
                 ] else ...[
                   Container(
-                    height: config.sh(85),
+                    height: config.sh(100),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -73,7 +178,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     ),
                   ),
                 ],
-                const YMargin(10),
+                const Spacer(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
                   child: Text(
@@ -83,6 +188,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                     textAlign: TextAlign.center,
                     style: CustomTextStyle.regular16.copyWith(
                       fontSize: config.sp(14),
+                      color: isDarkMode ? ColorPalette.white : ColorPalette.textColor,
                       fontFamily: "Apercu"
                     ),
                   ),
@@ -98,7 +204,7 @@ class _CustomProductItemState extends State<CustomProductItem> {
                           "${currency()} ${parseAmount(widget.productPrice!)}",
                           textAlign: TextAlign.center,
                           style: CustomTextStyle.bold16.copyWith(
-                            color: ColorPalette.primary
+                            color: isDarkMode ? ColorPalette.white : ColorPalette.primary,
                           ),
                         ),
                       ),
@@ -123,7 +229,6 @@ class _CustomProductItemState extends State<CustomProductItem> {
                       color: Colors.red
                     ),
                   ),
-                  const YMargin(10),
                 ] else ...[
                   const YMargin(2),
                   Text(
@@ -132,8 +237,8 @@ class _CustomProductItemState extends State<CustomProductItem> {
                       color: Colors.green
                     ),
                   ),
-                  const YMargin(10),
-                ]
+                ],
+                const Spacer(),
                 
               ],
             ),
@@ -143,10 +248,13 @@ class _CustomProductItemState extends State<CustomProductItem> {
               left: 0,
               right: 0,
               top: 0,
-              bottom: 10,
+              bottom: 0,
               child: Container(
-                color: Colors.white.withOpacity(.5),
                 alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.5),
+                  borderRadius: BorderRadius.circular(10)
+                ),
                 child: Text(
                   "${widget.quantity}",
                   style: CustomTextStyle.bold16.copyWith(

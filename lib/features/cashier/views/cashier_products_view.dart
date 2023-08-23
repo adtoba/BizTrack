@@ -2,6 +2,7 @@ import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
 import 'package:biz_track/shared/input/custom_search_text_field.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
+import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/style/custom_text_styles.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/error_util.dart';
@@ -11,6 +12,7 @@ import 'package:biz_track/shared/views/checkout_button.dart';
 import 'package:biz_track/shared/views/loading_indicator.dart';
 import 'package:biz_track/shared/views/product_item.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -70,13 +72,15 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
     var inventoryProvider = ref.watch(inventoryViewModel);
     var cartProvider = ref.watch(cartViewModel);
     var cashierProvider = ref.watch(cashierDashboardViewModel);
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
 
     return LoadingOverlay(
       isLoading: inventoryProvider.busy,
       color: Colors.white,
       progressIndicator: const CustomLoadingIndicator(),
       child: Scaffold(
-        backgroundColor: const Color(0xffF7F8FA),
         body: Stack(
           children: [
             Column(
@@ -86,8 +90,8 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                 Container(
                   height: config.sh(55),
                   padding: EdgeInsets.symmetric(horizontal: config.sw(20)),
-                  decoration: const BoxDecoration(
-                    color: Colors.white
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? ColorPalette.itemDarkBg : Colors.white
                   ),
                   child: isSearch! 
                   ? Row(
@@ -120,17 +124,32 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                   : Row(
                     children: [
                       Expanded(
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<Category>(
-                            items: cashierProvider.categoryItems,
-                            style: CustomTextStyle.regular16,
-                            hint: Text(
-                              "Pick a category",
-                              style: CustomTextStyle.regular16,
-                            ),
-                            value: cashierProvider.selectedCategory,
-                            onChanged: cashierProvider.onCategoryChanged
-                          ), 
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            hintColor: isDarkMode ? Colors.white : ColorPalette.textColor,
+                            textTheme: TextTheme(
+                              bodyText1: TextStyle(
+                                color: isDarkMode ? Colors.white : ColorPalette.textColor
+                              )
+                            )
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<Category>(
+                              items: cashierProvider.categoryItems,
+                              style: CustomTextStyle.regular16.copyWith(
+                                color: isDarkMode ? Colors.white : ColorPalette.textColor,
+                              ),
+                              hint: Text(
+                                "Pick a category",
+                                style: TextStyle(
+                                  fontSize: config.sp(16),
+                                  fontFamily: GoogleFonts.rubik().fontFamily,
+                                ),
+                              ),
+                              value: cashierProvider.selectedCategory,
+                              onChanged: cashierProvider.onCategoryChanged
+                            ), 
+                          ),
                         )
                       ),
                       const XMargin(30),
@@ -227,10 +246,10 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                   ],
                   Expanded(
                     child: Align(
-                      alignment: Alignment.topLeft,
+                      alignment: Alignment.topCenter,
                       child: SingleChildScrollView(
                         child: Padding(
-                          padding: EdgeInsets.only(bottom: config.sh(50), left: config.sw(10), right: config.sw(10)),
+                          padding: EdgeInsets.only(bottom: config.sh(50), left: config.sw(5), right: config.sw(5)),
                           child: ValueListenableBuilder<String?>(
                             valueListenable: _searchNotifier,
                             builder: (context, value, _) {
@@ -266,13 +285,13 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                   )
                 ],
                 
-                const YMargin(30),
+                const YMargin(60),
                 // const CheckoutButton(),
                 // const YMargin(10)
               ],
             ),
             Positioned(
-              bottom: config.sh(10),
+              bottom: config.sh(40),
               left: config.sw(22),
               right: config.sw(22),
               child: const CheckoutButton(),
@@ -287,49 +306,49 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
     var config = SizeConfig();
     var cartProvider = ref.watch(cartViewModel);
 
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisSpacing: 5,
-        crossAxisCount: 2,
-        childAspectRatio: 1,
-        crossAxisSpacing: 10
-      ), 
-      itemCount: products!.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return CustomProductItem(
-          productName: products[index].name,
-          productPrice: products[index].sellingPrice,
-          image: products[index].image,
-          productQuantity: products[index].stockCount,
-          quantity: cartProvider.selectedProducts[products[index].id]?.quantity ?? 0,
-          onTap: () {
-            _selectProduct(products[index]);
-          },
-        );
-      }
-    );
-
-    // return Wrap(
-    //   spacing: config.sw(10),
-    //   runSpacing: config.sh(10),
-    //   crossAxisAlignment: WrapCrossAlignment.center,
-    //   alignment: WrapAlignment.start,
-    //   runAlignment: WrapAlignment.center,
-    //   children: products.map((e) {
+    // return GridView.builder(
+    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    //     mainAxisSpacing: 5,
+    //     crossAxisCount: 2,
+    //     childAspectRatio: 1,
+    //     crossAxisSpacing: 10
+    //   ), 
+    //   itemCount: products!.length,
+    //   shrinkWrap: true,
+    //   physics: const NeverScrollableScrollPhysics(),
+    //   itemBuilder: (context, index) {
     //     return CustomProductItem(
-    //       productName: e.name,
-    //       productPrice: e.sellingPrice,
-    //       image: e.image,
-    //       productQuantity: e.stockCount,
-    //       quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
+    //       productName: products[index].name,
+    //       productPrice: products[index].sellingPrice,
+    //       image: products[index].image,
+    //       productQuantity: products[index].stockCount,
+    //       quantity: cartProvider.selectedProducts[products[index].id]?.quantity ?? 0,
     //       onTap: () {
-    //         _selectProduct(e);
+    //         _selectProduct(products[index]);
     //       },
     //     );
-    //   }).toList(),
+    //   }
     // );
+
+    return Wrap(
+      spacing: config.sw(10),
+      runSpacing: config.sh(10),
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.start,
+      runAlignment: WrapAlignment.center,
+      children: products!.map((e) {
+        return CustomProductItem(
+          productName: e.name,
+          productPrice: e.sellingPrice,
+          image: e.image,
+          productQuantity: e.stockCount,
+          quantity: cartProvider.selectedProducts[e.id]?.quantity ?? 0,
+          onTap: () {
+            _selectProduct(e);
+          },
+        );
+      }).toList(),
+    );
   }
  
   void _selectProduct(Product e) {

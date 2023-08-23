@@ -110,8 +110,8 @@ class _CustomSearchTextFieldState extends State<CustomSearchTextField> {
             color: Colors.grey
           ),
           border: border,
-          filled: false,
-          fillColor: isDarkMode ? const Color(0xff481F9F) : Colors.grey.withOpacity(.1),
+          filled: true,
+          fillColor: isDarkMode ? ColorPalette.itemDarkBg.withOpacity(.9) : Colors.grey.withOpacity(.1),
           errorStyle: TextStyle(
             fontSize: config.sp(14),
           ),

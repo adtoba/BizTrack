@@ -15,6 +15,8 @@ class TransactionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
     return InkWell(
       onTap: onTap,
@@ -22,16 +24,20 @@ class TransactionItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: config.sw(5), vertical: config.sh(10)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Colors.white
+          color: isDarkMode ? ColorPalette.itemDarkBg : ColorPalette.white
         ),
         child: ListTile(
           title: Text(
             "$amount",
-            style: CustomTextStyle.bold16,
+            style: CustomTextStyle.bold16.copyWith(
+              color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
+            ),
           ),
           subtitle: Text(
             "$time - $trxRef",
-            style: CustomTextStyle.regular14,
+            style: CustomTextStyle.regular14.copyWith(
+              color: isDarkMode ? Colors.grey : ColorPalette.textColor
+            ),
           ),
           trailing: Container(
             padding: EdgeInsets.symmetric(horizontal: config.sw(20), vertical: config.sh(10)),

@@ -26,6 +26,9 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     var loginProvider = ref.watch(authViewModel);
     var loginResponse = loginProvider.loginResponse;
     var employee = loginProvider.loginResponse?.employee;
@@ -49,7 +52,8 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               Text(
                 "Manage Business",
                 style: CustomTextStyle.bold16.copyWith(
-                  fontSize: config.sp(18)
+                  fontSize: config.sp(18),
+                  color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
                 ),
               ),
 
@@ -62,7 +66,9 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                   push(const ProductsView());
                 },
               ),
-              const Divider(),
+              const Divider(
+                color: Colors.white30,
+              ),
               ManageStoreItem(
                 icon: "category",
                 title: "Category",
@@ -71,7 +77,9 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                   push(const ProductCategoryView());
                 },
               ),
-              const Divider(),
+              const Divider(
+                color: Colors.white30,
+              ),
               ManageStoreItem(
                 icon: "customer",
                 title: "Customers",
@@ -80,14 +88,17 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                   push(const CustomerView());
                 },
               ),
-              const Divider(),
+              const Divider(
+                color: Colors.white30,
+              ),
 
               if(canManageBusiness)...[
                 const YMargin(20),
                 Text(
                   "Payment",
                   style: CustomTextStyle.bold16.copyWith(
-                    fontSize: config.sp(18)
+                    fontSize: config.sp(18),
+                    color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
                   ),
                 ),
                 const YMargin(10),
@@ -97,14 +108,14 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                   subtitle: "Create and edit your payment methods",
                   onTap: () {},
                 ),
-                const Divider(),
+                const Divider(color: Colors.white30,),
                 ManageStoreItem(
                   icon: "discount",
                   title: "Discounts",
                   subtitle: "Create and manage all your discounts",
                   onTap: () {},
                 ),
-                const Divider(),
+                const Divider(color: Colors.white30,),
               ],
               
 
@@ -112,7 +123,8 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
               Text(
                 "Printer & Receipt",
                 style: CustomTextStyle.bold16.copyWith(
-                  fontSize: config.sp(18)
+                  fontSize: config.sp(18),
+                  color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
                 ),
               ),
               const YMargin(10),
@@ -124,14 +136,14 @@ class _ManageStoreViewState extends ConsumerState<ManageStoreView> {
                   push(const PrinterBluetoothView());
                 },
               ),
-              const Divider(),
+              const Divider(color: Colors.white30,),
               ManageStoreItem(
                 icon: "receipt",
                 title: "Customize Receipt",
                 subtitle: "Customize your receipt to your taste",
                 onTap: () {},
               ),
-              const Divider(),
+              const Divider(color: Colors.white30,),
 
               
               const YMargin(30)
@@ -154,6 +166,8 @@ class ManageStoreItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final config = SizeConfig();
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
 
     return InkWell(
       onTap: onTap,
@@ -180,7 +194,9 @@ class ManageStoreItem extends StatelessWidget {
               children: [
                 Text(
                   "$title",
-                  style: CustomTextStyle.regular16,
+                  style: CustomTextStyle.regular16.copyWith(
+                    color: isDarkMode ? ColorPalette.white : ColorPalette.textColor
+                  ),
                 ),
                 const YMargin(5),
                 Text(

@@ -101,7 +101,6 @@ class _EditProductViewState extends ConsumerState<EditProductView> {
       progressIndicator: const CustomLoadingIndicator(),
       color: Colors.black,
       child: Scaffold(
-        backgroundColor: ColorPalette.scaffoldBg,
         appBar: const CustomAppBar(
           title: "Edit Product",
         ),
