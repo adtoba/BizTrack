@@ -8,7 +8,6 @@ import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/style/color_palette.dart';
 import 'package:biz_track/shared/utils/dimensions.dart';
 import 'package:biz_track/shared/utils/extensions.dart';
-import 'package:biz_track/shared/utils/navigator.dart';
 import 'package:biz_track/shared/utils/spacer.dart';
 import 'package:biz_track/shared/views/custom_app_bar.dart';
 import 'package:biz_track/shared/views/empty_state.dart';
@@ -122,12 +121,98 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
                   valueListenable: searchNotifier,
                   builder: (context, value, _) {
                     if(value == "") {
-                      return _buildListView(products);
+                      return ListView.separated(
+                        itemCount: products.length,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: config.sw(10), 
+                          vertical: config.sh(20)
+                        ),
+                        separatorBuilder: (c, i) => const YMargin(10),
+                        itemBuilder: (c, i) {
+                          return ProductItem(
+                            image: products[i]!.image,
+                            productName: products[i]!.name,
+                            quantityLeft: products[i]!.stockCount,
+                            sellingPrice: products[i]!.sellingPrice,
+                            onTap: () async {
+                              final category = await inventoryProvider.getCategoryById(
+                                categoryId: products[i]!.category
+                              );
+
+                              final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return EditProductView(
+                                  product: products[i],
+                                  category: category,
+                                  canEdit: true,
+                                );
+                              }));
+
+                              if (editRes != null) {
+                                bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+                                var employee = ref.read(authViewModel).loginResponse?.employee;
+
+                                final res = await ref.read(inventoryViewModel).getProducts(
+                                  isEmployee: isEmployee,
+                                  branchId: employee?.branch
+                                );
+                                    
+                                setState(() {
+                                  products = res!.products!;
+
+                                });
+                              }
+                            },
+                          );
+                        },
+                      );
                     } else {
                       var results = products.where((element) 
                         => element!.name!.toLowerCase().contains(value!.toLowerCase())).toList();
 
-                      return _buildListView(results);
+                      return ListView.separated(
+                        itemCount: results.length,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: config.sw(10), 
+                          vertical: config.sh(20)
+                        ),
+                        separatorBuilder: (c, i) => const YMargin(10),
+                        itemBuilder: (c, i) {
+                          return ProductItem(
+                            image: results[i]!.image,
+                            productName: results[i]!.name,
+                            quantityLeft: results[i]!.stockCount,
+                            sellingPrice: results[i]!.sellingPrice,
+                            onTap: () async {
+                              final category = await inventoryProvider.getCategoryById(
+                                categoryId: results[i]!.category
+                              );
+
+                              final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return EditProductView(
+                                  product: results[i],
+                                  category: category,
+                                  canEdit: true,
+                                );
+                              }));
+
+                              if (editRes != null) {
+                                bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+                                var employee = ref.read(authViewModel).loginResponse?.employee;
+
+                                final res = await ref.read(inventoryViewModel).getProducts(
+                                  isEmployee: isEmployee,
+                                  branchId: employee?.branch
+                                );
+                                    
+                                setState(() {
+                                  products = res!.products!;
+
+                                });
+                              }
+                            },
+                          );
+                        },
+                      );
                     }
                   },
                 )
@@ -142,7 +227,7 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
             child: CustomAuthButton(
               text: "Add New Product",
               onTap: () async {
-                 final res = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                final res = await Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const AddProductView();
                 }));
 
@@ -167,12 +252,13 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
     );
   }
 
-  Widget _buildListView(List<Product?> products) {
+  Widget _buildListView(BuildContext context, List<Product?> products) {
     var config = SizeConfig();
     var inventoryProvider = ref.watch(inventoryViewModel);
+    var productsList = products;
 
     return ListView.separated(
-      itemCount: products.length,
+      itemCount: productsList.length,
       padding: EdgeInsets.symmetric(
         horizontal: config.sw(10), 
         vertical: config.sh(20)
@@ -180,20 +266,38 @@ class _ProductsViewState extends ConsumerState<ProductsView> {
       separatorBuilder: (c, i) => const YMargin(10),
       itemBuilder: (c, i) {
         return ProductItem(
-          image: products[i]!.image,
-          productName: products[i]!.name,
-          quantityLeft: products[i]!.stockCount,
-          sellingPrice: products[i]!.sellingPrice,
+          image: productsList[i]!.image,
+          productName: productsList[i]!.name,
+          quantityLeft: productsList[i]!.stockCount,
+          sellingPrice: productsList[i]!.sellingPrice,
           onTap: () async {
-            final res = await inventoryProvider.getCategoryById(
-              categoryId: products[i]!.category
+            final category = await inventoryProvider.getCategoryById(
+              categoryId: productsList[i]!.category
             );
 
-            push(EditProductView(
-              product: products[i],
-              category: res,
-              canEdit: true,
-            ));
+            final editRes = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EditProductView(
+                product: productsList[i],
+                category: category,
+                canEdit: true,
+              );
+            }));
+
+            if (editRes != null) {
+              print("EDIT DONE SUCCESSFULLY");
+              bool isEmployee = ref.read(authViewModel).loginResponse?.employee != null;
+              var employee = ref.read(authViewModel).loginResponse?.employee;
+
+              final res = await ref.read(inventoryViewModel).getProducts(
+                isEmployee: isEmployee,
+                branchId: employee?.branch
+              );
+                  
+              setState(() {
+                productsList = res!.products!;
+
+              });
+            }
           },
         );
       },

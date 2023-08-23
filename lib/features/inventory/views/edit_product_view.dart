@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:biz_track/features/branch/models/get_branch_response.dart';
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
@@ -16,6 +18,7 @@ import 'package:biz_track/shared/views/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 
@@ -42,8 +45,23 @@ class _EditProductViewState extends ConsumerState<EditProductView> {
   final barcodeController = TextEditingController();
   final stockCountController = TextEditingController();
 
+  String? productImage;
+
   Branch? selectedBranch;
   Category? selectedCategory;
+
+  File? image;
+  PickedFile? pickedFile;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        image = File(pickedFile!.path);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -63,6 +81,7 @@ class _EditProductViewState extends ConsumerState<EditProductView> {
           purchasePriceController.text = widget.product!.purchasePrice!;
           barcodeController.text = widget.product!.barCode!;
           stockCountController.text = widget.product!.stockCount!.toString();
+          productImage = widget.product!.image;
         });
       }
     });
@@ -130,13 +149,37 @@ class _EditProductViewState extends ConsumerState<EditProductView> {
                             color: Colors.black.withOpacity(0.05),
                             borderRadius: BorderRadius.circular(5)
                           ),
-                          child: SvgPicture.asset(
-                            "no_image".svg
-                          ),
+                          child: pickedFile != null
+                            ? Image.file(
+                                image!,
+                                height: config.sh(70),
+                                width: config.sw(70),
+                              )
+                            : widget.product?.image == null || widget.product?.image == "" 
+                            
+                            ? SvgPicture.asset(
+                                "no_image".svg,
+                                height: config.sh(70),
+                                width: config.sw(70),
+                              )
+                            : widget.product!.image!.isNotEmpty 
+                            ? Image.network(
+                                widget.product!.image!,
+                                height: config.sh(70),
+                                width: config.sw(70),
+                              )
+                            : SvgPicture.asset(
+                                "no_image".svg,
+                                height: config.sh(70),
+                                width: config.sw(70),
+                              )
+                          
                         ),
                         const Spacer(),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await getImage();
+                          },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                               ColorPalette.textColor
@@ -210,13 +253,20 @@ class _EditProductViewState extends ConsumerState<EditProductView> {
               text: "Update Product",
               onTap: () async {
                 if(formKey.currentState!.validate()) {
-                  await inventoryProvider.createProduct(
+                  String? secureUrl;
+
+                  if(image != null) {
+                    secureUrl = await inventoryProvider.uploadProductimage(pickedFile: pickedFile);
+                  }
+
+                  await inventoryProvider.editProduct(
+                    productId: widget.product!.id,
                     productName: nameController.text,
                     category: selectedCategory!.id,
                     branch: !isEmployee
                       ? selectedBranch?.id
                       : employee.branch,
-                    image: "",
+                    image: image != null ? secureUrl : widget.product!.image,
                     purchasePrice: purchasePriceController.text,
                     sellingPrice: sellingPriceController.text,
                     stockCount: int.parse(stockCountController.text),

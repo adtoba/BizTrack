@@ -29,6 +29,31 @@ class InventoryApi extends ApiClient {
 
     return res;
   }
+
+  Future<Response?> editProduct({
+    String? productId,
+    String? name,
+    String? sellingPrice,
+    String? category,
+    String? image,
+    String? purchasePrice,
+    String? branch,
+    int? stockCount,
+    String? barcode
+  }) async {
+    final res = await http.put('${AppEndpoints.product}/$productId', data: {
+      "name": name,
+      "sellingPrice": sellingPrice,
+      "category": category,
+      "image": image,
+      "purchasePrice": purchasePrice,
+      "branch": branch,
+      "stockCount": stockCount,
+      "barCode": barcode
+    });
+
+    return res;
+  }
   
   Future<ProductsResponse?> getProducts() async {
     final res = await http.get(AppEndpoints.product);
