@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:biz_track/features/branch/models/get_branch_response.dart';
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/views/select_category_view.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 
@@ -45,6 +48,19 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
 
   String? barcodeResult;
 
+  File? image;
+  PickedFile? pickedFile;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        image = File(pickedFile!.path);
+      }
+    });
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -57,6 +73,7 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
     });
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -112,20 +129,30 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
                     child: Row(
                       children: [
                         Container(
-                          height: config.sw(80),
+                          height: config.sh(80),
                           width: config.sw(80),
                           padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.05),
                             borderRadius: BorderRadius.circular(5)
                           ),
-                          child: SvgPicture.asset(
-                            "no_image".svg
-                          ),
+                          child: pickedFile == null 
+                            ? SvgPicture.asset(
+                                "no_image".svg,
+                                height: config.sh(70),
+                                width: config.sw(70),
+                              )
+                            : Image.file(
+                                image!,
+                                height: config.sh(70),
+                                width: config.sw(70),
+                              )
                         ),
                         const Spacer(),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await getImage();
+                          },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                               ColorPalette.textColor
@@ -215,11 +242,17 @@ class _AddProductViewState extends ConsumerState<AddProductView> {
               text: "Add New Product",
               onTap: () async {
                 if(formKey.currentState!.validate()) {
+                  String? secureUrl;
+
+                  if(image != null) {
+                    secureUrl = await inventoryProvider.uploadProductimage(pickedFile: pickedFile);
+                  }
+
                   await inventoryProvider.createProduct(
                     productName: nameController.text,
                     category: selectedCategory!.id,
                     branch: "",
-                    image: "",
+                    image: secureUrl,
                     purchasePrice: purchasePriceController.text,
                     sellingPrice: sellingPriceController.text,
                     stockCount: int.parse(stockCountController.text),

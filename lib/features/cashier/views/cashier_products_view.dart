@@ -93,13 +93,16 @@ class _CashierProductsViewState extends ConsumerState<CashierProductsView> with 
                   ? Row(
                     children: [
                       Expanded(
-                        child: CustomSearchTextField(
-                          hint: "Search name of product",
-                          focusNode: searchNode,
-                          suffix: const Icon(Icons.search),
-                          onChanged: (String? value) {
-                            _searchNotifier.value = value;
-                          },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: config.sh(10)),
+                          child: CustomSearchTextField(
+                            hint: "Search name of product",
+                            focusNode: searchNode,
+                            suffix: const Icon(Icons.search),
+                            onChanged: (String? value) {
+                              _searchNotifier.value = value;
+                            },
+                          ),
                         ),
                       ),
                       const XMargin(20),

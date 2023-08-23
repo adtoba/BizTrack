@@ -1,13 +1,16 @@
 import 'package:biz_track/features/inventory/model/categories_response.dart';
 import 'package:biz_track/features/inventory/model/products_response.dart';
 import 'package:biz_track/main.dart';
+import 'package:biz_track/network/api/cloudinary_api.dart';
 import 'package:biz_track/network/api/inventory_api.dart';
 import 'package:biz_track/shared/registry/provider_registry.dart';
 import 'package:biz_track/shared/utils/error_util.dart';
 import 'package:biz_track/shared/utils/navigator.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 class InventoryVm extends ChangeNotifier {
   late InventoryApi inventoryApi;
@@ -201,4 +204,26 @@ class InventoryVm extends ChangeNotifier {
     }
     return null;
   }
+
+  Future<String?> uploadProductimage({PickedFile? pickedFile}) async {
+    _busy = true;
+    notifyListeners();
+    
+    try {
+      CloudinaryResponse resp =
+          await CloudinaryApi.upload(pickedFile!);
+
+      return resp.secureUrl;
+          
+    } on DioException catch (e){
+      String error = ErrorUtil.error(e);
+      ErrorUtil.showErrorSnackbar(error);
+    } finally {
+      _busy = false;
+      notifyListeners();
+    }
+    return null;
+  }
+
+  
 }

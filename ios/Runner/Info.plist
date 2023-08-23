@@ -4,6 +4,8 @@
 <dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Allow App use bluetooth?</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow access to photo gallery to upload image</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Allow App use bluetooth?</string>
 	<key>UIBackgroundModes</key>

@@ -77,23 +77,23 @@ class _CashierDashboardViewState extends ConsumerState<CashierDashboardView> {
         actions: [
           if(printerProvider.isConnected)...[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
+              padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
               child: Text(
                 "PRINTER CONNECTED",
                 style: TextStyle(
                   color: Colors.green,
-                  fontSize: config.sp(10)
+                  fontSize: config.sp(12)
                 ),
               ),
             )
           ] else ...[
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: config.sw(10)),
+              padding: EdgeInsets.symmetric(horizontal: config.sw(10), vertical: config.sh(10)),
               child: Text(
                 "PRINTER DISCONNECTED",
                 style: TextStyle(
                   color: Colors.red,
-                  fontSize: config.sp(10)
+                  fontSize: config.sp(12)
                 ),
               ),
             )
